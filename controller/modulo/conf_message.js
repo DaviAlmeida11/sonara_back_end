@@ -12,7 +12,7 @@ const HEADER = {
     status: '',
     status_code: '',
     development: 'Davi de Alemida Santos',
-    api_description: 'API para manipular dados de filmes',
+    api_description: 'API para manipular dados de conexao com artistas',
     version: '1.0.10.25',
     request_date: dataAtual.toLocaleString(),
     response: {}

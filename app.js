@@ -38,13 +38,15 @@ app.use((request, response, next) => {
 // importação das rotas 
 const generoRoutes = require('./routes/genero')
 
-
+const usuarioRoutes = require('./routes/usuario')
 
 
 
 
 //Configuração das rotas
 app.use("/v1/sonara/genero", generoRoutes)
+
+app.use("/v1/sonara/usuario", usuarioRoutes)
 
 
 

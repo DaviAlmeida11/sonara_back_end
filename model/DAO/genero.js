@@ -6,20 +6,21 @@
 *****************************************************************************/
 
 const knex = require('knex');
-const knexConfig = require('../database_config/knexfile');
+const knexConfig = require('../database_conf/knex');
 
 const knexDatabase = knex(knexConfig.development);
+
 
 
 const getSelectAllGenders = async function(){
     try {
       
-        let sql = `select * from tbl_genero order by id desc`
+        let sql = `select * from tbl_genero order by id_genero desc`
     
         let result = await knexDatabase.raw(sql)
 
         if(Array.isArray(result[0]))
-            return result
+            return result[0]
         else
             return false
 
@@ -33,7 +34,7 @@ const getSelectAllGenders = async function(){
 const getSelectByIdGender = async function(id){
     try {
     
-        let sql = `select * from tbl_genero where id=${id}`
+        let sql = `select * from tbl_genero where id_genero=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -52,13 +53,13 @@ const getSelectByIdGender = async function(id){
 const getSelectLastID = async function(){
     try {
         
-        let sql = `select id from tbl_genero order by id desc limit 1`
+        let sql = `select id_genero from tbl_genero order by id_genero desc limit 1`
 
        
         let result = await knexDatabase.raw(sql)
  
         if(Array.isArray(result))
-            return Number(result[0][0].id)
+            return Number(result[0][0].id_genero)
         else
             return false
 
@@ -72,7 +73,7 @@ const getSelectLastID = async function(){
 const setInsertGenders = async function(genero){
     try {
         let sql = `insert into tbl_genero (	nome)
-                    values( '${genero.nome}')`
+                    values( "${genero.nome}" )`
 
         let result = await knexDatabase.raw(sql)
 
@@ -90,10 +91,10 @@ const setInsertGenders = async function(genero){
 const setUpdateGenders = async function(genero){
     try {
         let sql = `update tbl_genero set 
-                        nome                = '${genero.nome}'
+                        nome                = "${genero.nome}"
                         
                     
-                    where id = ${genero.id}`
+                    where id_genero = ${genero.id_genero}`
 
         let result = await knexDatabase.raw(sql)
 
@@ -110,7 +111,7 @@ const setUpdateGenders = async function(genero){
 const setDeleteGenders = async function(id){
     try {
       
-        let sql = `delete from tbl_genero where id=${id}`
+        let sql = `delete from tbl_genero where id_genero=${id}`
         
        
         let result = await knexDatabase.raw(sql)

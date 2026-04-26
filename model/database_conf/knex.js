@@ -6,7 +6,7 @@ module.exports = {
         host: 'localhost',
         user: 'root', // Substitua pelo seu usuário
         password: 'bcd127', // Substitua pela sua senha
-        database: 'db_locadora_filme_ds2t_25_2',
+        database: 'sonara',
         port: 3306, // Porta padrão do MySQL
         
         // Opcional: Define charset (recomendado para UTF8)
