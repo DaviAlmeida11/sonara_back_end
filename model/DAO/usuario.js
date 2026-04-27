@@ -68,7 +68,19 @@ const getSelectLastID = async function(){
         return false
     }
 }
+const getUsuarioByUsuarioNome = async function (usuario) {
+    try{
+        let sql = `select * from tbl_usuario where nome = '${usuario}'`;
 
+        const result = await prisma.$queryRawUnsafe(sql);
+
+        if (Array.isArray(result)){
+            return result[0]
+        }
+    }catch(error){
+        return false
+    }  
+}
 
 const setInsertUsers = async function(usuario){
     try {
@@ -152,5 +164,6 @@ module.exports = {
     setInsertUsers,
     setUpdateUsers,
     getSelectLastID,
-    setDeleteUsers
+    setDeleteUsers,
+    getUsuarioByUsuarioNome
 } 

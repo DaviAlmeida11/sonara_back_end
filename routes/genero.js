@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const MESSAGE = require('../controller/modulo/conf_message.js')
 
 const bodyParserJson = bodyParser.json()
 
