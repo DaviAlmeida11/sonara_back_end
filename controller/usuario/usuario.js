@@ -37,7 +37,7 @@ const listarUsuarios = async function(){
 
 }
 
-//Retorna um filme fultrando pelo ID
+//Retorna um usuario fultrando pelo ID
 const buscarUsuarioId = async function(id){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -71,7 +71,7 @@ const buscarUsuarioId = async function(id){
     }
 }
 
-//Insere um filme 
+//Insere um  usuario
 const inserirUsuario = async function(usuario, contentType){
 
     //Criando um objeto novo para as mensagens
@@ -81,13 +81,13 @@ const inserirUsuario = async function(usuario, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            //Chama a função de validar todos os dados do filme
-            let validar = await validarDadosusuario(usuario)
+            //Chama a função de validar todos os dados do usuario
+            let validar = await validarDadosUsuario(usuario)
 
             if(!validar){
             
                 //Processamento
-                //Chama a função para inserir um novo filme no BD
+                //Chama a função para inserir um novo usuario no BD
                 let resultusuarios = await usuarioDAO.setInsertUsers(usuario)
 
                 if(resultusuarios){
@@ -95,7 +95,7 @@ const inserirUsuario = async function(usuario, contentType){
                     let lastID = await usuarioDAO.getSelectLastID()
                
                     if(lastID){
-                        //Adiciona o ID no JSON com os dados do filme
+                        //Adiciona o ID no JSON com os dados do usuario
                         usuario.id = lastID
                         MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
                         MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
@@ -121,7 +121,7 @@ const inserirUsuario = async function(usuario, contentType){
     }
 }
 
-//Atualiza um filme buscando pelo ID
+//Atualiza um usuario buscando pelo ID
 const atualizarUsuario = async function(usuario, id, contentType){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -130,7 +130,7 @@ const atualizarUsuario = async function(usuario, id, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-                //Chama a função de validar todos os dados do filme
+                //Chama a função de validar todos os dados do usuario
                 let validar = await validarDadosUsuario(usuario)
 
                 if(!validar){
@@ -143,7 +143,7 @@ const atualizarUsuario = async function(usuario, id, contentType){
                         //Adiciona o ID do usuario no JSON de dados para ser encaminhado ao DAO
                         usuario.id_usuario = Number(id)
 
-                        //Chama a função para inserir um novo filme no BD
+                        //Chama a função para inserir um novo usuario no BD
                         let resultusuarios = await usuarioDAO.setUpdateUsers(usuario)
 
                         if(resultusuarios){
@@ -157,7 +157,7 @@ const atualizarUsuario = async function(usuario, id, contentType){
                             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
                         }
                     }else{
-                        return validarID //A função buscarFilmeID poderá retornar (400 ou 404 ou 500)
+                        return validarID //A função buscarusuarioID poderá retornar (400 ou 404 ou 500)
                     }    
                 }else{
                     return validar //400 referente a validação dos dados
@@ -234,7 +234,7 @@ const validarDadosUsuario = async function(usuario){
          MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [CPF incorreto]' 
         return MESSAGES.ERROR_REQUIRED_FIELDS
 
-    }else if(usuario.data_nascimento == '' || usuario.data_nascimento == undefined || usuario.data_nascimento == null || usuario.data_nascimento.length > 30){
+    }else if(usuario.data_nascimento == '' || usuario.data_nascimento == undefined || usuario.data_nascimento == null || usuario.data_nascimento.length > 12){
          MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [DATA incorreto]' 
         return MESSAGES.ERROR_REQUIRED_FIELDS
     }else if(usuario.nacionalidade == '' || usuario.nacionalidade == undefined || usuario.nacionalidade == null || usuario.nacionalidade == Number || usuario.nacionalidade.length > 80){

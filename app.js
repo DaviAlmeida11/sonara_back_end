@@ -1,5 +1,5 @@
 /*********************************************************************************************
- * Objetivo: Arquivo responsável pela requisições da API do projeto da locadora de filmes
+ * Objetivo: Arquivo responsável pela requisições da API do projeto de a conexão de artistas com eventos
  * Data: 27/11/2025
  * Autor: Davi de Alemida Santos
  * Versão: 1.0
@@ -40,6 +40,8 @@ const generoRoutes = require('./routes/genero')
 
 const usuarioRoutes = require('./routes/usuario')
 
+const enderecoRoutes = require('./routes/endereco')
+
 
 
 
@@ -48,7 +50,7 @@ app.use("/v1/sonara/genero", generoRoutes)
 
 app.use("/v1/sonara/usuario", usuarioRoutes)
 
-
+app. use("/v1/sonara/endereco", enderecoRoutes)
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')

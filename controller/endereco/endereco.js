@@ -5,25 +5,25 @@
  * Versão: 1.0
 *****************************************************************************/
 
-const generoDAO = require('../../model/DAO/genero.js')
+const  enderecoDAO = require('../../model/DAO/endereco.js')
 
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
 
 
-const listarGeneros = async function(){
+const listarEnderecos = async function(){
     
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
        
-        let resultGeneros = await generoDAO.getSelectAllGenders()
+        let resultEnderecos = await enderecoDAO.getSelectAllAddress()
         
-        if(resultGeneros){
-            if(resultGeneros.length > 0){
+        if(resultEnderecos){
+            if(resultEnderecos.length > 0){
             MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.generos = resultGeneros
+            MESSAGES.HEADER.response.enderecos = resultEnderecos
 
             return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
@@ -37,8 +37,8 @@ const listarGeneros = async function(){
 
 }
 
-//Retorna um genero fultrando pelo ID
-const buscarGeneroId = async function(id){
+//Retorna um endereco fultrando pelo ID
+const buscarEnderecoId = async function(id){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -46,13 +46,13 @@ const buscarGeneroId = async function(id){
 
         //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultGeneros = await generoDAO.getSelectByIdGender(Number(id))
+            let resultEnderecos = await enderecoDAO.getSelectByIdAddress(Number(id))
 
-            if(resultGeneros){
-                if(resultGeneros.length > 0){
+            if(resultEnderecos){
+                if(resultEnderecos.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.generos = resultGeneros
+                    MESSAGES.HEADER.response.enderecos = resultEnderecos
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -62,7 +62,7 @@ const buscarGeneroId = async function(id){
                 return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
             }
         }else{
-            MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [ID incorreto]'
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [ID incorreto]'
             return MESSAGES.ERROR_REQUIRED_FIELDS //400
         }
 
@@ -71,8 +71,8 @@ const buscarGeneroId = async function(id){
     }
 }
 
-//Insere um genero 
-const inserirGenero = async function(genero, contentType){
+//Insere um  endereco
+const inserirEndereco = async function(endereco, contentType){
 
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -81,26 +81,26 @@ const inserirGenero = async function(genero, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            //Chama a função de validar todos os dados do genero
-            let validar = await validarDadosGenero(genero)
+            //Chama a função de validar todos os dados do endereco
+            let validar = await validarDadosEndereco(endereco)
 
             if(!validar){
             
                 //Processamento
-                //Chama a função para inserir um novo genero no BD
-                let resultGeneros = await generoDAO.setInsertGenders(genero)
+                //Chama a função para inserir um novo endereco no BD
+                let resultEnderecos = await enderecoDAO.setInsertAddress(endereco)
 
-                if(resultGeneros){
+                if(resultEnderecos){
                     //Chama a função para receber o ID gerado no BD
-                    let lastID = await generoDAO.getSelectLastID()
+                    let lastID = await enderecoDAO.getSelectLastID()
                
                     if(lastID){
-                        //Adiciona o ID no JSON com os dados do genero
-                        genero.id = lastID
+                        //Adiciona o ID no JSON com os dados do endereco
+                        endereco.id = lastID
                         MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
                         MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
                         MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.HEADER.response         =   genero
+                        MESSAGES.HEADER.response         =   endereco
 
                         return MESSAGES.HEADER //201
                     }else{
@@ -121,8 +121,8 @@ const inserirGenero = async function(genero, contentType){
     }
 }
 
-//Atualiza um genero buscando pelo ID
-const atualizarGenero = async function(genero, id, contentType){
+//Atualiza um endereco buscando pelo ID
+const atualizarEndereco = async function(endereco, id, contentType){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -130,34 +130,34 @@ const atualizarGenero = async function(genero, id, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-                //Chama a função de validar todos os dados do genero
-                let validar = await validarDadosGenero(genero)
+                //Chama a função de validar todos os dados do endereco
+                let validar = await validarDadosEndereco(endereco)
 
                 if(!validar){
                 
                     //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                     let validarID = await buscarGeneroId(id)
+                     let validarID = await buscarEnderecoId(id)
 
                     if(validarID.status_code == 200){
                         
-                        //Adiciona o ID do genero no JSON de dados para ser encaminhado ao DAO
-                        genero.id_genero = Number(id)
+                        //Adiciona o ID do endereco no JSON de dados para ser encaminhado ao DAO
+                        endereco.id_endereco = Number(id)
 
-                        //Chama a função para inserir um novo genero no BD
-                        let resultGeneros = await generoDAO.setUpdateGenders(genero)
+                        //Chama a função para inserir um novo endereco no BD
+                        let resultEnderecos = await enderecoDAO.setUpdateAddress(endereco)
 
-                        if(resultGeneros){
+                        if(resultEnderecos){
                             MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
                             MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
                             MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
-                            MESSAGES.HEADER.response.genero     =   genero           
+                            MESSAGES.HEADER.response.endereco     =   endereco           
 
                             return MESSAGES.HEADER //200
                         }else{
                             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
                         }
                     }else{
-                        return validarID //A função buscargeneroID poderá retornar (400 ou 404 ou 500)
+                        return validarID //A função buscarenderecoID poderá retornar (400 ou 404 ou 500)
                     }    
                 }else{
                     return validar //400 referente a validação dos dados
@@ -173,7 +173,7 @@ const atualizarGenero = async function(genero, id, contentType){
 }
 
 
-const excluirGenero = async function(id){
+const excluirEndereco = async function(id){
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
@@ -181,18 +181,18 @@ const excluirGenero = async function(id){
       
         if(!isNaN(id) && id != '' && id != null && id > 0){
 
-            let validarID = await buscarGeneroId(id)
+            let validarID = await buscarEnderecoId(id)
 
             if(validarID.status_code == 200){
 
-                let resultGeneros = await generoDAO.setDeleteGenders(Number(id))
+                let resultEnderecos = await enderecoDAO.setDeleteAddress(Number(id))
 
-                if(resultGeneros){
+                if(resultEnderecos){
                     
                         MESSAGES.HEADER.status      = MESSAGES.SUCCESS_DELETED_ITEM.status
                         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
                         MESSAGES.HEADER.message     = MESSAGES.SUCCESS_DELETED_ITEM.message
-                        MESSAGES.HEADER.response.genero = resultGeneros
+                        MESSAGES.HEADER.response.endereco = resultEnderecos
                         delete MESSAGES.HEADER.response
                         return MESSAGES.HEADER 
             
@@ -203,7 +203,7 @@ const excluirGenero = async function(id){
                 return MESSAGES.ERROR_NOT_FOUND 
             }
         }else{
-            MESSAGES.ERROR_REQUIRED_FIELDS.message == '[ID incorreto]'
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [ID incorreto]'
             return MESSAGES.ERROR_REQUIRED_FIELDS 
         }
 
@@ -213,25 +213,41 @@ const excluirGenero = async function(id){
 }
 
 
-const validarDadosGenero = async function(genero){
+const validarDadosEndereco = async function(endereco){
     
     
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
-    if(genero.nome == '' || genero.nome == undefined || genero.nome == null || genero.nome.length > 100){
-        MESSAGES.ERROR_REQUIRED_FIELDS.message == '[Nome incorreto]' 
+    if(endereco.cep == '' || endereco.cep == undefined || endereco.cep == null || endereco.cep.length > 11){
+        MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [Nome incorreto]' 
+        return MESSAGES.ERROR_REQUIRED_FIELDS
+    
+    }else if(endereco.cidade == '' || endereco.cidade == undefined || endereco.cidade == null || endereco.cidade.length > 170) {
+           MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [Email incorreto]' 
         return MESSAGES.ERROR_REQUIRED_FIELDS
 
-    
+    }else if(endereco.estado == '' || endereco.estado == undefined || endereco.estado == null || endereco.estado.length > 25){
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [Senha incorreto]' 
+        return MESSAGES.ERROR_REQUIRED_FIELDS
+
+    } else if(endereco.logradouro == '' || endereco.logradouro == undefined || endereco.logradouro == null ||  endereco.logradouro.length > 14){
+         MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [CPF incorreto]' 
+        return MESSAGES.ERROR_REQUIRED_FIELDS
+
+    }else if(endereco.numero == '' || endereco.numero == undefined || endereco.numero == null || endereco.numero.length > 30){
+         MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [DATA incorreto]' 
+        return MESSAGES.ERROR_REQUIRED_FIELDS
+   
     }else{
         return false
     }
+
 }
 
 module.exports = {
-    listarGeneros,
-    buscarGeneroId,
-    inserirGenero,
-    atualizarGenero,
-    excluirGenero
+    listarEnderecos,
+    buscarEnderecoId,
+    inserirEndereco,
+    atualizarEndereco,
+    excluirEndereco
 }

@@ -17,7 +17,7 @@ router.use((request, response, next ) => {
     next()
 })
 
-// ENDPOINTS DA TABELA Usuario
+
 
 
 // retornar todos os generos
