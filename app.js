@@ -42,6 +42,8 @@ const usuarioRoutes = require('./routes/usuario')
 
 const enderecoRoutes = require('./routes/endereco')
 
+const artistaRoutes = require('./routes/artista')
+
 
 
 
@@ -51,6 +53,8 @@ app.use("/v1/sonara/genero", generoRoutes)
 app.use("/v1/sonara/usuario", usuarioRoutes)
 
 app. use("/v1/sonara/endereco", enderecoRoutes)
+
+app.use("/v1/sonara/artista", artistaRoutes)
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')

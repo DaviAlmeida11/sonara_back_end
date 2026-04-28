@@ -12,13 +12,13 @@ const knexDatabase = knex(knexConfig.development);
 
 
 
-const getSelectAllUsers = async function(){
+const getSelectAllArtist = async function(){
     try {
       
-        let sql = `select * from tb_usuario order by id_usuario desc`
-    
-        let result = await knexDatabase.raw(sql)
+        let sql = `select * from tb_artista order by id_artista desc `
 
+        let result = await knexDatabase.raw(sql)
+   
         if(Array.isArray(result[0]))
             return result[0]
         else
@@ -31,10 +31,10 @@ const getSelectAllUsers = async function(){
 }
 
 //Retorna um filme filtrando pelo ID do banco de dados
-const getSelectByIdUsers = async function(id){
+const getSelectByIdArtist = async function(id){
     try {
     
-        let sql = `select * from tb_usuario where id_usuario=${id}`
+        let sql = `select * from tb_artista where id_artista=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -53,13 +53,13 @@ const getSelectByIdUsers = async function(id){
 const getSelectLastID = async function(){
     try {
         
-        let sql = `select id_usuario from tb_usuario order by id_usuario desc limit 1`
+        let sql = `select id_artista from tb_artista order by id_artista desc limit 1`
 
        
         let result = await knexDatabase.raw(sql)
  
         if(Array.isArray(result))
-            return Number(result[0][0].id_usuario)
+            return Number(result[0][0].id_artista)
         else
             return false
 
@@ -68,39 +68,21 @@ const getSelectLastID = async function(){
         return false
     }
 }
-const getUsuarioByUsuarioNome = async function (usuario) {
-    try{
-        let sql = `select * from tb_usuario where nome = '${usuario}'`;
 
-        const result = await prisma.$queryRawUnsafe(sql);
 
-        if (Array.isArray(result)){
-            return result[0]
-        }
-    }catch(error){
-        return false
-    }  
-}
-
-const setInsertUsers = async function(usuario){
+const setInsertArtist = async function(artista){
     try {
-  let sql = `insert into tb_usuario (
-    nome,
-    email,
-    senha,
-    cpf,
-    data_nascimento,
-    nacionalidade,
-    endereco
+  let sql = `insert into tb_artista (
+    nome_artistico  ,
+    usuario_id,
+    descricao
 ) values (
-    "${usuario.nome}",
-    "${usuario.email}",
-    "${usuario.senha}",
-    "${usuario.cpf}",
-    "${usuario.data_nascimento}",
-    "${usuario.nacionalidade}",
-    "${usuario.endereco}"
+    "${artista.nome_artistico}",
+    "${artista.usuario_id}",
+    "${artista.descricao}"
+
 );`
+
 
         let result = await knexDatabase.raw(sql)
 
@@ -115,17 +97,13 @@ const setInsertUsers = async function(usuario){
 }
 
 
-const setUpdateUsers = async function(usuario){
+const setUpdateArtist = async function(artista){
     try {
-      let sql = `update tb_usuario set 
-    nome = "${usuario.nome}",
-    email = "${usuario.email}",
-    senha = "${usuario.senha}",
-    cpf = "${usuario.cpf}",
-    data_nascimento = "${usuario.data_nascimento}",
-    nacionalidade = "${usuario.nacionalidade}",
-    endereco = "${usuario.endereco}"
-where id_usuario = ${usuario.id_usuario}`;
+      let sql = `update tb_artista set 
+    nome_artistico = "${artista.nome_artistico}",
+    usuario_id = "${artista.usuario_id}",
+    descricao = "${artista.descricao}"
+where id_artista = ${artista.id_artista}`;
 console.log(sql)
         let result = await knexDatabase.raw(sql)
 
@@ -139,10 +117,10 @@ console.log(sql)
     }
 }
 
-const setDeleteUsers = async function(id){
+const setDeleteArtist = async function(id){
     try {
       
-        let sql = `delete from tb_usuario where id_usuario=${id}`
+        let sql = `delete from tb_artista where id_artista=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -159,11 +137,10 @@ const setDeleteUsers = async function(id){
 }
 
 module.exports = {
-    getSelectAllUsers,
-    getSelectByIdUsers,
-    setInsertUsers,
-    setUpdateUsers,
+    getSelectAllArtist,
+    getSelectByIdArtist,
+    setInsertArtist,
+    setUpdateArtist,
     getSelectLastID,
-    setDeleteUsers,
-    getUsuarioByUsuarioNome
+    setDeleteArtist
 } 

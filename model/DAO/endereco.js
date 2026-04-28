@@ -15,7 +15,7 @@ const knexDatabase = knex(knexConfig.development);
 const getSelectAllAddress = async function(){
     try {
       
-        let sql = `select * from tbl_endereco order by id_endereco desc`
+        let sql = `select * from tb_endereco order by id_endereco desc`
     
         let result = await knexDatabase.raw(sql)
 
@@ -34,7 +34,7 @@ const getSelectAllAddress = async function(){
 const getSelectByIdAddress = async function(id){
     try {
     
-        let sql = `select * from tbl_endereco where id_endereco=${id}`
+        let sql = `select * from tb_endereco where id_endereco=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -53,7 +53,7 @@ const getSelectByIdAddress = async function(id){
 const getSelectLastID = async function(){
     try {
         
-        let sql = `select id_endereco from tbl_endereco order by id_endereco desc limit 1`
+        let sql = `select id_endereco from tb_endereco order by id_endereco desc limit 1`
 
        
         let result = await knexDatabase.raw(sql)
@@ -72,7 +72,7 @@ const getSelectLastID = async function(){
 
 const setInsertAddress = async function(endereco){
     try {
-  let sql = `insert into tbl_endereco (
+  let sql = `insert into tb_endereco (
     cep,
     cidade,
     estado,
@@ -102,7 +102,7 @@ const setInsertAddress = async function(endereco){
 
 const setUpdateAddress = async function(endereco){
     try {
-      let sql = `update tbl_endereco set 
+      let sql = `update tb_endereco set 
     cep = "${endereco.cep}",
     cidade = "${endereco.cidade}",
     estado = "${endereco.estado}",
@@ -125,7 +125,7 @@ where id_endereco = ${endereco.id_endereco}`;
 const setDeleteAddress = async function(id){
     try {
       
-        let sql = `delete from tbl_endereco where id_endereco=${id}`
+        let sql = `delete from tb_endereco where id_endereco=${id}`
         
        
         let result = await knexDatabase.raw(sql)
