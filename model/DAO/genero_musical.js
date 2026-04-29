@@ -12,10 +12,10 @@ const knexDatabase = knex(knexConfig.development);
 
 
 
-const getSelectAllGenders = async function(){
+const getSelectAllMusicalGeners = async function(){
     try {
       
-        let sql = `select * from tb_genero order by id_genero desc`
+        let sql = `select * from tb_genero_musical order by id_genero_musical desc`
     
         let result = await knexDatabase.raw(sql)
 
@@ -34,7 +34,7 @@ const getSelectAllGenders = async function(){
 const getSelectByIdGender = async function(id){
     try {
     
-        let sql = `select * from tb_genero where id_genero=${id}`
+        let sql = `select * from tb_genero_musical where id_genero_musical =${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -53,13 +53,13 @@ const getSelectByIdGender = async function(id){
 const getSelectLastID = async function(){
     try {
         
-        let sql = `select id_genero from tb_genero order by id_genero desc limit 1`
+        let sql = `select id_genero_musical from tb_genero_musical order by id_genero_musical desc limit 1`
 
        
         let result = await knexDatabase.raw(sql)
  
         if(Array.isArray(result))
-            return Number(result[0][0].id_genero)
+            return Number(result[0][0].id_genero_musical)
         else
             return false
 
@@ -70,10 +70,10 @@ const getSelectLastID = async function(){
 }
 
 
-const setInsertGenders = async function(genero){
+const setInsertMusicalGeners = async function(generoMusical){
     try {
-        let sql = `insert into tb_genero (nome)
-                    values( "${genero.nome}" )`
+        let sql = `insert into tb_genero_musical(nome)
+                    values( "${generoMusical.nome}")`
 
                
         let result = await knexDatabase.raw(sql)
@@ -89,13 +89,13 @@ const setInsertGenders = async function(genero){
 }
 
 
-const setUpdateGenders = async function(genero){
+const setUpdateMusicalGeners = async function(generoMusical){
     try {
-        let sql = `update tb_genero set 
-                        nome                = "${genero.nome}"
+        let sql = `update tb_genero_musical set 
+                        nome                = "${generoMusical.nome}"
                         
                     
-                    where id_genero = ${genero.id_genero}`
+                    where id_genero_musical = ${generoMusical.id_genero_musical}`
 
         let result = await knexDatabase.raw(sql)
 
@@ -109,11 +109,10 @@ const setUpdateGenders = async function(genero){
     }
 }
 
-const setDeleteGenders = async function(id){
+const setDeleteMusicalGeners = async function(id){
     try {
       
-        let sql = `delete from tb_genero where id_genero=${id}`
-        
+        let sql = `delete from tb_genero_musical where id_genero_musical=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -130,10 +129,10 @@ const setDeleteGenders = async function(id){
 }
 
 module.exports = {
-    getSelectAllGenders,
+    getSelectAllMusicalGeners,
     getSelectByIdGender,
-    setInsertGenders,
-    setUpdateGenders,
+    setInsertMusicalGeners,
+    setUpdateMusicalGeners,
     getSelectLastID,
-    setDeleteGenders
+    setDeleteMusicalGeners
 } 

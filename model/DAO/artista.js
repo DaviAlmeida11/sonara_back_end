@@ -55,7 +55,7 @@ const getSelectLastID = async function(){
         
         let sql = `select id_artista from tb_artista order by id_artista desc limit 1`
 
-       
+      
         let result = await knexDatabase.raw(sql)
  
         if(Array.isArray(result))
@@ -82,7 +82,7 @@ const setInsertArtist = async function(artista){
     "${artista.descricao}"
 
 );`
-
+ 
 
         let result = await knexDatabase.raw(sql)
 
@@ -104,7 +104,7 @@ const setUpdateArtist = async function(artista){
     usuario_id = "${artista.usuario_id}",
     descricao = "${artista.descricao}"
 where id_artista = ${artista.id_artista}`;
-console.log(sql)
+
         let result = await knexDatabase.raw(sql)
 
         if(result)

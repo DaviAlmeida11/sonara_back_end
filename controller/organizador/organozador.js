@@ -5,25 +5,25 @@
  * Versão: 1.0
 *****************************************************************************/
 
-const  enderecoDAO = require('../../model/DAO/endereco.js')
+const  OrganizadorDAO = require('../../model/DAO/organizador.js')
 
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
 
 
-const listarEnderecos = async function(){
+const listarOrganizador = async function(){
     
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
        
-        let resultEnderecos = await enderecoDAO.getSelectAllAddress()
-        
-        if(resultEnderecos){
-            if(resultEnderecos.length > 0){
+        let resultOrganizador = await OrganizadorDAO.getSelectAllOrganizer()
+      
+        if(resultOrganizador){
+            if(resultOrganizador.length > 0){
             MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.enderecos = resultEnderecos
+            MESSAGES.HEADER.response.Organizador = resultOrganizador
 
             return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
@@ -37,8 +37,8 @@ const listarEnderecos = async function(){
 
 }
 
-//Retorna um endereco fultrando pelo ID
-const buscarEnderecoId = async function(id){
+//Retorna um Organizador fultrando pelo ID
+const buscarOrganizadorId = async function(id){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -46,13 +46,13 @@ const buscarEnderecoId = async function(id){
 
         //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultEnderecos = await enderecoDAO.getSelectByIdAddress(Number(id))
+            let resultOrganizador = await OrganizadorDAO.getSelectAllOrganizer(Number(id))
 
-            if(resultEnderecos){
-                if(resultEnderecos.length > 0){
+            if(resultOrganizador){
+                if(resultOrganizador.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.enderecos = resultEnderecos
+                    MESSAGES.HEADER.response.Organizador = resultOrganizador
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -71,8 +71,8 @@ const buscarEnderecoId = async function(id){
     }
 }
 
-//Insere um  endereco
-const inserirEndereco = async function(endereco, contentType){
+//Insere um  Organizador
+const inserirOrganizador = async function(organizador, contentType){
 
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -81,26 +81,26 @@ const inserirEndereco = async function(endereco, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            //Chama a função de validar todos os dados do endereco
-            let validar = await validarDadosEndereco(endereco)
+            //Chama a função de validar todos os dados do Organizador
+            let validar = await validarDadosOrganizador(organizador)
 
             if(!validar){
             
                 //Processamento
-                //Chama a função para inserir um novo endereco no BD
-                let resultEnderecos = await enderecoDAO.setInsertAddress(endereco)
+                //Chama a função para inserir um novo Organizador no BD
+                let resultOrganizador = await OrganizadorDAO.setInsertOrganizer(organizador)
 
-                if(resultEnderecos){
+                if(resultOrganizador){
                     //Chama a função para receber o ID gerado no BD
-                    let lastID = await enderecoDAO.getSelectLastID()
-            
+                    let lastID = await OrganizadorDAO.getSelectLastID()
+      
                     if(lastID){
-                        //Adiciona o ID no JSON com os dados do endereco
-                        endereco.id = lastID
+                        //Adiciona o ID no JSON com os dados do Organizador
+                        organizador.id_Organizador = lastID
                         MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
                         MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
                         MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.HEADER.response         =   endereco
+                        MESSAGES.HEADER.response         =   organizador
 
                         return MESSAGES.HEADER //201
                     }else{
@@ -121,8 +121,8 @@ const inserirEndereco = async function(endereco, contentType){
     }
 }
 
-//Atualiza um endereco buscando pelo ID
-const atualizarEndereco = async function(endereco, id, contentType){
+//Atualiza um Organizador buscando pelo ID
+const atualizarOrganizador = async function(organizador, id, contentType){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -130,34 +130,34 @@ const atualizarEndereco = async function(endereco, id, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-                //Chama a função de validar todos os dados do endereco
-                let validar = await validarDadosEndereco(endereco)
+                //Chama a função de validar todos os dados do Organizador
+                let validar = await validarDadosOrganizador(organizador)
 
                 if(!validar){
                 
                     //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                     let validarID = await buscarEnderecoId(id)
-
+                     let validarID = await buscarOrganizadorId(id)
+                
                     if(validarID.status_code == 200){
                         
-                        //Adiciona o ID do endereco no JSON de dados para ser encaminhado ao DAO
-                        endereco.id_endereco = Number(id)
+                        //Adiciona o ID do Organizador no JSON de dados para ser encaminhado ao DAO
+                        organizador.id_organizador = Number(id)
 
-                        //Chama a função para inserir um novo endereco no BD
-                        let resultEnderecos = await enderecoDAO.setUpdateAddress(endereco)
+                        //Chama a função para inserir um novo Organizador no BD
+                        let resultOrganizador = await OrganizadorDAO.setUpdateOrganizer(organizador)
 
-                        if(resultEnderecos){
+                        if(resultOrganizador){
                             MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
                             MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
                             MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
-                            MESSAGES.HEADER.response.endereco     =   endereco           
+                            MESSAGES.HEADER.response.Organizador     =   organizador           
 
                             return MESSAGES.HEADER //200
                         }else{
                             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
                         }
                     }else{
-                        return validarID //A função buscarenderecoID poderá retornar (400 ou 404 ou 500)
+                        return validarID //A função buscarOrganizadorID poderá retornar (400 ou 404 ou 500)
                     }    
                 }else{
                     return validar //400 referente a validação dos dados
@@ -173,7 +173,7 @@ const atualizarEndereco = async function(endereco, id, contentType){
 }
 
 
-const excluirEndereco = async function(id){
+const excluirOrganizador = async function(id){
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
@@ -181,18 +181,18 @@ const excluirEndereco = async function(id){
       
         if(!isNaN(id) && id != '' && id != null && id > 0){
 
-            let validarID = await buscarEnderecoId(id)
+            let validarID = await buscarOrganizadorId(id)
 
             if(validarID.status_code == 200){
 
-                let resultEnderecos = await enderecoDAO.setDeleteAddress(Number(id))
+                let resultOrganizador = await OrganizadorDAO.setDeleteOrganizer(Number(id))
 
-                if(resultEnderecos){
+                if(resultOrganizador){
                     
                         MESSAGES.HEADER.status      = MESSAGES.SUCCESS_DELETED_ITEM.status
                         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
                         MESSAGES.HEADER.message     = MESSAGES.SUCCESS_DELETED_ITEM.message
-                        MESSAGES.HEADER.response.endereco = resultEnderecos
+                        MESSAGES.HEADER.response.Organizador = resultOrganizador
                         delete MESSAGES.HEADER.response
                         return MESSAGES.HEADER 
             
@@ -213,41 +213,23 @@ const excluirEndereco = async function(id){
 }
 
 
-const validarDadosEndereco = async function(endereco){
+const validarDadosOrganizador = function(organizador) {
     
-    
-    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+    const gerarErro = (campo) => ({
+        DEFAULT_MESSAGES, 
+        message: `${DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS.message} [Campo: ${campo}]`
+    });
 
-    if(endereco.cep == '' || endereco.cep == undefined || endereco.cep == null || endereco.cep.length > 11){
-        MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [Nome incorreto]' 
-        return MESSAGES.ERROR_REQUIRED_FIELDS
-    
-    }else if(endereco.cidade == '' || endereco.cidade == undefined || endereco.cidade == null || endereco.cidade.length > 170) {
-           MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [Email incorreto]' 
-        return MESSAGES.ERROR_REQUIRED_FIELDS
+    if (organizador.usuario_id == Number && organizador.usuario_id != '' && organizador.usuario_id != null && organizador.usuario_id > 0) 
+        return gerarErro('ID_ORGANIZADOR');
 
-    }else if(endereco.estado == '' || endereco.estado == undefined || endereco.estado == null || endereco.estado.length > 25){
-            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [Senha incorreto]' 
-        return MESSAGES.ERROR_REQUIRED_FIELDS
 
-    } else if(endereco.logradouro == '' || endereco.logradouro == undefined || endereco.logradouro == null ||  endereco.logradouro.length > 14){
-         MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [CPF incorreto]' 
-        return MESSAGES.ERROR_REQUIRED_FIELDS
-
-    }else if(endereco.numero == '' || endereco.numero == undefined || endereco.numero == null || endereco.numero.length > 30){
-         MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [DATA incorreto]' 
-        return MESSAGES.ERROR_REQUIRED_FIELDS
-   
-    }else{
-        return false
-    }
-
+    return false; 
 }
-
 module.exports = {
-    listarEnderecos,
-    buscarEnderecoId,
-    inserirEndereco,
-    atualizarEndereco,
-    excluirEndereco
+    listarOrganizador,
+    buscarOrganizadorId,
+    inserirOrganizador,
+    atualizarOrganizador,
+    excluirOrganizador
 }

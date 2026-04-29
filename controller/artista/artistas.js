@@ -82,7 +82,7 @@ const inserirArtista = async function(Artista, contentType){
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
             //Chama a função de validar todos os dados do Artista
-            let validar = await validarDadosartista(Artista)
+            let validar = await validarDadosArtista(Artista)
 
             if(!validar){
             
@@ -93,10 +93,10 @@ const inserirArtista = async function(Artista, contentType){
                 if(resultArtista){
                     //Chama a função para receber o ID gerado no BD
                     let lastID = await ArtistaDAO.getSelectLastID()
-               
+         
                     if(lastID){
                         //Adiciona o ID no JSON com os dados do Artista
-                        Artista.id_Artista = lastID
+                        Artista.id_artista = lastID
                         MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
                         MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
                         MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
@@ -131,7 +131,7 @@ const atualizarArtista = async function(Artista, id, contentType){
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
                 //Chama a função de validar todos os dados do Artista
-                let validar = await validarDadosartista(Artista)
+                let validar = await validarDadosArtista(Artista)
 
                 if(!validar){
                 
@@ -213,7 +213,7 @@ const excluirArtista = async function(id){
 }
 
 
-const validarDadosartista = function(artista) {
+const validarDadosArtista = function(artista) {
     
     const gerarErro = (campo) => ({
         DEFAULT_MESSAGES, 
@@ -225,7 +225,7 @@ const validarDadosartista = function(artista) {
         return gerarErro('nome_artista');
     
     if (artista.usuario_id == Number && artista.usuario_id != '' && artista.usuario_id != null && artista.usuario_id > 0) 
-        return gerarErro('descricao');
+        return gerarErro('ID_ARTISTA');
 
     if (!artista.descricao || artista.descricao.length > 500) 
         return gerarErro('descricao');

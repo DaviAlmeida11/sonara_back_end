@@ -12,13 +12,13 @@ const knexDatabase = knex(knexConfig.development);
 
 
 
-const getSelectAllGenders = async function(){
+const getSelectAllOrganizer = async function(){
     try {
       
-        let sql = `select * from tb_genero order by id_genero desc`
-    
-        let result = await knexDatabase.raw(sql)
+        let sql = `select * from tb_organizador order by id_organizador desc `
 
+        let result = await knexDatabase.raw(sql)
+   
         if(Array.isArray(result[0]))
             return result[0]
         else
@@ -31,10 +31,10 @@ const getSelectAllGenders = async function(){
 }
 
 //Retorna um filme filtrando pelo ID do banco de dados
-const getSelectByIdGender = async function(id){
+const getSelectByIdOrganizer = async function(id){
     try {
     
-        let sql = `select * from tb_genero where id_genero=${id}`
+        let sql = `select * from tb_organizador where id_organizador=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -53,13 +53,13 @@ const getSelectByIdGender = async function(id){
 const getSelectLastID = async function(){
     try {
         
-        let sql = `select id_genero from tb_genero order by id_genero desc limit 1`
+        let sql = `select id_organizador from tb_organizador order by id_organizador desc limit 1`
 
-       
+      
         let result = await knexDatabase.raw(sql)
  
         if(Array.isArray(result))
-            return Number(result[0][0].id_genero)
+            return Number(result[0][0].id_organizador)
         else
             return false
 
@@ -70,12 +70,15 @@ const getSelectLastID = async function(){
 }
 
 
-const setInsertGenders = async function(genero){
+const setInsertOrganizer = async function(organizador){
     try {
-        let sql = `insert into tb_genero (nome)
-                    values( "${genero.nome}" )`
+  let sql = `insert into tb_organizador (
+    usuario_id
+) values (
+    "${organizador.usuario_id}"
+);`
 
-               
+ 
         let result = await knexDatabase.raw(sql)
 
         if(result)
@@ -89,13 +92,11 @@ const setInsertGenders = async function(genero){
 }
 
 
-const setUpdateGenders = async function(genero){
+const setUpdateOrganizer = async function(organizador){
     try {
-        let sql = `update tb_genero set 
-                        nome                = "${genero.nome}"
-                        
-                    
-                    where id_genero = ${genero.id_genero}`
+      let sql = `update tb_organizador set 
+    usuario_id = "${organizador.usuario_id}" 
+where id_organizador = ${organizador.id_organizador}`;
 
         let result = await knexDatabase.raw(sql)
 
@@ -109,11 +110,10 @@ const setUpdateGenders = async function(genero){
     }
 }
 
-const setDeleteGenders = async function(id){
+const setDeleteOrganizer = async function(id){
     try {
       
-        let sql = `delete from tb_genero where id_genero=${id}`
-        
+        let sql = `delete from tb_organizador where id_organizador=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -130,10 +130,10 @@ const setDeleteGenders = async function(id){
 }
 
 module.exports = {
-    getSelectAllGenders,
-    getSelectByIdGender,
-    setInsertGenders,
-    setUpdateGenders,
+    getSelectAllOrganizer,
+    getSelectByIdOrganizer,
+    setInsertOrganizer,
+    setUpdateOrganizer,
     getSelectLastID,
-    setDeleteGenders
+    setDeleteOrganizer
 } 
