@@ -5,26 +5,25 @@
  * Versão: 1.0
 *****************************************************************************/
 
-const  usuarioDAO = require('../../model/DAO/usuario.js')
-const  crypto = require('../modulo/crypto-password.js')
+const eventoDAO = require('../../model/DAO/evento.js')
 
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
 
 
-const listarUsuarios = async function(){
+const listarEvento = async function(){
     
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
        
-        let resultusuarios = await usuarioDAO.getSelectAllUsers()
+        let resultEvento = await eventoDAO.getSelectAllEvent()
         
-        if(resultusuarios){
-            if(resultusuarios.length > 0){
+        if(resultEvento){
+            if(resultEvento.length > 0){
             MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.usuarios = resultusuarios
+            MESSAGES.HEADER.response.generos = resultEvento
 
             return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
@@ -38,8 +37,8 @@ const listarUsuarios = async function(){
 
 }
 
-//Retorna um usuario fultrando pelo ID
-const buscarUsuarioId = async function(id){
+//Retorna um evento fultrando pelo ID
+const buscarEventoId = async function(id){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -47,13 +46,13 @@ const buscarUsuarioId = async function(id){
 
         //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultusuarios = await usuarioDAO.getSelectByIdUsers(Number(id))
+            let resultEvento = await eventoDAO.getSelectByIdEvent(Number(id))
 
-            if(resultusuarios){
-                if(resultusuarios.length > 0){
+            if(resultEvento){
+                if(resultEvento.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.usuarios = resultusuarios
+                    MESSAGES.HEADER.response.generos = resultEvento
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -63,7 +62,7 @@ const buscarUsuarioId = async function(id){
                 return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
             }
         }else{
-            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [ID incorreto]'
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [ID incorreto]'
             return MESSAGES.ERROR_REQUIRED_FIELDS //400
         }
 
@@ -72,51 +71,36 @@ const buscarUsuarioId = async function(id){
     }
 }
 
-//Insere um  usuario
-const inserirUsuario = async function(usuario, contentType){
+//Insere um evento 
+const inserirEvento = async function(evento, contentType){
 
+    //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
-        
+        //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-       
-            let validar = await validarDadosUsuario(usuario)
+            //Chama a função de validar todos os dados do evento
+            let validar = await validarDadosEvento(evento)
 
             if(!validar){
             
-                // let resultusuarios = await usuarioDAO.setInsertUsers(usuario)
+                //Processamento
+                //Chama a função para inserir um novo evento no BD
+                let resultEvento = await eventoDAO.setInsertEvent(evento)
 
-                if(!dadosValidos){
-
-                    let criptografiaDeSenha = crypto.hashPassword(usuario.senha)
-
-                    let usuarioCriptografado = {
-                        nome: usuario.nome,
-                        email: usuario.email,
-                        senha: criptografiaDeSenha,
-                        cpf: usuario.cpf,
-                        data_nascimento: usuario.data_nascimento,
-                        nacionalidade: usuario.nacionalidade,
-                        endereco: usuario.endereco
-
-                    }
-
-                    let result = await usuarioDAO.setInsertUsers(usuarioCriptografado)
-                
-
-                if(result){
-
-                    let lastID = await usuarioDAO.getSelectLastID()
+                if(resultEvento){
+                    //Chama a função para receber o ID gerado no BD
+                    let lastID = await eventoDAO.getSelectLastID()
                
                     if(lastID){
-                      
-                        usuario.id = lastID
+                        //Adiciona o ID no JSON com os dados do evento
+                        evento.id_evento = lastID
                         MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
                         MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
                         MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.HEADER.response        =   usuario
+                        MESSAGES.HEADER.response         =   evento
 
                         return MESSAGES.HEADER //201
                     }else{
@@ -129,7 +113,6 @@ const inserirUsuario = async function(usuario, contentType){
             }else{
                 return validar //400
             }
-        }
         }else{
             return MESSAGES.ERROR_CONTENT_TYPE //415
         }
@@ -138,75 +121,43 @@ const inserirUsuario = async function(usuario, contentType){
     }
 }
 
-const loginUsuario = async function(usuario){
-
-    let MESSAGE = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
-
-        try {
-
-            const user = await usuarioDAO.getUsuarioByUsuarioNome(usuario.usuario);
-
-            if (!user) {
-
-                return MESSAGE.ERROR_REQUIRED_FIELDS;
-                
-            }
-
-            let senhaVerificada = crypto.verifyPassword(usuario.senha, user.senha)
-
-            if(senhaVerificada){
-
-                delete user.senha
-                MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
-                MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
-                MESSAGE.HEADER.response.usuario = user
-
-                return MESSAGE.HEADER //200
-            }
-
-        } catch (error) {
-            return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
-        }
-
-}
-
-//Atualiza um usuario buscando pelo ID
-const atualizarUsuario = async function(usuario, id, contentType){
-  
+//Atualiza um evento buscando pelo ID
+const atualizarEvento = async function(evento, id, contentType){
+    //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
-    
+        //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-                //Chama a função de validar todos os dados do usuario
-                let validar = await validarDadosUsuario(usuario)
+                //Chama a função de validar todos os dados do evento
+                let validar = await validarDadosEvento(evento)
 
                 if(!validar){
                 
                     //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                     let validarID = await buscarUsuarioId(id)
+                     let validarID = await buscarGeneroId(id)
 
                     if(validarID.status_code == 200){
                         
-                        //Adiciona o ID do usuario no JSON de dados para ser encaminhado ao DAO
-                        usuario.id_usuario = Number(id)
+                        //Adiciona o ID do evento no JSON de dados para ser encaminhado ao DAO
+                        evento.id_evento = Number(id)
 
-                        //Chama a função para inserir um novo usuario no BD
-                        let resultusuarios = await usuarioDAO.setUpdateUsers(usuario)
+                        //Chama a função para inserir um novo evento no BD
+                        let resultEvento = await eventoDAO.setUpdateEvent(evento)
 
-                        if(resultusuarios){
+                        if(resultEvento){
                             MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
                             MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
                             MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
-                            MESSAGES.HEADER.response.usuario     =   usuario           
+                            MESSAGES.HEADER.response.evento     =   evento           
 
                             return MESSAGES.HEADER //200
                         }else{
                             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
                         }
                     }else{
-                        return validarID //A função buscarusuarioID poderá retornar (400 ou 404 ou 500)
+                        return validarID //A função buscargeneroID poderá retornar (400 ou 404 ou 500)
                     }    
                 }else{
                     return validar //400 referente a validação dos dados
@@ -222,7 +173,7 @@ const atualizarUsuario = async function(usuario, id, contentType){
 }
 
 
-const excluirUsuario = async function(id){
+const excluirEvento = async function(id){
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
@@ -230,18 +181,18 @@ const excluirUsuario = async function(id){
       
         if(!isNaN(id) && id != '' && id != null && id > 0){
 
-            let validarID = await buscarUsuarioId(id)
+            let validarID = await buscarEventoId(id)
 
             if(validarID.status_code == 200){
 
-                let resultusuarios = await usuarioDAO.setDeleteUsers(Number(id))
+                let resultEvento = await eventoDAO.setDeleteEvent(Number(id))
 
-                if(resultusuarios){
+                if(resultEvento){
                     
                         MESSAGES.HEADER.status      = MESSAGES.SUCCESS_DELETED_ITEM.status
                         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
                         MESSAGES.HEADER.message     = MESSAGES.SUCCESS_DELETED_ITEM.message
-                        MESSAGES.HEADER.response.usuario = resultusuarios
+                        MESSAGES.HEADER.response.evento = resultEvento
                         delete MESSAGES.HEADER.response
                         return MESSAGES.HEADER 
             
@@ -252,7 +203,7 @@ const excluirUsuario = async function(id){
                 return MESSAGES.ERROR_NOT_FOUND 
             }
         }else{
-            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [ID incorreto]'
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == '[ID incorreto]'
             return MESSAGES.ERROR_REQUIRED_FIELDS 
         }
 
@@ -261,9 +212,7 @@ const excluirUsuario = async function(id){
     }
 }
 
-
-
-const validarDadosUsuario = function(usuario) {
+const validarDadosEvento = function(evento) {
     
     const gerarErro = (campo) => ({
         DEFAULT_MESSAGES, 
@@ -271,35 +220,37 @@ const validarDadosUsuario = function(usuario) {
     });
 
     // Validações rápidas
-    if (!usuario.nome || usuario.nome.length > 100) 
+    if (!evento.nome || evento.nome.length > 100) 
         return gerarErro('Nome');
     
-    if (!usuario.email || usuario.email.length > 150) 
-        return gerarErro('Email');
+    if (!evento.descricao || evento.descricao.length > 500) 
+        return gerarErro('descricao');
 
-    if (!usuario.senha || usuario.senha.length > 100) 
-        return gerarErro('Senha');
+    if (!evento.local || evento.local.length > 255) 
+        return gerarErro('local');
 
-    if (!usuario.cpf || usuario.cpf.length > 14) 
-        return gerarErro('CPF');
+    if (!evento.data || evento.data.length > 20) 
+        return gerarErro('data');
 
-    if (!usuario.data_nascimento || usuario.data_nascimento.length > 12) 
-        return gerarErro('Data de Nascimento');
+    if (!evento.hora_inicio || evento.hora_inicio.length > 20) 
+        return gerarErro('hora_inicio');
 
-    if (!usuario.nacionalidade || typeof usuario.nacionalidade !== 'string' || usuario.nacionalidade.length > 80) 
-        return gerarErro('Nacionalidade');
+    if (!evento.hora_fim ||  evento.hora_fim.length > 80) 
+        return gerarErro('hora_fim');
 
-    if (!usuario.endereco || usuario.endereco.length > 80) 
+    if (!evento.endereco || evento.endereco.length > 80) 
         return gerarErro('Endereço');
 
-    return false; // Retorna false se tudo estiver OK
+    return false
+
+
 }
 
+
 module.exports = {
-    listarUsuarios,
-    buscarUsuarioId,
-    inserirUsuario,
-    atualizarUsuario,
-    excluirUsuario,
-    loginUsuario
+    listarEvento,
+    buscarEventoId,
+    inserirEvento,
+    atualizarEvento,
+    excluirEvento
 }

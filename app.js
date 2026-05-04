@@ -58,6 +58,8 @@ const tipoRedesSociais = require('./routes/tipo_redes_sociais')
 
 const foto = require('./routes/foto')
 
+const evento = require('./routes/evento')
+
 
 
 
@@ -83,6 +85,8 @@ app.use('/v1/sonara/redesSociais', RedesSociais)
 app.use('/v1/sonara/tipoRedesSociais', tipoRedesSociais)
 
 app.use('/v1/sonara/foto', foto)
+
+app.use('/v1/sonara/evento', evento)
 
 
 app.listen(PORT, function(){
