@@ -5,25 +5,25 @@
  * Versão: 1.0
 *****************************************************************************/
 
-const generoMusicalDAO = require('../../model/DAO/genero_musical.js')
+const TipoRedesSociaisDAO = require('../../model/DAO/tipo_redes_sociais.js')
 
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
 
 
-const listarGeneroMusical = async function(){
+const listarTipoRedesSociais = async function(){
     
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
        
-        let resultGeneros = await generoMusicalDAO.getSelectAllMusicalGeners()
+        let resultTipoRedesSociais = await TipoRedesSociaisDAO.getSelectAllTIpoRedesSociais()
         
-        if(resultGeneros){
-            if(resultGeneros.length > 0){
+        if(resultTipoRedesSociais){
+            if(resultTipoRedesSociais.length > 0){
             MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.generos = resultGeneros
+            MESSAGES.HEADER.response.TipoRedesSociais = resultTipoRedesSociais
 
             return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
@@ -37,8 +37,8 @@ const listarGeneroMusical = async function(){
 
 }
 
-//Retorna um genero fultrando pelo ID
-const buscarGeneroMusicalId = async function(id){
+//Retorna um TipoRedesSociaiss fultrando pelo ID
+const buscarTipoRedesSociaisId = async function(id){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -46,13 +46,13 @@ const buscarGeneroMusicalId = async function(id){
 
         //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultGeneros = await generoMusicalDAO.getSelectByIdGender(Number(id))
+            let resultTipoRedesSociais = await TipoRedesSociaisDAO.getSelectByIdTIpoRedesSociais(Number(id))
 
-            if(resultGeneros){
-                if(resultGeneros.length > 0){
+            if(resultTipoRedesSociais){
+                if(resultTipoRedesSociais.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.generos = resultGeneros
+                    MESSAGES.HEADER.response.TipoRedesSociais = resultTipoRedesSociais
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -71,8 +71,8 @@ const buscarGeneroMusicalId = async function(id){
     }
 }
 
-//Insere um genero 
-const inserirGeneroMusical = async function(generoMusical, contentType){
+//Insere um TipoRedesSociais 
+const inserirTipoRedesSociais = async function(TipoRedesSociais, contentType){
 
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -81,26 +81,26 @@ const inserirGeneroMusical = async function(generoMusical, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            //Chama a função de validar todos os dados do genero
-            let validar = await validarDadosGeneroMusical(generoMusical)
+            //Chama a função de validar todos os dados do TipoRedesSociaiss
+            let validar = await validarDadosTipoRedesSociais(TipoRedesSociais)
 
             if(!validar){
             
                 //Processamento
-                //Chama a função para inserir um novo genero no BD
-                let resultGeneros = await generoMusicalDAO.setInsertMusicalGeners(generoMusical)
+                //Chama a função para inserir um novo TipoRedesSociais no BD
+                let resultTipoRedesSociais = await TipoRedesSociaisDAO.setInserTIpoRedesSociais(TipoRedesSociais)
 
-                if(resultGeneros){
+                if(resultTipoRedesSociais){
                     //Chama a função para receber o ID gerado no BD
-                    let lastID = await generoMusicalDAO.getSelectLastID()
-         
+                    let lastID = await TipoRedesSociaisDAO.getSelectLastID()
+               
                     if(lastID){
-                        //Adiciona o ID no JSON com os dados do genero
-                        generoMusical.id_genero_musical = lastID
+                        //Adiciona o ID no JSON com os dados do TipoRedesSociais
+                        TipoRedesSociais.id_tipo_redes_sociais = lastID
                         MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
                         MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
                         MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.HEADER.response         =   generoMusical
+                        MESSAGES.HEADER.response         =   TipoRedesSociais
 
                         return MESSAGES.HEADER //201
                     }else{
@@ -117,12 +117,12 @@ const inserirGeneroMusical = async function(generoMusical, contentType){
             return MESSAGES.ERROR_CONTENT_TYPE //415
         }
     } catch (error) {
-            return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
+        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 }
 
-//Atualiza um genero buscando pelo ID
-const atualizarGeneroMusical = async function(generoMusical, id, contentType){
+//Atualiza um TipoRedesSociais buscando pelo ID
+const atualizarTipoRedesSociais = async function(TipoRedesSociais, id, contentType){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -130,34 +130,34 @@ const atualizarGeneroMusical = async function(generoMusical, id, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-                //Chama a função de validar todos os dados do genero
-                let validar = await validarDadosGeneroMusical(generoMusical)
-      
+                //Chama a função de validar todos os dados do TipoRedesSociaiss
+                let validar = await validarDadosTipoRedesSociais(TipoRedesSociais)
+
                 if(!validar){
                 
                     //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                     let validarID = await buscarGeneroMusicalId(id)
-             
+                     let validarID = await buscarTipoRedesSociaisId(id)
+
                     if(validarID.status_code == 200){
                         
-                        //Adiciona o ID do genero no JSON de dados para ser encaminhado ao DAO
-                        generoMusical.id_genero_musical= Number(id)
+                        //Adiciona o ID do TipoRedesSociais no JSON de dados para ser encaminhado ao DAO
+                      TipoRedesSociais.id_redes_sociais = Number(id)
 
-                        //Chama a função para inserir um novo genero no BD
-                        let resultGeneros = await generoMusicalDAO.setUpdateMusicalGeners(generoMusical)
+                        //Chama a função para inserir um novo TipoRedesSociaiss no BD
+                        let resultTipoRedesSociais = await TipoRedesSociaisDAO.setUpdateTIpoRedesSociais(TipoRedesSociais)
 
-                        if(resultGeneros){
+                        if(resultTipoRedesSociais){
                             MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
                             MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
                             MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
-                            MESSAGES.HEADER.response.generoMusical     =   generoMusical           
+                            MESSAGES.HEADER.response.TipoRedesSociais    =   TipoRedesSociais       
 
                             return MESSAGES.HEADER //200
                         }else{
                             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
                         }
                     }else{
-                        return validarID //A função buscargeneroID poderá retornar (400 ou 404 ou 500)
+                        return validarID //A função buscarTipoRedesSociaisID poderá retornar (400 ou 404 ou 500)
                     }    
                 }else{
                     return validar //400 referente a validação dos dados
@@ -173,7 +173,7 @@ const atualizarGeneroMusical = async function(generoMusical, id, contentType){
 }
 
 
-const excluirGeneroMusical = async function(id){
+const excluirTipoRedesSociais = async function(id){
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
@@ -181,18 +181,18 @@ const excluirGeneroMusical = async function(id){
       
         if(!isNaN(id) && id != '' && id != null && id > 0){
 
-            let validarID = await buscarGeneroMusicalId(id)
+            let validarID = await buscarTipoRedesSociaisId(id)
 
             if(validarID.status_code == 200){
 
-                let resultGenerosMusicais = await generoMusicalDAO.setDeleteMusicalGeners(Number(id))
+                let resultTipoRedesSociais = await TipoRedesSociaisDAO.setDeleteTIpoRedesSociais(Number(id))
 
-                if(resultGenerosMusicais){
+                if(resultTipoRedesSociais){
                     
                         MESSAGES.HEADER.status      = MESSAGES.SUCCESS_DELETED_ITEM.status
                         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
                         MESSAGES.HEADER.message     = MESSAGES.SUCCESS_DELETED_ITEM.message
-                        MESSAGES.HEADER.response.genero = resultGenerosMusicais
+                        MESSAGES.HEADER.response.TipoRedesSociais = resultTipoRedesSociais
                         delete MESSAGES.HEADER.response
                         return MESSAGES.HEADER 
             
@@ -213,25 +213,25 @@ const excluirGeneroMusical = async function(id){
 }
 
 
-const validarDadosGeneroMusical = async function(genero){
+const validarDadosTipoRedesSociais = function(TipoRedesSociais) {
     
-    
-    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+    const gerarErro = (campo) => ({
+        DEFAULT_MESSAGES, 
+        message: `${DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS.message} [Campo: ${campo}]`
+    });
 
-    if(genero.nome == '' || genero.nome == undefined || genero.nome == null || genero.nome.length > 100){
-        MESSAGES.ERROR_REQUIRED_FIELDS.message == '[Nome incorreto]' 
-        return MESSAGES.ERROR_REQUIRED_FIELDS
+    // Validações rápidas
+    if (!TipoRedesSociais.nome || TipoRedesSociais.nome.length > 4100) 
+        return gerarErro('nome');
 
-    
-    }else{
-        return false
-    }
+
+    return false; 
 }
 
 module.exports = {
-    listarGeneroMusical,
-    buscarGeneroMusicalId,
-    inserirGeneroMusical,
-    atualizarGeneroMusical,
-    excluirGeneroMusical
+    listarTipoRedesSociais,
+    buscarTipoRedesSociaisId,
+    inserirTipoRedesSociais,
+    atualizarTipoRedesSociais,
+    excluirTipoRedesSociais
 }

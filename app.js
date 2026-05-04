@@ -48,6 +48,14 @@ const organizador = require('./routes/organizador')
 
 const generoMusical = require('./routes/genero_musical')
 
+const nacionalidade = require('./routes/nacionalidade')
+
+const status = require('./routes/status')
+
+const RedesSociais = require('./routes/redes_sociais')
+
+const tipoRedesSociais = require('./routes/tipo_redes_sociais')
+
 
 
 
@@ -63,6 +71,15 @@ app.use("/v1/sonara/artista", artistaRoutes)
 app.use("/v1/sonara/organizador", organizador)
 
 app.use("/v1/sonara/generoMusical", generoMusical)
+
+app.use("/v1/sonara/nacionalidade", nacionalidade)
+
+app.use('/v1/sonara/status', status)
+
+app.use('/v1/sonara/redesSociais', RedesSociais)
+
+app.use('/v1/sonara/tipoRedesSociais', tipoRedesSociais)
+
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')
