@@ -1,6 +1,6 @@
 /******************************************************************************
  * Objetivo: Arquivo responsável pela conexãode cassa de show com cantores
- * Data: 29/04/2026
+ * Data: 25/04/2026
  * Autor: Davi de Alemida Santos
  * Versão: 1.0
 *****************************************************************************/
@@ -12,10 +12,10 @@ const knexDatabase = knex(knexConfig.development);
 
 
 
-const getSelectAllSocialMidia= async function(){
+const getSelectAllPicture = async function(){
     try {
       
-        let sql = `select * from tb_redes_sociais order by id_redes_sociais desc`
+        let sql = `select * from tb_foto order by id_foto desc`
     
         let result = await knexDatabase.raw(sql)
 
@@ -31,10 +31,10 @@ const getSelectAllSocialMidia= async function(){
 }
 
 //Retorna um filme filtrando pelo ID do banco de dados
-const getSelectByIdSocialMidia = async function(id){
+const getSelectByIdPicture = async function(id){
     try {
     
-        let sql = `select * from tb_redes_sociais where id_redes_sociais=${id}`
+        let sql = `select * from tb_foto where id_foto=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -53,13 +53,13 @@ const getSelectByIdSocialMidia = async function(id){
 const getSelectLastID = async function(){
     try {
         
-        let sql = `select id_redes_sociais from tb_redes_sociais order by id_redes_sociais desc limit 1`
+        let sql = `select id_foto from tb_foto order by id_foto desc limit 1`
 
        
         let result = await knexDatabase.raw(sql)
  
         if(Array.isArray(result))
-            return Number(result[0][0].id_redes_sociais)
+            return Number(result[0][0].id_foto)
         else
             return false
 
@@ -70,12 +70,10 @@ const getSelectLastID = async function(){
 }
 
 
-const setInserSocialMidia= async function(redes_sociais){
+const setInsertPicture = async function(foto){
     try {
-       let sql = `insert into tb_redes_sociais 
-            (link, tipo_id, usuario_id)
-           values
-            ("${redes_sociais.link}", ${redes_sociais.tipo_id}, ${redes_sociais.usuario_id})`
+        let sql = `insert into tb_foto (foto)
+                    values( "${foto.foto}" )`
 
                
         let result = await knexDatabase.raw(sql)
@@ -91,13 +89,13 @@ const setInserSocialMidia= async function(redes_sociais){
 }
 
 
-const setUpdateSocialMidia = async function(redes_sociais){
+const setUpdatePicture = async function(foto){
     try {
-      let sql = `update tb_redes_sociais set
-                link       = "${redes_sociais.link}",
-                tipo_id    = ${redes_sociais.tipo_id},
-                usuario_id = ${redes_sociais.usuario_id}
-           where id_redes_sociais = ${redes_sociais.id_redes_sociais}`
+        let sql = `update tb_foto set 
+                        foto               = "${foto.foto}"
+                        
+                    
+                    where id_foto = ${foto.id_foto}`
 
         let result = await knexDatabase.raw(sql)
 
@@ -111,12 +109,13 @@ const setUpdateSocialMidia = async function(redes_sociais){
     }
 }
 
-const setDeleteSocialMidia = async function(id){
+const setDeletePicture = async function(id){
     try {
       
-        let sql = `delete from tb_redes_sociais where id_redes_sociais=${id}`
+        let sql = `delete from tb_foto where id_foto=${id}`
         
-
+        
+       
         let result = await knexDatabase.raw(sql)
 
         if(Array.isArray(result))
@@ -131,10 +130,10 @@ const setDeleteSocialMidia = async function(id){
 }
 
 module.exports = {
-    getSelectAllSocialMidia,
-    getSelectByIdSocialMidia,
-    setInserSocialMidia,
-    setUpdateSocialMidia,
+    getSelectAllPicture,
+    getSelectByIdPicture,
+    setInsertPicture,
+    setUpdatePicture,
     getSelectLastID,
-    setDeleteSocialMidia
+    setDeletePicture
 } 

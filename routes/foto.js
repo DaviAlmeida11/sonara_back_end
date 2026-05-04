@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const bodyParserJson = bodyParser.json()
 
 
-const controllerGenero = require('../controller/genero/genero')
+const controllerFoto = require('../controller/foto/foto')
 
 //configurção do cors 
 const router = express.Router()
@@ -20,60 +20,60 @@ router.use((request, response, next ) => {
 
 
 
-// retornar todos os generos
+// retornar todos os Fotos
 router.get('/', cors(), async function (request, response){
 
-  let genero  = await controllerGenero.listarGeneros()
+  let Foto  = await controllerFoto.listarFotos()
     
-    response.status(genero.status_code)
-    response.json(genero)
+    response.status(Foto.status_code)
+    response.json(Foto)
 })
 module.exports = router 
 
 
-// pegar genero por id
+// pegar Foto por id
 router.get('/:id', cors(), async function (request, response){
-    let idGenero = request.params.id
+    let idFoto = request.params.id
 
-    let genero = await controllerGenero.buscarGeneroId(idGenero)
-    response.status(genero.status_code)
-    response.json(genero)  
+    let Foto = await controllerFoto.buscarFotoId(idFoto)
+    response.status(Foto.status_code)
+    response.json(Foto)  
 
 
 })
 
 
-//inserir genero
+//inserir Foto
 router.post('/', cors(), bodyParserJson, async function (request, response) {
 
 
     let dadosBody = request.body
     let contentType = request.headers['content-type']
 
-    let genero = await controllerGenero.inserirGenero(dadosBody, contentType)
+    let Foto = await controllerFoto.inserirFoto(dadosBody, contentType)
 
-    response.status(genero.status_code)
-    response.json(genero)
+    response.status(Foto.status_code)
+    response.json(Foto)
 })
 
 
 router.put('/:id', cors(), bodyParserJson, async function(request, response) {
     let dadosBody = request.body
     
-    let idGenero = request.params.id
+    let idFoto = request.params.id
 
     let contentType = request.headers['content-type']
 
-    let genero = await controllerGenero.atualizarGenero(dadosBody, idGenero, contentType)
-    response.status(genero.status_code)
-    response.json(genero)
+    let Foto = await controllerFoto.atualizarFoto(dadosBody, idFoto, contentType)
+    response.status(Foto.status_code)
+    response.json(Foto)
 })
 
 router.delete('/:id', cors(), async function(request, response) {
-    let idGenero = request.params.id
+    let idFoto = request.params.id
 
-    let genero = await controllerGenero.excluirGenero(idGenero)
-    response.status(genero.status_code)
-    response.json(genero)
+    let Foto = await controllerFoto.excluirFoto(idFoto)
+    response.status(Foto.status_code)
+    response.json(Foto)
 })
   

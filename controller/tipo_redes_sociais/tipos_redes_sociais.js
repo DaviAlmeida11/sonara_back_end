@@ -17,7 +17,7 @@ const listarTipoRedesSociais = async function(){
 
     try {
        
-        let resultTipoRedesSociais = await TipoRedesSociaisDAO.getSelectAllTIpoRedesSociais()
+        let resultTipoRedesSociais = await TipoRedesSociaisDAO.getSelectAllTypeSocialMidia ()
         
         if(resultTipoRedesSociais){
             if(resultTipoRedesSociais.length > 0){
@@ -46,7 +46,7 @@ const buscarTipoRedesSociaisId = async function(id){
 
         //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultTipoRedesSociais = await TipoRedesSociaisDAO.getSelectByIdTIpoRedesSociais(Number(id))
+            let resultTipoRedesSociais = await TipoRedesSociaisDAO.getSelectByIdTypeSocialMidia (Number(id))
 
             if(resultTipoRedesSociais){
                 if(resultTipoRedesSociais.length > 0){
@@ -88,7 +88,7 @@ const inserirTipoRedesSociais = async function(TipoRedesSociais, contentType){
             
                 //Processamento
                 //Chama a função para inserir um novo TipoRedesSociais no BD
-                let resultTipoRedesSociais = await TipoRedesSociaisDAO.setInserTIpoRedesSociais(TipoRedesSociais)
+                let resultTipoRedesSociais = await TipoRedesSociaisDAO.setInserTypeSocialMidia (TipoRedesSociais)
 
                 if(resultTipoRedesSociais){
                     //Chama a função para receber o ID gerado no BD
@@ -144,7 +144,7 @@ const atualizarTipoRedesSociais = async function(TipoRedesSociais, id, contentTy
                       TipoRedesSociais.id_redes_sociais = Number(id)
 
                         //Chama a função para inserir um novo TipoRedesSociaiss no BD
-                        let resultTipoRedesSociais = await TipoRedesSociaisDAO.setUpdateTIpoRedesSociais(TipoRedesSociais)
+                        let resultTipoRedesSociais = await TipoRedesSociaisDAO.setUpdateTypeSocialMidia (TipoRedesSociais)
 
                         if(resultTipoRedesSociais){
                             MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
@@ -185,7 +185,7 @@ const excluirTipoRedesSociais = async function(id){
 
             if(validarID.status_code == 200){
 
-                let resultTipoRedesSociais = await TipoRedesSociaisDAO.setDeleteTIpoRedesSociais(Number(id))
+                let resultTipoRedesSociais = await TipoRedesSociaisDAO.setDeleteTypeSocialMidia(Number(id))
 
                 if(resultTipoRedesSociais){
                     

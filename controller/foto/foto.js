@@ -5,25 +5,25 @@
  * Versão: 1.0
 *****************************************************************************/
 
-const RedesSociaisDAO = require('../../model/DAO/redes_sociais.js')
+const FotoDAO = require('../../model/DAO/foto.js')
 
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
 
 
-const listarRedesSociaiss = async function(){
+const listarFotos = async function(){
     
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
        
-        let resultRedesSociaiss = await RedesSociaisDAO.getSelectAllSocialMidia()
+        let resultFotos = await FotoDAO.getSelectAllPicture()
         
-        if(resultRedesSociaiss){
-            if(resultRedesSociaiss.length > 0){
+        if(resultFotos){
+            if(resultFotos.length > 0){
             MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.RedesSociais = resultRedesSociaiss
+            MESSAGES.HEADER.response.Fotos = resultFotos
 
             return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
@@ -37,8 +37,8 @@ const listarRedesSociaiss = async function(){
 
 }
 
-//Retorna um RedesSociais fultrando pelo ID
-const buscarRedesSociaisId = async function(id){
+//Retorna um Foto fultrando pelo ID
+const buscarFotoId = async function(id){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -46,13 +46,13 @@ const buscarRedesSociaisId = async function(id){
 
         //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultRedesSociais = await RedesSociaisDAO.getSelectByIdSocialMidia(Number(id))
+            let resultFotos = await FotoDAO.getSelectByIdPicture(Number(id))
 
-            if(resultRedesSociais){
-                if(resultRedesSociais.length > 0){
+            if(resultFotos){
+                if(resultFotos.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.RedesSociais = resultRedesSociais
+                    MESSAGES.HEADER.response.Fotos = resultFotos
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -71,8 +71,8 @@ const buscarRedesSociaisId = async function(id){
     }
 }
 
-//Insere um RedesSociais 
-const inserirRedesSociais = async function(RedesSociais, contentType){
+//Insere um Foto 
+const inserirFoto = async function(Foto, contentType){
 
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -81,26 +81,26 @@ const inserirRedesSociais = async function(RedesSociais, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            //Chama a função de validar todos os dados do RedesSociais
-            let validar = await validarDadosRedesSociais(RedesSociais)
+            //Chama a função de validar todos os dados do Foto
+            let validar = await validarDadosFoto(Foto)
 
             if(!validar){
             
                 //Processamento
-                //Chama a função para inserir um novo RedesSociais no BD
-                let resultRedesSociais = await RedesSociaisDAO.setInserSocialMidia(RedesSociais)
+                //Chama a função para inserir um novo Foto no BD
+                let resultFotos = await FotoDAO.setInsertPicture(Foto)
 
-                if(resultRedesSociais){
+                if(resultFotos){
                     //Chama a função para receber o ID gerado no BD
-                    let lastID = await RedesSociaisDAO.getSelectLastID()
+                    let lastID = await FotoDAO.getSelectLastID()
                
                     if(lastID){
-                        //Adiciona o ID no JSON com os dados do RedesSociais
-                        RedesSociais.id_redes_sociais = lastID
+                        //Adiciona o ID no JSON com os dados do Foto
+                        Foto.id = lastID
                         MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
                         MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
                         MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.HEADER.response         =   RedesSociais
+                        MESSAGES.HEADER.response         =   Foto
 
                         return MESSAGES.HEADER //201
                     }else{
@@ -121,8 +121,8 @@ const inserirRedesSociais = async function(RedesSociais, contentType){
     }
 }
 
-//Atualiza um RedesSociais buscando pelo ID
-const atualizarRedesSociais = async function(RedesSociais, id, contentType){
+//Atualiza um Foto buscando pelo ID
+const atualizarFoto = async function(Foto, id, contentType){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -130,34 +130,34 @@ const atualizarRedesSociais = async function(RedesSociais, id, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-                //Chama a função de validar todos os dados do RedesSociais
-                let validar = await validarDadosRedesSociais(RedesSociais)
+                //Chama a função de validar todos os dados do Foto
+                let validar = await validarDadosFoto(Foto)
 
                 if(!validar){
                 
                     //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                     let validarID = await buscarRedesSociaisId(id)
+                     let validarID = await buscarFotoId(id)
 
                     if(validarID.status_code == 200){
                         
-                        //Adiciona o ID do RedesSociais no JSON de dados para ser encaminhado ao DAO
-                      RedesSociais.id_redes_sociais = Number(id)
+                        //Adiciona o ID do Foto no JSON de dados para ser encaminhado ao DAO
+                        Foto.id_foto = Number(id)
 
-                        //Chama a função para inserir um novo RedesSociais no BD
-                        let resultRedesSociaiss = await RedesSociaisDAO.setUpdateSocialMidia(RedesSociais)
+                        //Chama a função para inserir um novo Foto no BD
+                        let resultFotos = await FotoDAO.setUpdatePicture(Foto)
 
-                        if(resultRedesSociaiss){
+                        if(resultFotos){
                             MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
                             MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
                             MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
-                            MESSAGES.HEADER.response.RedesSociais     =   RedesSociais           
+                            MESSAGES.HEADER.response.Foto     =   Foto           
 
                             return MESSAGES.HEADER //200
                         }else{
                             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
                         }
                     }else{
-                        return validarID //A função buscarRedesSociaisID poderá retornar (400 ou 404 ou 500)
+                        return validarID //A função buscarFotoID poderá retornar (400 ou 404 ou 500)
                     }    
                 }else{
                     return validar //400 referente a validação dos dados
@@ -173,7 +173,7 @@ const atualizarRedesSociais = async function(RedesSociais, id, contentType){
 }
 
 
-const excluirRedesSociais = async function(id){
+const excluirFoto = async function(id){
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
@@ -181,18 +181,18 @@ const excluirRedesSociais = async function(id){
       
         if(!isNaN(id) && id != '' && id != null && id > 0){
 
-            let validarID = await buscarRedesSociaisId(id)
+            let validarID = await buscarFotoId(id)
 
             if(validarID.status_code == 200){
 
-                let resultRedesSociaiss = await RedesSociaisDAO.setDeleteSocialMidia(Number(id))
+                let resultFotos = await FotoDAO.setDeletePicture(Number(id))
 
-                if(resultRedesSociaiss){
+                if(resultFotos){
                     
                         MESSAGES.HEADER.status      = MESSAGES.SUCCESS_DELETED_ITEM.status
                         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
                         MESSAGES.HEADER.message     = MESSAGES.SUCCESS_DELETED_ITEM.message
-                        MESSAGES.HEADER.response.RedesSociais = resultRedesSociaiss
+                        MESSAGES.HEADER.response.Foto = resultFotos
                         delete MESSAGES.HEADER.response
                         return MESSAGES.HEADER 
             
@@ -213,31 +213,25 @@ const excluirRedesSociais = async function(id){
 }
 
 
-const validarDadosRedesSociais = function(redesSociais) {
+const validarDadosFoto = async function(Foto){
     
-    const gerarErro = (campo) => ({
-        DEFAULT_MESSAGES, 
-        message: `${DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS.message} [Campo: ${campo}]`
-    });
-
-    // Validações rápidas
-    if (!redesSociais.link || redesSociais.link.length > 400) 
-        return gerarErro('nome_artista');
     
-    if (redesSociais.tipo_id == Number && artista.tipo_id!= '' && artista.tipo_id != null && artista.tipo_id > 0) 
-        return gerarErro('id_tipo_redes_sociais');
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
-   if (redesSociais.usuario_id == Number && redesSociais.usuario_id!= '' && redesSociais.usuario_id != null && redesSociais.usuario_id> 0) 
-        return gerarErro('ID_ARTISTA');
+    if(Foto.foto == '' || Foto.foto == undefined || Foto.foto == null || Foto.foto.length > 500){
+        MESSAGES.ERROR_REQUIRED_FIELDS.message == '[Foto incorreta]' 
+        return MESSAGES.ERROR_REQUIRED_FIELDS
 
-
-    return false; 
+    
+    }else{
+        return false
+    }
 }
 
 module.exports = {
-    listarRedesSociaiss,
-    buscarRedesSociaisId,
-    inserirRedesSociais,
-    atualizarRedesSociais,
-    excluirRedesSociais
+    listarFotos,
+    buscarFotoId,
+    inserirFoto,
+    atualizarFoto,
+    excluirFoto
 }

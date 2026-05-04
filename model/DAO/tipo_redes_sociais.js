@@ -12,7 +12,7 @@ const knexDatabase = knex(knexConfig.development);
 
 
 
-const getSelectAllTIpoRedesSociais = async function(){
+const getSelectAllTypeSocialMidia = async function(){
     try {
       
         let sql = `select * from tb_tipo_redes_sociais order by id_tipo_redes_sociais desc`
@@ -31,7 +31,7 @@ const getSelectAllTIpoRedesSociais = async function(){
 }
 
 //Retorna um filme filtrando pelo ID do banco de dados
-const getSelectByIdTIpoRedesSociais = async function(id){
+const getSelectByIdTypeSocialMidia  = async function(id){
     try {
     
         let sql = `select * from tb_tipo_redes_sociais where id_tipo_redes_sociais=${id}`
@@ -70,7 +70,7 @@ const getSelectLastID = async function(){
 }
 
 
-const setInserTIpoRedesSociais = async function(tipo_redes_sociais){
+const setInserTypeSocialMidia  = async function(tipo_redes_sociais){
     try {
        let sql = `insert into tb_tipo_redes_sociais
             (nome)
@@ -91,7 +91,7 @@ const setInserTIpoRedesSociais = async function(tipo_redes_sociais){
 }
 
 
-const setUpdateTIpoRedesSociais = async function(tipo_redes_sociais){
+const setUpdateTypeSocialMidia  = async function(tipo_redes_sociais){
     try {
       let sql = `update tb_tipo_redes_sociais set
                 nome       = "${tipo_redes_sociais.nome}"
@@ -109,7 +109,7 @@ const setUpdateTIpoRedesSociais = async function(tipo_redes_sociais){
     }
 }
 
-const setDeleteTIpoRedesSociais = async function(id){
+const setDeleteTypeSocialMidia  = async function(id){
     try {
       
         let sql = `delete from tb_tipo_redes_sociais where id_tipo_redes_sociais=${id}`
@@ -129,10 +129,10 @@ const setDeleteTIpoRedesSociais = async function(id){
 }
 
 module.exports = {
-    getSelectAllTIpoRedesSociais,
-    getSelectByIdTIpoRedesSociais,
-    setInserTIpoRedesSociais,
-    setUpdateTIpoRedesSociais,
+    getSelectAllTypeSocialMidia ,
+    getSelectByIdTypeSocialMidia ,
+    setInserTypeSocialMidia ,
+    setUpdateTypeSocialMidia,
     getSelectLastID,
-    setDeleteTIpoRedesSociais
+    setDeleteTypeSocialMidia 
 } 
