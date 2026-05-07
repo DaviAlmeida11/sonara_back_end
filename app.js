@@ -68,6 +68,7 @@ const avaliacaoArtista = require('./routes/avaliacao_artista')
 
 const avaliacaoEvento = require('./routes/avaliacao_evento')
 
+const usuarioFoto = require('./routes/usuario_foto')
 
 
 
@@ -103,6 +104,9 @@ app.use('/v1/sonara/eventoOrganizador', eventoOrganizador)
 app.use('/v1/sonara/avaliacaoArtista', avaliacaoArtista)
 
 app.use('/v1/sonara/avaliacaoEvento', avaliacaoEvento)
+
+app.use('/v1/sonara/usuarioFoto', usuarioFoto)
+
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')
