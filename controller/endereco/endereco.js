@@ -219,15 +219,15 @@ const validarDadosEndereco = async function(endereco){
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     if(endereco.cep == '' || endereco.cep == undefined || endereco.cep == null || endereco.cep.length > 11){
-        MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [endereco incorreto]' 
+        MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [cep incorreto]' 
         return MESSAGES.ERROR_REQUIRED_FIELDS
     
     }else if(endereco.cidade == '' || endereco.cidade == undefined || endereco.cidade == null || endereco.cidade.length > 170) {
-           MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [cidade incorreto]' 
+           MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [endereco incorreto]' 
         return MESSAGES.ERROR_REQUIRED_FIELDS
 
     }else if(endereco.estado == '' || endereco.estado == undefined || endereco.estado == null || endereco.estado.length > 25){
-            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [estado incorreto]' 
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [estadoo incorreto]' 
         return MESSAGES.ERROR_REQUIRED_FIELDS
 
     } else if(endereco.logradouro == '' || endereco.logradouro == undefined || endereco.logradouro == null ||  endereco.logradouro.length > 14){
