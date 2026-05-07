@@ -12,10 +12,10 @@ const knexDatabase = knex(knexConfig.development);
 
 
 
-const getSelectAllOrganizer = async function(){
+const getSelectAllEventReview = async function(){
     try {
       
-        let sql = `select * from tb_organizador order by id_organizador desc `
+        let sql = `select * from tb_avaliacao_evento order by id_avaliacao_evento desc `
 
         let result = await knexDatabase.raw(sql)
    
@@ -30,13 +30,11 @@ const getSelectAllOrganizer = async function(){
     }
 }
 
-
-
 //Retorna um filme filtrando pelo ID do banco de dados
-const getSelectByIdOrganizer = async function(id){
+const getSelectByIdEventReview = async function(id){
     try {
     
-        let sql = `select * from tb_organizador where id_organizador=${id}`
+        let sql = `select * from tb_avaliacao_evento where id_avaliacao_evento=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -55,13 +53,13 @@ const getSelectByIdOrganizer = async function(id){
 const getSelectLastID = async function(){
     try {
         
-        let sql = `select id_organizador from tb_organizador order by id_organizador desc limit 1`
+        let sql = `select id_avaliacao_evento from tb_avaliacao_evento order by id_avaliacao_evento desc limit 1`
 
       
         let result = await knexDatabase.raw(sql)
  
         if(Array.isArray(result))
-            return Number(result[0][0].id_organizador)
+            return Number(result[0][0].id_avaliacao_evento)
         else
             return false
 
@@ -72,15 +70,22 @@ const getSelectLastID = async function(){
 }
 
 
-const setInsertOrganizer = async function(organizador){
+const setInsertEventReview = async function(artista){
     try {
-  let sql = `insert into tb_organizador (
-    usuario_id
+  let sql = `insert into tb_avaliacao_artist (
+    numero_estrelas,
+    usuario_id,
+    evento_id,
+    data_avaliacao
 ) values (
-    "${organizador.usuario_id}"
+    "${artista.numero_estrelas}",
+    "${artista.usuario_id}",
+    "${artista.evento_id}",
+    "${artista.data_avaliacao}"
+
 );`
-
  
+
         let result = await knexDatabase.raw(sql)
 
         if(result)
@@ -94,11 +99,13 @@ const setInsertOrganizer = async function(organizador){
 }
 
 
-const setUpdateOrganizer = async function(organizador){
+const setUpdateEventReview= async function(artista){
     try {
-      let sql = `update tb_organizador set 
-    usuario_id = "${organizador.usuario_id}" 
-where id_organizador = ${organizador.id_organizador}`;
+      let sql = `update tb_avaliacao_evento set 
+    numero_estrelas = "${artista.numero_estrelas}",
+    usuario_id = "${artista.usuario_id}",
+    evento_id = "${artista.evento_id}"
+where id_avaliacao_artis = ${artista.id_avaliacao_evento}`;
 
         let result = await knexDatabase.raw(sql)
 
@@ -112,10 +119,10 @@ where id_organizador = ${organizador.id_organizador}`;
     }
 }
 
-const setDeleteOrganizer = async function(id){
+const setDeleteEventReview = async function(id){
     try {
       
-        let sql = `delete from tb_organizador where id_organizador=${id}`
+        let sql = `delete from tb_avaliacao_evento where id_avaliacao_evento=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -132,10 +139,10 @@ const setDeleteOrganizer = async function(id){
 }
 
 module.exports = {
-    getSelectAllOrganizer,
-    getSelectByIdOrganizer,
-    setInsertOrganizer,
-    setUpdateOrganizer,
+    getSelectAllEventReview,
+    getSelectByIdEventReview,
+    setInsertEventReview,
+    setUpdateEventReview,
     getSelectLastID,
-    setDeleteOrganizer
+    setDeleteEventReview
 } 
