@@ -62,6 +62,8 @@ const evento = require('./routes/evento')
 
 const recuperacao = require('./routes/recuperacao_senha')
 
+const eventoOrganizador = require('./routes/evento_organizador')
+
 
 
 
@@ -92,6 +94,7 @@ app.use('/v1/sonara/evento', evento)
 
 app.use('/v1/sonara/recuperacao', recuperacao)
 
+app.use('/v1/sonara/eventoOrganizador', eventoOrganizador)
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')

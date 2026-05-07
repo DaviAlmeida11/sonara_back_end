@@ -5,25 +5,25 @@
  * Versão: 1.0
 *****************************************************************************/
 
-const  ArtistaGeneroDAO = require('../../model/DAO/artista_genero.js')
+const  eventoOrganizadorDAO = require('../../model/DAO/evento_organizador.js')
 
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
 
 
-const listarArtistaGenero = async function(){
+const listarEventoOrganizador = async function(){
     
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
        
-        let resultArtistaGenero = await ArtistaGeneroDAO.getSelectAllArtistGenders()
+        let resulteventoOrganizador = await eventoOrganizadorDAO.getSelectAllOrganizerEvent()
       
-        if(resultArtistaGenero){
-            if(resultArtistaGenero.length > 0){
+        if(resulteventoOrganizador){
+            if(resulteventoOrganizador.length > 0){
             MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.ArtistaGenero = resultArtistaGenero
+            MESSAGES.HEADER.response.eventoOrganizador = resulteventoOrganizador
 
             return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
@@ -37,8 +37,8 @@ const listarArtistaGenero = async function(){
 
 }
 
-//Retorna um ArtistaGenero fultrando pelo ID
-const buscarArtistaGeneroId = async function(id){
+//Retorna um eventoOrganizador fultrando pelo ID
+const buscarEventoOrganizadorId = async function(id){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -46,13 +46,13 @@ const buscarArtistaGeneroId = async function(id){
 
         //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultArtistaGenero = await ArtistaGeneroDAO.getSelectByIdArtistGenders(Number(id))
+            let resulteventoOrganizador = await eventoOrganizadorDAO.getSelectByIdOrganizerEvent(Number(id))
 
-            if(resultArtistaGenero){
-                if(resultArtistaGenero.length > 0){
+            if(resulteventoOrganizador){
+                if(resulteventoOrganizador.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.ArtistaGenero = resultArtistaGenero[0]
+                    MESSAGES.HEADER.response.eventoOrganizador = resulteventoOrganizador[0]
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -71,8 +71,8 @@ const buscarArtistaGeneroId = async function(id){
     }
 }
 
-//Insere um  ArtistaGenero
-const inserirArtistaGenero = async function(ArtistaGenero, contentType){
+//Insere um  eventoOrganizador
+const inserirEventoOrganizador = async function(eventoOrganizador, contentType){
 
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -81,26 +81,26 @@ const inserirArtistaGenero = async function(ArtistaGenero, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            //Chama a função de validar todos os dados do ArtistaGenero
-            let validar = await validarDadosArtistaGenero(ArtistaGenero)
+            //Chama a função de validar todos os dados do eventoOrganizador
+            let validar = await validarDadoseventoOrganizador(eventoOrganizador)
 
             if(!validar){
             
                 //Processamento
-                //Chama a função para inserir um novo ArtistaGenero no BD
-                let resultArtistaGenero = await ArtistaGeneroDAO.setInsertArtistGenders(ArtistaGenero)
+                //Chama a função para inserir um novo eventoOrganizador no BD
+                let resulteventoOrganizador = await eventoOrganizadorDAO.setInsertOrganizerEvent(eventoOrganizador)
 
-                if(resultArtistaGenero){
+                if(resulteventoOrganizador){
                     //Chama a função para receber o ID gerado no BD
-                    let lastID = await ArtistaGeneroDAO.getSelectLastID()
+                    let lastID = await eventoOrganizadorDAO.getSelectLastID()
          
                     if(lastID){
-                        //Adiciona o ID no JSON com os dados do ArtistaGenero
-                        ArtistaGenero.id_artista_genero = lastID
+                        //Adiciona o ID no JSON com os dados do eventoOrganizador
+                        eventoOrganizador.id_artista_genero = lastID
                         MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
                         MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
                         MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.HEADER.response         =   ArtistaGenero
+                        MESSAGES.HEADER.response         =   eventoOrganizador
 
                         return MESSAGES.HEADER //201
                     }else{
@@ -121,8 +121,8 @@ const inserirArtistaGenero = async function(ArtistaGenero, contentType){
     }
 }
 
-//Atualiza um ArtistaGenero buscando pelo ID
-const atualizarArtistaGenero = async function(ArtistaGenero, id, contentType){
+//Atualiza um eventoOrganizador buscando pelo ID
+const atualizarEventoOrganizador = async function(eventoOrganizador, id, contentType){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -130,34 +130,34 @@ const atualizarArtistaGenero = async function(ArtistaGenero, id, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-                //Chama a função de validar todos os dados do ArtistaGenero
-                let validar = await validarDadosArtistaGenero(ArtistaGenero)
+                //Chama a função de validar todos os dados do eventoOrganizador
+                let validar = await validarDadoseventoOrganizador(eventoOrganizador)
 
                 if(!validar){
                 
                     //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                     let validarID = await buscarArtistaGeneroId(id)
+                     let validarID = await buscarEventoOrganizadorId(id)
                   
                     if(validarID.status_code == 200){
                         
-                        //Adiciona o ID do ArtistaGenero no JSON de dados para ser encaminhado ao DAO
-                        ArtistaGenero.id_artista_genero = Number(id)
+                        //Adiciona o ID do eventoOrganizador no JSON de dados para ser encaminhado ao DAO
+                        eventoOrganizador.id_artista_genero = Number(id)
 
-                        //Chama a função para inserir um novo ArtistaGenero no BD
-                        let resultArtistaGenero = await ArtistaGeneroDAO.setUpdateArtistGenders(ArtistaGenero)
+                        //Chama a função para inserir um novo eventoOrganizador no BD
+                        let resulteventoOrganizador = await eventoOrganizadorDAO.setUpdateOrganizerEvent(eventoOrganizador)
 
-                        if(resultArtistaGenero){
+                        if(resulteventoOrganizador){
                             MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
                             MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
                             MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
-                            MESSAGES.HEADER.response.ArtistaGenero     =   ArtistaGenero           
+                            MESSAGES.HEADER.response.eventoOrganizador     =   eventoOrganizador           
 
                             return MESSAGES.HEADER //200
                         }else{
                             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
                         }
                     }else{
-                        return validarID //A função buscarArtistaGeneroID poderá retornar (400 ou 404 ou 500)
+                        return validarID //A função buscareventoOrganizadorID poderá retornar (400 ou 404 ou 500)
                     }    
                 }else{
                     return validar //400 referente a validação dos dados
@@ -173,7 +173,7 @@ const atualizarArtistaGenero = async function(ArtistaGenero, id, contentType){
 }
 
 
-const excluirArtistaGenero = async function(id){
+const excluirEventoOrganizador = async function(id){
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
@@ -181,18 +181,18 @@ const excluirArtistaGenero = async function(id){
       
         if(!isNaN(id) && id != '' && id != null && id > 0){
 
-            let validarID = await buscarArtistaGeneroId(id)
+            let validarID = await buscarEventoOrganizadorId(id)
 
             if(validarID.status_code == 200){
 
-                let resultArtistaGenero = await ArtistaGeneroDAO.setDeleteArtistGenders(Number(id))
+                let resulteventoOrganizador = await eventoOrganizadorDAO.setDeleteOrganizerEvent(Number(id))
 
-                if(resultArtistaGenero){
+                if(resulteventoOrganizador){
                     
                         MESSAGES.HEADER.status      = MESSAGES.SUCCESS_DELETED_ITEM.status
                         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
                         MESSAGES.HEADER.message     = MESSAGES.SUCCESS_DELETED_ITEM.message
-                        MESSAGES.HEADER.response.ArtistaGenero = resultArtistaGenero
+                        MESSAGES.HEADER.response.eventoOrganizador = resulteventoOrganizador
                         delete MESSAGES.HEADER.response
                         return MESSAGES.HEADER 
             
@@ -213,7 +213,7 @@ const excluirArtistaGenero = async function(id){
 }
 
 
-const validarDadosArtistaGenero = function(ArtistaGenero) {
+const validarDadosEventoOrganizador = function(eventoOrganizador) {
     
     const gerarErro = (campo) => ({
         DEFAULT_MESSAGES, 
@@ -221,18 +221,23 @@ const validarDadosArtistaGenero = function(ArtistaGenero) {
     });
 
     // Validações rápidas
-  if (ArtistaGenero.genero_id == Number && ArtistaGenero.genero_id != '' && ArtistaGenero.genero_id != null && ArtistaGenero.genero_id > 0) 
-        return gerarErro('ID_Genero');
+     if (eventoOrganizador.evento_id == Number && eventoOrganizador.evento_id!= '' && eventoOrganizador.tipo_id != null && eventoOrganizador.evento_id > 0) 
+        return gerarErro('id_tipo_redes_sociais');
     
-    if (ArtistaGenero.artista_id == Number && ArtistaGenero.artista_id != '' && ArtistaGenero.artista_id != null && ArtistaGenero.artista_id > 0) 
-        return gerarErro('ID_Artista');
+    if (eventoOrganizador.organizador_id == Number && eventoOrganizador.organizador_id != '' && eventoOrganizador.organizador_id != null && eventoOrganizador.organizador_id > 0) 
+        return gerarErro('ID_Organizador');
+
+       if (
+        !eventoOrganizador.criado ||  eventoOrganizador.criado.length > 30 ) {  
+             return gerarErro('criado'); }
+
 
     return false; 
 }
 module.exports = {
-    listarArtistaGenero,
-    buscarArtistaGeneroId,
-    inserirArtistaGenero,
-    atualizarArtistaGenero,
-    excluirArtistaGenero
+    listarEventoOrganizador,
+    buscarEventoOrganizadorId,
+    inserirEventoOrganizador,
+    atualizarEventoOrganizador,
+    excluirEventoOrganizador
 }
