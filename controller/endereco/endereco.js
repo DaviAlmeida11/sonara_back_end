@@ -219,23 +219,23 @@ const validarDadosEndereco = async function(endereco){
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     if(endereco.cep == '' || endereco.cep == undefined || endereco.cep == null || endereco.cep.length > 11){
-        MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [Nome incorreto]' 
+        MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [endereco incorreto]' 
         return MESSAGES.ERROR_REQUIRED_FIELDS
     
     }else if(endereco.cidade == '' || endereco.cidade == undefined || endereco.cidade == null || endereco.cidade.length > 170) {
-           MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [Email incorreto]' 
+           MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [cidade incorreto]' 
         return MESSAGES.ERROR_REQUIRED_FIELDS
 
     }else if(endereco.estado == '' || endereco.estado == undefined || endereco.estado == null || endereco.estado.length > 25){
-            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [Senha incorreto]' 
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [estado incorreto]' 
         return MESSAGES.ERROR_REQUIRED_FIELDS
 
     } else if(endereco.logradouro == '' || endereco.logradouro == undefined || endereco.logradouro == null ||  endereco.logradouro.length > 14){
-         MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [CPF incorreto]' 
+         MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [logradouro incorreto]' 
         return MESSAGES.ERROR_REQUIRED_FIELDS
 
     }else if(endereco.numero == '' || endereco.numero == undefined || endereco.numero == null || endereco.numero.length > 30){
-         MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [DATA incorreto]' 
+         MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [numero incorreto]' 
         return MESSAGES.ERROR_REQUIRED_FIELDS
    
     }else{
