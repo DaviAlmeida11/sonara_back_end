@@ -52,7 +52,7 @@ const buscarTipoRedesSociaisId = async function(id){
                 if(resultTipoRedesSociais.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.TipoRedesSociais = resultTipoRedesSociais
+                    MESSAGES.HEADER.response.TipoRedesSociais = resultTipoRedesSociais[0]
 
                     return MESSAGES.HEADER //200
                 }else{

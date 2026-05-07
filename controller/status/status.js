@@ -52,7 +52,7 @@ const buscarStatusId = async function(id){
                 if(resultStatuss.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.Statuss = resultStatuss
+                    MESSAGES.HEADER.response.Statuss = resultStatuss[0]
 
                     return MESSAGES.HEADER //200
                 }else{

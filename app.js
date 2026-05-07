@@ -60,6 +60,8 @@ const foto = require('./routes/foto')
 
 const evento = require('./routes/evento')
 
+const recuperacao = require('./routes/recuperacao_senha')
+
 
 
 
@@ -87,6 +89,8 @@ app.use('/v1/sonara/tipoRedesSociais', tipoRedesSociais)
 app.use('/v1/sonara/foto', foto)
 
 app.use('/v1/sonara/evento', evento)
+
+app.use('/v1/sonara/recuperacao', recuperacao)
 
 
 app.listen(PORT, function(){

@@ -17,7 +17,7 @@ const listarRecuperacao = async function(){
 
     try {
        
-        let resultadoRecuperacao = await recuperacaoDAO.getSelectAllNationality()
+        let resultadoRecuperacao = await recuperacaoDAO.getSelectAllPassword()
         
         if(resultadoRecuperacao){
             if(resultadoRecuperacao.length > 0){
@@ -52,7 +52,7 @@ const buscarnacioRecuperacaoId = async function(id){
                 if(resultadoRecuperacao.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.nacionalidades = resultadoRecuperacao
+                    MESSAGES.HEADER.response.nacionalidades = resultadoRecuperacao[0]
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -215,23 +215,63 @@ const excluirRecuperacao = async function(id){
 
 
 const validarDadosRecuperacao = function(recuperacao) {
-    
+
     const gerarErro = (campo) => ({
-        DEFAULT_MESSAGES, 
+        status: DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS.status,
+        status_code: DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS.status_code,
         message: `${DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS.message} [Campo: ${campo}]`
     });
 
-     if (recuperacao.usuario_id == Number && recuperacao.usuario_id!= '' && recuperacao.usuario_id != null && recuperacao.usuario_id > 0) 
-        return gerarErro('id_tipo_redes_sociais');
+    // usuario_id
+    if (
+        !recuperacao.usuario_id ||
+        isNaN(Number(recuperacao.usuario_id)) ||
+        Number(recuperacao.usuario_id) <= 0
+    ) {
+        return gerarErro('usuario_id');
+    }
 
-    if (!recuperacao.expira_em || recuperacao.expira_em.length > 20) 
-        return gerarErro('nome_artista');
-    
+    // codigo
+    if (
+        !recuperacao.codigo ||
+        recuperacao.codigo.length > 10
+    ) {
+        return gerarErro('codigo');
+    }
 
-    if (!recuperacao.tentativas || recuperacao.tentativas.length > 20) 
-        return gerarErro('nome_artista');
-    
-    return false; 
+    // expira_em
+    if (
+        !recuperacao.expira_em ||
+        recuperacao.expira_em.length > 30
+    ) {
+        return gerarErro('expira_em');
+    }
+
+    // usado
+    if (
+        recuperacao.usado == null ||
+        isNaN(Number(recuperacao.usado))
+    ) {
+        return gerarErro('usado');
+    }
+
+    // tentativas
+    if (
+        recuperacao.tentativas == null ||
+        isNaN(Number(recuperacao.tentativas))
+    ) {
+        return gerarErro('tentativas');
+    }
+
+    // criado_em
+    if (
+        !recuperacao.criado_em ||
+        recuperacao.criado_em.length > 30
+    ) {
+        return gerarErro('criado_em');
+    }
+
+    return false;
 }
 module.exports = {
     listarRecuperacao,

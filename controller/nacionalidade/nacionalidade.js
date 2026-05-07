@@ -52,7 +52,7 @@ const buscarnacioNalidadeId = async function(id){
                 if(resultnacionalidades.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.nacionalidades = resultnacionalidades
+                    MESSAGES.HEADER.response.nacionalidades = resultnacionalidades[0]
 
                     return MESSAGES.HEADER //200
                 }else{

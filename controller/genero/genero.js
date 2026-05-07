@@ -52,7 +52,7 @@ const buscarGeneroId = async function(id){
                 if(resultGeneros.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.generos = resultGeneros
+                    MESSAGES.HEADER.response.generos = resultGeneros[0]
 
                     return MESSAGES.HEADER //200
                 }else{

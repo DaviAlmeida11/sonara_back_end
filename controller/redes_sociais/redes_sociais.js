@@ -52,7 +52,7 @@ const buscarRedesSociaisId = async function(id){
                 if(resultRedesSociais.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.RedesSociais = resultRedesSociais
+                    MESSAGES.HEADER.response.RedesSociais = resultRedesSociais[0]
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -224,7 +224,7 @@ const validarDadosRedesSociais = function(redesSociais) {
     if (!redesSociais.link || redesSociais.link.length > 400) 
         return gerarErro('nome_artista');
     
-    if (redesSociais.tipo_id == Number && artista.tipo_id!= '' && artista.tipo_id != null && artista.tipo_id > 0) 
+    if (redesSociais.tipo_id == Number && redesSociais.tipo_id!= '' && redesSociais.tipo_id != null && redesSociais.tipo_id > 0) 
         return gerarErro('id_tipo_redes_sociais');
 
    if (redesSociais.usuario_id == Number && redesSociais.usuario_id!= '' && redesSociais.usuario_id != null && redesSociais.usuario_id> 0) 

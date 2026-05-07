@@ -72,12 +72,23 @@ const getSelectLastID = async function(){
 
 const setInsertPassword = async function(recuperacao_senha){
     try {
-        let sql = `insert into tb_recuperacao_senha (usuario_id, expira_em, tentativas)
-                    values( "${recuperacao_senha.usuario_id}",
-                            "${recuperacao_senha.expira_em}", 
-                            "${recuperacao_senha.tentativas}"`
-
-               
+        let sql  = `insert into tb_recuperacao_senha (
+                usuario_id,
+                codigo,
+                expira_em,
+                usado,
+                tentativas,
+                criado_em
+            ) values (
+                "${recuperacao_senha.usuario_id}",
+                "${recuperacao_senha.codigo}",
+                "${recuperacao_senha.expira_em}",
+                "${recuperacao_senha.usado}",
+                "${recuperacao_senha.tentativas}",
+                "${recuperacao_senha.criado_em}"
+            )`
+            console.log(sql)
+          
         let result = await knexDatabase.raw(sql)
 
         if(result)
@@ -93,14 +104,15 @@ const setInsertPassword = async function(recuperacao_senha){
 
 const setUpdatePassword = async function(recuperacao_senha){
     try {
-        let sql = `update tb_recuperacao_senha set 
-                        usuario_id         = "${recuperacao_senha.usuario_id}",
-                        expira_em          = "${recuperacao_senha.expira_em}",
-                        tentativa          = "${recuperacao_senha.tentativas}"
-                
-                    where id_recuperacao
-         = ${recuperacao_senha.id_recuperacao}`
-
+        let sql = `update tb_recuperacao_senha set
+                usuario_id = "${recuperacao_senha.usuario_id}",
+                codigo = "${recuperacao_senha.codigo}",
+                expira_em = "${recuperacao_senha.expira_em}",
+                usado = "${recuperacao_senha.usado}",
+                tentativas = "${recuperacao_senha.tentativas}",
+                criado_em = "${recuperacao_senha.criado_em}"
+            where id_recuperacao = ${recuperacao_senha.id_recuperacao}`
+            
         let result = await knexDatabase.raw(sql)
 
         if(result)

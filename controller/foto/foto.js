@@ -52,7 +52,7 @@ const buscarFotoId = async function(id){
                 if(resultFotos.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.Fotos = resultFotos
+                    MESSAGES.HEADER.response.Fotos = resultFotos[0]
 
                     return MESSAGES.HEADER //200
                 }else{

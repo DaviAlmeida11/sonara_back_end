@@ -1,24 +1,58 @@
-/*******************************
- * Objeto: Arquivo responsavel pela criptografia de senha dos usuarios
+/***************************************
+ * Objeto: Arquivo responsável pelo hash
+ * das senhas dos usuários
  * Data: 27/04/2026
  * Autor: Gabriel Cavalcante dos Santos
- * Versão: 1.0
- *******************************/
+ * Versão: 1.1
+ ****************************************/
 
 const crypto = require('crypto');
 
+// Configurações do hash
+const ITERATIONS = 100000;
+const KEY_LENGTH = 64;
+const DIGEST = 'sha512';
 
+/**
+ * Gera o hash da senha
+ * @param {string} password
+ * @returns {string}
+ */
 function hashPassword(password) {
-    const salt = crypto.randomBytes(16).toString('hex'); 
-    const hash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex'); 
+
+    // Gera um salt aleatório
+    const salt = crypto.randomBytes(16).toString('hex');
+
+    // Cria o hash da senha
+    const hash = crypto
+        .pbkdf2Sync(password, salt, ITERATIONS, KEY_LENGTH, DIGEST)
+        .toString('hex');
+
+    // Retorna no formato: salt:hash
     return `${salt}:${hash}`;
 }
 
-
+/**
+ * Verifica se a senha informada é válida
+ * @param {string} password
+ * @param {string} storedHash
+ * @returns {boolean}
+ */
 function verifyPassword(password, storedHash) {
-    const [salt, hash] = storedHash.split(':');
-    const hashVerify = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
-    return hash === hashVerify;
+
+    // Separa o salt do hash salvo
+    const [salt, originalHash] = storedHash.split(':');
+
+    // Gera um novo hash com a senha informada
+    const hashVerify = crypto
+        .pbkdf2Sync(password, salt, ITERATIONS, KEY_LENGTH, DIGEST)
+        .toString('hex');
+
+    // Comparação segura contra timing attack
+    return crypto.timingSafeEqual(
+        Buffer.from(originalHash, 'hex'),
+        Buffer.from(hashVerify, 'hex')
+    );
 }
 
 module.exports = {
