@@ -86,7 +86,7 @@ const getUsuarioByUsuarioEmail = async function(email) {
 const setInsertUsers = async function(usuario){
     try {
         let sql = `INSERT INTO tb_usuario 
-            (nome, email, senha, cpf, data_nasc, nacionalidade_id, endereco_id, genero_id)
+            (nome, email, senha, cpf, data_nascimento, nacionalidade_id, endereco_id, genero_id)
             VALUES (
                 "${usuario.nome}",
                 "${usuario.email}",
@@ -97,7 +97,7 @@ const setInsertUsers = async function(usuario){
                 "${usuario.endereco_id}",
                 "${usuario.genero_id}"
             );`
-
+console.log(sql)
 
         let result = await knexDatabase.raw(sql)
 
@@ -105,7 +105,7 @@ const setInsertUsers = async function(usuario){
         return !!result
 
     } catch (error) {
-        console.log(error)
+    
     }
 }
 
@@ -121,6 +121,7 @@ const setUpdateUsers = async function(usuario){
     endereco_id = "${usuario.endereco_id}",
     genero_id = "${usuario.genero_id}"
 where id_usuario = ${usuario.id_usuario}`;
+
 
         let result = await knexDatabase.raw(sql)
 
