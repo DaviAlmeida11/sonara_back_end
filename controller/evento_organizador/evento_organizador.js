@@ -82,7 +82,7 @@ const inserirEventoOrganizador = async function(eventoOrganizador, contentType){
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
             //Chama a função de validar todos os dados do eventoOrganizador
-            let validar = await validarDadoseventoOrganizador(eventoOrganizador)
+            let validar = await validarDadosEventoOrganizador(eventoOrganizador)
 
             if(!validar){
             
@@ -131,7 +131,7 @@ const atualizarEventoOrganizador = async function(eventoOrganizador, id, content
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
                 //Chama a função de validar todos os dados do eventoOrganizador
-                let validar = await validarDadoseventoOrganizador(eventoOrganizador)
+                let validar = await validarDadosEventoOrganizador(eventoOrganizador)
 
                 if(!validar){
                 
@@ -141,7 +141,8 @@ const atualizarEventoOrganizador = async function(eventoOrganizador, id, content
                     if(validarID.status_code == 200){
                         
                         //Adiciona o ID do eventoOrganizador no JSON de dados para ser encaminhado ao DAO
-                        eventoOrganizador.id_artista_genero = Number(id)
+                        eventoOrganizador.id_evento_organizador = Number(id)
+
 
                         //Chama a função para inserir um novo eventoOrganizador no BD
                         let resulteventoOrganizador = await eventoOrganizadorDAO.setUpdateOrganizerEvent(eventoOrganizador)

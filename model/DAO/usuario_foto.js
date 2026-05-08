@@ -73,13 +73,14 @@ const getSelectLastID = async function(){
 const setInsertPhotoUser = async function(usuario_foto){
     try {
   let sql = `insert into tb_usuario_foto (
-    foto_id 
-    usuario_id,
+    foto_id,
+    usuario_id
 ) values (
     "${usuario_foto.foto_id}",
     "${usuario_foto.usuario_id}"
 
 );`
+
  
 
         let result = await knexDatabase.raw(sql)
@@ -102,6 +103,7 @@ const setUpdatePhotoUser = async function(usuario_foto){
     usuario_id = "${usuario_foto.usuario_id}"
 where id_usuario_foto = ${usuario_foto.id_usuario_foto}`;
 
+console.log(sql)
         let result = await knexDatabase.raw(sql)
 
         if(result)

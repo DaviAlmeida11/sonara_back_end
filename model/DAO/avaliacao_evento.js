@@ -70,18 +70,18 @@ const getSelectLastID = async function(){
 }
 
 
-const setInsertEventReview = async function(artista){
+const setInsertEventReview = async function(evento){
     try {
-  let sql = `insert into tb_avaliacao_artist (
+  let sql = `insert into tb_avaliacao_evento(
     numero_estrelas,
     usuario_id,
     evento_id,
     data_avaliacao
 ) values (
-    "${artista.numero_estrelas}",
-    "${artista.usuario_id}",
-    "${artista.evento_id}",
-    "${artista.data_avaliacao}"
+    "${evento.numero_estrelas}",
+    "${evento.usuario_id}",
+    "${evento.evento_id}",
+    "${evento.data_avaliacao}"
 
 );`
  
@@ -99,13 +99,14 @@ const setInsertEventReview = async function(artista){
 }
 
 
-const setUpdateEventReview= async function(artista){
+const setUpdateEventReview= async function(evento){
     try {
       let sql = `update tb_avaliacao_evento set 
-    numero_estrelas = "${artista.numero_estrelas}",
-    usuario_id = "${artista.usuario_id}",
-    evento_id = "${artista.evento_id}"
-where id_avaliacao_artis = ${artista.id_avaliacao_evento}`;
+    numero_estrelas = "${evento.numero_estrelas}",
+    usuario_id = "${evento.usuario_id}",
+    evento_id = "${evento.evento_id}"
+where id_avaliacao_evento = ${evento.id_avaliacao_evento}`;
+
 
         let result = await knexDatabase.raw(sql)
 
@@ -123,7 +124,7 @@ const setDeleteEventReview = async function(id){
     try {
       
         let sql = `delete from tb_avaliacao_evento where id_avaliacao_evento=${id}`
-        
+     
        
         let result = await knexDatabase.raw(sql)
 

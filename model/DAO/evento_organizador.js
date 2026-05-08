@@ -72,16 +72,17 @@ const getSelectLastID = async function(){
 
 const setInsertOrganizerEvent = async function(evento_organizador){
     try {
-  let sql = `insert into tb_evento_organizador (
-    evento_id,
-    organizador_id,
-    criado
-) values (
-    "${evento_organizador.evento_id}",
-    "${evento_organizador.organizador_id}",
-    "${evento_organizador.criado}"
+ let sql = `
+INSERT INTO tb_evento_organizador (
+  evento_id,
+  organizador_id,
+  criado
+) VALUES (
+  ${evento_organizador.evento_id},
+  ${evento_organizador.organizador_id},
+  '${evento_organizador.criado}'
+)`
 
-);`
  
 
         let result = await knexDatabase.raw(sql)
@@ -99,11 +100,15 @@ const setInsertOrganizerEvent = async function(evento_organizador){
 
 const setUpdateOrganizerEvent = async function(evento_organizador){
     try {
-      let sql = `update tb_evento_organizador set 
-    evento_id = "${evento_organizador.evento_id}",
-    organizador_id = "${evento_organizador.organizador_id}",
-    criado = "${evento_organizador.criado}"
-where id_evento_organizador = ${evento_organizador.id_evento_organizador}`;
+    let sql = `
+UPDATE tb_evento_organizador SET
+  evento_id = ${evento_organizador.evento_id},
+  organizador_id = ${evento_organizador.organizador_id},
+  criado = '${evento_organizador.criado}'
+WHERE id_evento_organizador = ${evento_organizador.id_evento_organizador};
+`
+
+
 
         let result = await knexDatabase.raw(sql)
 
@@ -141,5 +146,6 @@ module.exports = {
     getSelectByIdOrganizerEvent,
     setInsertOrganizerEvent,
     setUpdateOrganizerEvent,
+    setDeleteOrganizerEvent,
     getSelectLastID
 } 

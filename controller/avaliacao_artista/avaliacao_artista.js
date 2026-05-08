@@ -141,7 +141,7 @@ const atualizarAvaliacaoArtista = async function(eventoOrganizador, id, contentT
                     if(validarID.status_code == 200){
                         
                         //Adiciona o ID do eventoOrganizador no JSON de dados para ser encaminhado ao DAO
-                        eventoOrganizador.id_avaliacao_evento = Number(id)
+                        eventoOrganizador.id_avaliacao_artista = Number(id)
 
                         //Chama a função para inserir um novo eventoOrganizador no BD
                         let resultAvaliacaoArtista = await avaliacaoArtistaDAO.setUpdateArtistReview(eventoOrganizador)

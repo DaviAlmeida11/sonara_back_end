@@ -126,7 +126,7 @@ const setDeleteAddress = async function(id){
     try {
       
         let sql = `delete from tb_endereco where id_endereco=${id}`
-        
+     
        
         let result = await knexDatabase.raw(sql)
 

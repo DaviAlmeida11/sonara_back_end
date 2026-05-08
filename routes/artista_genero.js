@@ -1,13 +1,11 @@
-// IMPORTANT 
-
-// no arrtista_genero esta localizado no post vai ter que inserir o nome do genero e do ususario ja existentes no banco, posivelmente vai precisar de uma trigger NAO ESQUECERconst express = require('express')
+const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
 const bodyParserJson = bodyParser.json()
 
 
-const controllerArtistaGenero = require('../controller/artista_genero/artista_genero')
+const controllerArtista = require('../controller/artista/artistas')
 
 //configurção do cors 
 const router = express.Router()
@@ -18,7 +16,6 @@ router.use((request, response, next ) => {
     router.use(cors())
     next()
 })
-
 // ENDPOINTS DA TABELA ArtistaGenero
 
 
