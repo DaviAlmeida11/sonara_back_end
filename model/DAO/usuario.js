@@ -68,52 +68,46 @@ const getSelectLastID = async function(){
         return false
     }
 }
-const getUsuarioByUsuarioNome = async function (usuario) {
-    try{
-        let sql = `select * from tb_usuario where nome = '${usuario}'`;
-
-        const result = await prisma.$queryRawUnsafe(sql);
-
-        if (Array.isArray(result)){
-            return result[0]
-        }
-    }catch(error){
-        return false
-    }  
-}
-
-const setInsertUsers = async function(usuario){
+const getUsuarioByUsuarioEmail = async function(email) {
     try {
-  let sql = `insert into tb_usuario (
-    nome,
-    email,
-    senha,
-    cpf,
-    data_nascimento,
-    nacionalidade,
-    endereco
-) values (
-    "${usuario.nome}",
-    "${usuario.email}",
-    "${usuario.senha}",
-    "${usuario.cpf}",
-    "${usuario.data_nascimento}",
-    "${usuario.nacionalidade}",
-    "${usuario.endereco}"
-);`
+        let sql = `select * from tb_usuario where email = '${email}'` 
 
-        let result = await knexDatabase.raw(sql)
+        const result = await knexDatabase.raw(sql)
 
-        if(result)
-            return true
+        if(Array.isArray(result[0]) && result[0].length > 0)
+            return result[0][0]
         else
             return false
-
-    } catch (error) {
+    } catch(error) {
         return false
     }
 }
 
+const setInsertUsers = async function(usuario){
+    try {
+        let sql = `INSERT INTO tb_usuario 
+            (nome, email, senha, cpf, data_nasc, nacionalidade_id, endereco_id, genero_id)
+            VALUES (
+                "${usuario.nome}",
+                "${usuario.email}",
+                "${usuario.senha}",
+                "${usuario.cpf}",
+                "${usuario.data_nascimento}",
+                "${usuario.nacionalidade_id}",
+                "${usuario.endereco_id}",
+                "${usuario.genero_id}"
+            );`
+
+
+        let result = await knexDatabase.raw(sql)
+
+
+        return !!result
+
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 const setUpdateUsers = async function(usuario){
     try {
@@ -123,10 +117,11 @@ const setUpdateUsers = async function(usuario){
     senha = "${usuario.senha}",
     cpf = "${usuario.cpf}",
     data_nascimento = "${usuario.data_nascimento}",
-    nacionalidade = "${usuario.nacionalidade}",
-    endereco = "${usuario.endereco}"
+    nacionalidade_id = "${usuario.nacionalidade_id}",
+    endereco_id = "${usuario.endereco_id}",
+    genero_id = "${usuario.genero_id}"
 where id_usuario = ${usuario.id_usuario}`;
-console.log(sql)
+
         let result = await knexDatabase.raw(sql)
 
         if(result)
@@ -165,5 +160,5 @@ module.exports = {
     setUpdateUsers,
     getSelectLastID,
     setDeleteUsers,
-    getUsuarioByUsuarioNome
+    getUsuarioByUsuarioEmail
 } 

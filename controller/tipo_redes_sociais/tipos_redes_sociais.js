@@ -221,7 +221,7 @@ const validarDadosTipoRedesSociais = function(TipoRedesSociais) {
     });
 
     // Validações rápidas
-    if (!TipoRedesSociais.nome || TipoRedesSociais.nome.length > 4100) 
+    if (!TipoRedesSociais.nome || TipoRedesSociais.nome.length > 40) 
         return gerarErro('nome');
 
 

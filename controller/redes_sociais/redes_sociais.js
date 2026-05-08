@@ -222,13 +222,13 @@ const validarDadosRedesSociais = function(redesSociais) {
 
     // Validações rápidas
     if (!redesSociais.link || redesSociais.link.length > 400) 
-        return gerarErro('nome_artista');
+        return gerarErro('link');
     
     if (redesSociais.tipo_id == Number && redesSociais.tipo_id!= '' && redesSociais.tipo_id != null && redesSociais.tipo_id > 0) 
         return gerarErro('id_tipo_redes_sociais');
 
    if (redesSociais.usuario_id == Number && redesSociais.usuario_id!= '' && redesSociais.usuario_id != null && redesSociais.usuario_id> 0) 
-        return gerarErro('ID_ARTISTA');
+        return gerarErro('ID_usuario');
 
 
     return false; 

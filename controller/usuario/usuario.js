@@ -10,7 +10,6 @@ const  crypto = require('../modulo/crypto-password.js')
 
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
-const { connect } = require('../../routes/redes_sociais.js')
 
 
 const listarUsuarios = async function(){
@@ -73,73 +72,113 @@ const buscarUsuarioId = async function(id){
     }
 }
 
-//Insere um  usuario
-const inserirUsuario = async function(usuario, contentType) {
-
-    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
+const buscarUsuarioEmail = async function(email){
+    //Criando um objeto novo para as mensagens
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
 
-        // Validação do Content-Type
-        if (String(contentType).toUpperCase() != 'APPLICATION/JSON') {
-            return MESSAGES.ERROR_CONTENT_TYPE;
+        //Validação da chegada do ID
+        if(email != '' && email != null && email != undefined){
+            let resultusuarios = await usuarioDAO.getUsuarioByUsuarioEmail({ email })
+
+            if(resultusuarios){
+                if(resultusuarios.length > 0){
+                    MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
+                    MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
+                    MESSAGES.HEADER.response.usuarios = resultusuarios
+
+                    return MESSAGES.HEADER //200
+                }else{
+                    return MESSAGES.ERROR_NOT_FOUND //404
+                }
+            }else{
+                return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+            }
+        }else{
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [ID incorreto]'
+            return MESSAGES.ERROR_REQUIRED_FIELDS //400
         }
-
-        // Validação dos dados
-        let validar = await validarDadosUsuario(usuario);
-
-        if (validar != true) {
-            return validar;
-        }
-
-        // Criptografa senha
-        let criptografiaDeSenha = crypto.hashPassword(usuario.senha);
-
-        // Novo objeto com senha criptografada
-        let usuarioCriptografado = {
-            nome: usuario.nome,
-            email: usuario.email,
-            senha: criptografiaDeSenha,
-            cpf: usuario.cpf,
-            data_nascimento: usuario.data_nascimento,
-            nacionalidade: usuario.nacionalidade,
-            endereco: usuario.endereco
-        };
-
-        // Insere no banco
-        let result = await usuarioDAO.setInsertUsers(usuarioCriptografado);
-
-        if (!result) {
-            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL;
-        }
-
-        // Busca último ID
-        let lastID = await usuarioDAO.getSelectLastID();
-
-        if (!lastID) {
-            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL;
-        }
-
-        // Remove senha do retorno
-        delete usuarioCriptografado.senha;
-
-        usuarioCriptografado.id_usuario = lastID.id;
-
-        // Monta resposta
-        MESSAGES.HEADER.status = MESSAGES.SUCCESS_CREATED_ITEM.status;
-        MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_CREATED_ITEM.status_code;
-        MESSAGES.HEADER.message = MESSAGES.SUCCESS_CREATED_ITEM.message;
-        MESSAGES.HEADER.response = usuarioCriptografado;
-
-        return MESSAGES.HEADER;
 
     } catch (error) {
-
-        console.log(error);
-
-        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER;
+        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
-};
+}
+
+
+
+
+
+//Insere um  usuario
+const inserirUsuario = async function(usuario, contentType){
+
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+    console.log(usuario)
+    try {
+        
+        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
+
+       
+            let validar = await validarDadosUsuario(usuario)
+
+            console.log(validar)
+            
+                // let resultusuarios = await usuarioDAO.setInsertUsers(usuario)
+
+            if(!validar){
+
+                    let criptografiaDeSenha = crypto.hashPassword(usuario.senha)
+
+                    let usuarioCriptografado = {
+                        nome: usuario.nome,
+                        email: usuario.email,
+                        senha: criptografiaDeSenha,
+                        cpf: usuario.cpf,
+                        data_nascimento: usuario.data_nascimento,
+                        nacionalidade_id: usuario.nacionalidade_id,
+                        endereco_id: usuario.endereco_id,
+                        genero_id: usuario.genero_id
+
+                    }
+
+                    console.log(usuarioCriptografado)
+
+                    let result = await usuarioDAO.setInsertUsers(usuarioCriptografado)
+                
+
+                    if(result){
+
+                        let lastID = await usuarioDAO.getSelectLastID()
+               
+                        if(lastID){
+                            delete usuarioCriptografado.senha
+                            usuarioCriptografado.id_usuario = lastID
+                            MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
+                            MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
+                            MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
+                            MESSAGES.HEADER.response        =   usuarioCriptografado
+
+                            return MESSAGES.HEADER //201
+                        }else{
+                        return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+                        }
+                    
+                    }else{
+                    return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+                    }
+                
+            
+            }else{
+                return validar //400
+            }
+
+        }else{
+            return MESSAGES.ERROR_CONTENT_TYPE //415
+        }
+    } catch (error) {
+     
+    }
+}
 
 const loginUsuario = async function(usuario){
 
@@ -147,7 +186,9 @@ const loginUsuario = async function(usuario){
 
         try {
 
-            const user = await usuarioDAO.getUsuarioByUsuarioNome(usuario.usuario);
+            const user = await usuarioDAO.getUsuarioByUsuarioEmail( usuario.email);
+
+            console.log(user)
 
             if (!user) {
 
@@ -157,14 +198,17 @@ const loginUsuario = async function(usuario){
 
             let senhaVerificada = crypto.verifyPassword(usuario.senha, user.senha)
 
+
             if(senhaVerificada){
 
-                delete user.senha
+                
                 MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
                 MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
                 MESSAGE.HEADER.response.usuario = user
 
                 return MESSAGE.HEADER //200
+            }else {
+            return MESSAGE.ERROR_REQUIRED_FIELDS // 400
             }
 
         } catch (error) {
@@ -269,9 +313,10 @@ const excluirUsuario = async function(id){
 const validarDadosUsuario = function(usuario) {
     
     const gerarErro = (campo) => ({
-        DEFAULT_MESSAGES, 
+        status: DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS.status,
+        status_code: DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS.status_code,
         message: `${DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS.message} [Campo: ${campo}]`
-    });
+    })
 
     // Validações rápidas
     if (!usuario.nome || usuario.nome.length > 100) 
@@ -289,11 +334,14 @@ const validarDadosUsuario = function(usuario) {
     if (!usuario.data_nascimento || usuario.data_nascimento.length > 12) 
         return gerarErro('Data de Nascimento');
 
-    if (usuario.nacionalidade_id == Number && usuario.nacionalidade_id!= '' && usuario.nacionalidade_id != null && usuario.nacionalidade_id > 0) 
+    if (!usuario.nacionalidade_id || isNaN(usuario.nacionalidade_id))
         return gerarErro('Nacionalidade');
 
-    if (usuario.endereco_id == Number && usuario.endereco_id!= '' && usuario.endereco_id != null && usuario.endereco_id > 0) 
+    if (!usuario.endereco_id || isNaN(usuario.endereco_id))
         return gerarErro('Endereço');
+
+    if (!usuario.genero_id || isNaN(usuario.genero_id))
+        return gerarErro('Gênero');
 
     return false; // Retorna false se tudo estiver OK
 }
@@ -301,6 +349,7 @@ const validarDadosUsuario = function(usuario) {
 module.exports = {
     listarUsuarios,
     buscarUsuarioId,
+    buscarUsuarioEmail,
     inserirUsuario,
     atualizarUsuario,
     excluirUsuario,
