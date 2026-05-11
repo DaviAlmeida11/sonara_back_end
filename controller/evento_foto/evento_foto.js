@@ -1,29 +1,29 @@
 /******************************************************************************
  * Objetivo: Arquivo responsável pela conexãode cassa de show com cantores
- * Data: 25/04/2026
+ * Data: 11/05/2026
  * Autor: Davi de Alemida Santos
  * Versão: 1.0
 *****************************************************************************/
 
-const  avaliacaoArtistaDAO = require('../../model/DAO/avaliacao_artista.js')
+const eventoFotoDAO = require('../../model/DAO/evento_foto.js')
 
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
 
 
-const listarAvaliacaoArtista = async function(){
+const listareventoFoto = async function(){
     
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
        
-        let resultAvaliacaoArtista = await avaliacaoArtistaDAO.getSelectAllArtistReview()
-      
-        if(resultAvaliacaoArtista){
-            if(resultAvaliacaoArtista.length > 0){
+        let resulteventoFoto = await eventoFotoDAO.getSelectAllPhotoEvent()
+        
+        if(resulteventoFoto){
+            if(resulteventoFoto.length > 0){
             MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.AvaliacaoArtista = resultAvaliacaoArtista
+            MESSAGES.HEADER.response.EventoFoto = resulteventoFoto
 
             return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
@@ -37,8 +37,8 @@ const listarAvaliacaoArtista = async function(){
 
 }
 
-//Retorna um AvaliacaoArtista fultrando pelo ID
-const buscarAvaliacaoArtistaId = async function(id){
+//Retorna um eventoFoto fultrando pelo ID
+const buscareventoFotoId = async function(id){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -46,13 +46,13 @@ const buscarAvaliacaoArtistaId = async function(id){
 
         //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultAvaliacaoArtista = await avaliacaoArtistaDAO.getSelectByIdArtistReview(Number(id))
+            let resulteventoFoto = await eventoFotoDAO.getSelectByIdPhotoEvent(Number(id))
 
-            if(resultAvaliacaoArtista){
-                if(resultAvaliacaoArtista.length > 0){
+            if(resulteventoFoto){
+                if(resulteventoFoto.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.avaliacaoArtista = resultAvaliacaoArtista[0]
+                    MESSAGES.HEADER.response.eventoFoto = resulteventoFoto[0]
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -62,7 +62,7 @@ const buscarAvaliacaoArtistaId = async function(id){
                 return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
             }
         }else{
-            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [ID incorreto]'
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [ID incorreto]'
             return MESSAGES.ERROR_REQUIRED_FIELDS //400
         }
 
@@ -71,8 +71,8 @@ const buscarAvaliacaoArtistaId = async function(id){
     }
 }
 
-//Insere um  AvaliacaoArtista
-const inserirAvaliacaoArtista = async function(AvaliacaoArtista, contentType){
+//Insere um eventoFoto 
+const inserireventoFoto = async function(eventoFoto, contentType){
 
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -81,26 +81,26 @@ const inserirAvaliacaoArtista = async function(AvaliacaoArtista, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            //Chama a função de validar todos os dados do AvaliacaoArtista
-            let validar = await validarDadosAvaliacaoArtista(AvaliacaoArtista)
+            //Chama a função de validar todos os dados do eventoFoto
+            let validar = await validarDadoseventoFoto(eventoFoto)
 
             if(!validar){
             
                 //Processamento
-                //Chama a função para inserir um novo AvaliacaoArtista no BD
-                let resultAvaliacaoArtista = await avaliacaoArtistaDAO.setInsertArtistReview(AvaliacaoArtista)
+                //Chama a função para inserir um novo eventoFoto no BD
+                let resulteventoFoto = await eventoFotoDAO.setInsertPhotoEvent(eventoFoto)
 
-                if(resultAvaliacaoArtista){
+                if(resulteventoFoto){
                     //Chama a função para receber o ID gerado no BD
-                    let lastID = await avaliacaoArtistaDAO.getSelectLastID()
-         
+                    let lastID = await eventoFotoDAO.getSelectLastID()
+               
                     if(lastID){
-                        //Adiciona o ID no JSON com os dados do AvaliacaoArtista
-                        AvaliacaoArtista.id_avaliacao_artista = lastID
+                        //Adiciona o ID no JSON com os dados do eventoFoto
+                        eventoFoto.id_evento_foto = lastID
                         MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
                         MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
                         MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.HEADER.response         =   AvaliacaoArtista
+                        MESSAGES.HEADER.response         =   eventoFoto
 
                         return MESSAGES.HEADER //201
                     }else{
@@ -121,8 +121,8 @@ const inserirAvaliacaoArtista = async function(AvaliacaoArtista, contentType){
     }
 }
 
-//Atualiza um AvaliacaoArtista buscando pelo ID
-const atualizarAvaliacaoArtista = async function(AvaliacaoArtista, id, contentType){
+//Atualiza um eventoFoto buscando pelo ID
+const atualizareventoFoto = async function(eventoFoto, id, contentType){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -130,34 +130,34 @@ const atualizarAvaliacaoArtista = async function(AvaliacaoArtista, id, contentTy
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-                //Chama a função de validar todos os dados do AvaliacaoArtista
-                let validar = await validarDadosAvaliacaoArtista(AvaliacaoArtista)
+                //Chama a função de validar todos os dados do eventoFoto
+                let validar = await validarDadoseventoFoto(eventoFoto)
 
                 if(!validar){
                 
                     //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                     let validarID = await buscarAvaliacaoArtistaId(id)
-                  
+                     let validarID = await buscarGeneroId(id)
+
                     if(validarID.status_code == 200){
                         
-                        //Adiciona o ID do AvaliacaoArtista no JSON de dados para ser encaminhado ao DAO
-                        AvaliacaoArtista.id_avaliacao_artista = Number(id)
+                        //Adiciona o ID do eventoFoto no JSON de dados para ser encaminhado ao DAO
+                        eventoFoto.id_evento_foto = Number(id)
 
-                        //Chama a função para inserir um novo AvaliacaoArtista no BD
-                        let resultAvaliacaoArtista = await avaliacaoArtistaDAO.setUpdateArtistReview(AvaliacaoArtista)
+                        //Chama a função para inserir um novo eventoFoto no BD
+                        let resulteventoFoto = await eventoFotoDAO.setUpdatePhotoEvent(eventoFoto)
 
-                        if(resultAvaliacaoArtista){
+                        if(resulteventoFoto){
                             MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
                             MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
                             MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
-                            MESSAGES.HEADER.response.AvaliacaoArtista     =   AvaliacaoArtista           
+                            MESSAGES.HEADER.response.eventoFoto     =   eventoFoto           
 
                             return MESSAGES.HEADER //200
                         }else{
                             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
                         }
                     }else{
-                        return validarID //A função buscarAvaliacaoArtistaID poderá retornar (400 ou 404 ou 500)
+                        return validarID //A função buscargeneroID poderá retornar (400 ou 404 ou 500)
                     }    
                 }else{
                     return validar //400 referente a validação dos dados
@@ -173,7 +173,7 @@ const atualizarAvaliacaoArtista = async function(AvaliacaoArtista, id, contentTy
 }
 
 
-const excluirAvaliacaoArtista = async function(id){
+const excluireventoFoto = async function(id){
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
@@ -181,18 +181,18 @@ const excluirAvaliacaoArtista = async function(id){
       
         if(!isNaN(id) && id != '' && id != null && id > 0){
 
-            let validarID = await buscarAvaliacaoArtistaId(id)
+            let validarID = await buscareventoFotoId(id)
 
             if(validarID.status_code == 200){
 
-                let resultAvaliacaoArtista = await avaliacaoArtistaDAO.setDeleteArtistReview(Number(id))
+                let resulteventoFoto = await eventoFotoDAO.setDeleteStatusEvent(Number(id))
 
-                if(resultAvaliacaoArtista){
+                if(resulteventoFoto){
                     
                         MESSAGES.HEADER.status      = MESSAGES.SUCCESS_DELETED_ITEM.status
                         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
                         MESSAGES.HEADER.message     = MESSAGES.SUCCESS_DELETED_ITEM.message
-                        MESSAGES.HEADER.response.AvaliacaoArtista = resultAvaliacaoArtista
+                        MESSAGES.HEADER.response.eventoFoto = resulteventoFoto
                         delete MESSAGES.HEADER.response
                         return MESSAGES.HEADER 
             
@@ -203,7 +203,7 @@ const excluirAvaliacaoArtista = async function(id){
                 return MESSAGES.ERROR_NOT_FOUND 
             }
         }else{
-            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [ID incorreto]'
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == '[ID incorreto]'
             return MESSAGES.ERROR_REQUIRED_FIELDS 
         }
 
@@ -212,8 +212,7 @@ const excluirAvaliacaoArtista = async function(id){
     }
 }
 
-
-const validarDadosAvaliacaoArtista = function(AvaliacaoArtista) {
+const validarDadoseventoFoto = function(eventoFoto) {
     
     const gerarErro = (campo) => ({
         DEFAULT_MESSAGES, 
@@ -221,24 +220,27 @@ const validarDadosAvaliacaoArtista = function(AvaliacaoArtista) {
     });
 
     // Validações rápidas
-    if (!AvaliacaoArtista.numero_estrelas ||  AvaliacaoArtista.numero_estrelas.length > 30 ) 
-             return gerarErro('numero_estrelas'); 
-             
-    if (AvaliacaoArtista.usuario_id == Number && AvaliacaoArtista.usuario_id != '' && AvaliacaoArtista.usuario_id != null && AvaliacaoArtista.usuario_id > 0) 
-        return gerarErro('ID_usuario');
+    if (eventoFoto.foto_id == Number && eventoFoto.foto_id != '' && eventoFoto.foto_id != null && eventoFoto.foto_id > 0) 
+        return gerarErro('ID_Foto');
+    
+     if (eventoFoto.evento_id == Number && eventoFoto.evento_id != '' && eventoFoto.evento_id != null && eventoFoto.evento_id > 0) 
+        return gerarErro('ID_Evento');
 
-    if (AvaliacaoArtista.artista_id == Number && AvaliacaoArtista.artista_id != '' && AvaliacaoArtista.artista_id != null && AvaliacaoArtista.artista_id > 0) {
-        return gerarErro('ID_artista');}
+    if (!eventoFoto.data_hora || eventoFoto.data_hora.length > 255) 
+        return gerarErro('data_hora');
 
-    if (!AvaliacaoArtista.data_avaliacao ||  AvaliacaoArtista.data_avaliacao.length > 30 ) 
-             return gerarErro('numero_estrel'); 
-                 
-    return false; 
+
+
+    return false
+
+
 }
+
+
 module.exports = {
-    listarAvaliacaoArtista,
-    buscarAvaliacaoArtistaId,
-    inserirAvaliacaoArtista,
-    atualizarAvaliacaoArtista,
-    excluirAvaliacaoArtista
+    listareventoFoto,
+    buscareventoFotoId,
+    inserireventoFoto,
+    atualizareventoFoto,
+    excluireventoFoto
 }

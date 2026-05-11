@@ -23,7 +23,7 @@ const listarRecuperacao = async function(){
             if(resultadoRecuperacao.length > 0){
             MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.nacionalidades = resultadoRecuperacao
+            MESSAGES.HEADER.response.RecuperacaoSenha = resultadoRecuperacao
 
             return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
@@ -52,7 +52,7 @@ const buscarnacioRecuperacaoId = async function(id){
                 if(resultadoRecuperacao.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.nacionalidades = resultadoRecuperacao[0]
+                    MESSAGES.HEADER.response.RecuperacaoSenha = resultadoRecuperacao[0]
 
                     return MESSAGES.HEADER //200
                 }else{

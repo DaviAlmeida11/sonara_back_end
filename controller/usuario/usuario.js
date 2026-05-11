@@ -7,7 +7,6 @@
 
 const  usuarioDAO = require('../../model/DAO/usuario.js')
 const  crypto = require('../modulo/crypto-password.js')
-const UPLOAD = require('../upload_azure/upload_azure.js')
 
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
@@ -54,7 +53,7 @@ const buscarUsuarioId = async function(id){
                 if(resultusuarios.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.usuarios = resultusuarios[0]
+                    MESSAGES.HEADER.response.usuarios = resultusuarios
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -111,86 +110,75 @@ const buscarUsuarioEmail = async function(email){
 
 
 //Insere um  usuario
-const inserirUsuario = async function (usuario, contentType, img) {
+const inserirUsuario = async function(usuario, contentType){
 
-    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
-
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+    console.log(usuario)
     try {
+        
+        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-        // Validação do Content-Type
-        if (!contentType || !contentType.toLowerCase().includes('multipart/form-data')) {
-            return MESSAGES.ERROR_CONTENT_TYPE; // 415
+       
+            let validar = await validarDadosUsuario(usuario)
+
+            console.log(validar)
+            
+                // let resultusuarios = await usuarioDAO.setInsertUsers(usuario)
+
+            if(!validar){
+
+                    let criptografiaDeSenha = crypto.hashPassword(usuario.senha)
+
+                    let usuarioCriptografado = {
+                        nome: usuario.nome,
+                        email: usuario.email,
+                        senha: criptografiaDeSenha,
+                        cpf: usuario.cpf,
+                        data_nascimento: usuario.data_nascimento,
+                        nacionalidade_id: usuario.nacionalidade_id,
+                        endereco_id: usuario.endereco_id,
+                        genero_id: usuario.genero_id
+
+                    }
+
+                    console.log(usuarioCriptografado)
+
+                    let result = await usuarioDAO.setInsertUsers(usuarioCriptografado)
+                
+
+                    if(result){
+
+                        let lastID = await usuarioDAO.getSelectLastID()
+               
+                        if(lastID){
+                            delete usuarioCriptografado.senha
+                            usuarioCriptografado.id_usuario = lastID
+                            MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
+                            MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
+                            MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
+                            MESSAGES.HEADER.response        =   usuarioCriptografado
+
+                            return MESSAGES.HEADER //201
+                        }else{
+                        return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+                        }
+                    
+                    }else{
+                    return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+                    }
+                
+            
+            }else{
+                return validar //400
+            }
+
+        }else{
+            return MESSAGES.ERROR_CONTENT_TYPE //415
         }
-
-        // Validação da imagem
-        if (!img || !img.originalname || !img.buffer) {
-            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL; // 500
-        }
-
-        // Validação dos dados do usuário
-        let validar = await validarDadosUsuario(usuario);
-
-        if (validar !== true) {
-            return validar;
-        }
-
-        // Upload da imagem
-        let urlImg = await UPLOAD.uploadFiles(img);
-
-        if (!urlImg) {
-            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL;
-        }
-
-        // Criptografa senha
-        let criptografiaDeSenha = crypto.hashPassword(usuario.senha);
-
-        // Monta objeto do usuário
-        let usuarioCriptografado = {
-            nome: usuario.nome,
-            email: usuario.email,
-            senha: criptografiaDeSenha,
-            cpf: usuario.cpf,
-            data_nascimento: usuario.data_nascimento,
-            nacionalidade: usuario.nacionalidade,
-            endereco: usuario.endereco,
-            img: urlImg
-        };
-
-        // Insere no banco
-        let result = await usuarioDAO.setInsertUsers(usuarioCriptografado);
-
-        if (!result) {
-            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL;
-        }
-
-        // Busca último ID
-        let lastID = await usuarioDAO.getSelectLastID();
-
-        if (!lastID) {
-            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL;
-        }
-
-        // Remove senha do retorno
-        delete usuarioCriptografado.senha;
-
-        // Adiciona ID ao retorno
-        usuarioCriptografado.id_usuario = lastID.id;
-
-        // Monta resposta
-        MESSAGES.HEADER.status = MESSAGES.SUCCESS_CREATED_ITEM.status;
-        MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_CREATED_ITEM.status_code;
-        MESSAGES.HEADER.message = MESSAGES.SUCCESS_CREATED_ITEM.message;
-        MESSAGES.HEADER.response = usuarioCriptografado;
-
-        return MESSAGES.HEADER;
-
     } catch (error) {
-
-        console.log(error);
-
-        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER;
+        console.log(error)
     }
-};
+}
 
 const loginUsuario = async function(usuario){
 

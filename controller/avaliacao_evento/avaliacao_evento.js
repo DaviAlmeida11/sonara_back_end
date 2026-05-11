@@ -23,7 +23,7 @@ const listarAvaliacaoEvento = async function(){
             if(resultAvaliacaoEvento.length > 0){
             MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.eventoOrganizador = resultAvaliacaoEvento
+            MESSAGES.HEADER.response.avaliacaoEvento = resultAvaliacaoEvento
 
             return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
@@ -37,7 +37,7 @@ const listarAvaliacaoEvento = async function(){
 
 }
 
-//Retorna um eventoOrganizador fultrando pelo ID
+//Retorna um AvaliacaoEvento fultrando pelo ID
 const buscarAvaliacaoEventoId = async function(id){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -52,7 +52,7 @@ const buscarAvaliacaoEventoId = async function(id){
                 if(resultAvaliacaoEvento.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.eventoOrganizador = resultAvaliacaoEvento[0]
+                    MESSAGES.HEADER.response.avaliacaoEvento = resultAvaliacaoEvento[0]
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -71,8 +71,8 @@ const buscarAvaliacaoEventoId = async function(id){
     }
 }
 
-//Insere um  eventoOrganizador
-const inserirAvaliacaoEvento= async function(eventoOrganizador, contentType){
+//Insere um  AvaliacaoEvento
+const inserirAvaliacaoEvento= async function(AvaliacaoEvento, contentType){
 
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -81,26 +81,26 @@ const inserirAvaliacaoEvento= async function(eventoOrganizador, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            //Chama a função de validar todos os dados do eventoOrganizador
-            let validar = await validarDadosAvaliacaoEvento(eventoOrganizador)
+            //Chama a função de validar todos os dados do AvaliacaoEvento
+            let validar = await validarDadosAvaliacaoEvento(AvaliacaoEvento)
 
             if(!validar){
             
                 //Processamento
-                //Chama a função para inserir um novo eventoOrganizador no BD
-                let resultAvaliacaoEvento = await avaliacaoEventoDAO.setInsertEventReview(eventoOrganizador)
+                //Chama a função para inserir um novo AvaliacaoEvento no BD
+                let resultAvaliacaoEvento = await avaliacaoEventoDAO.setInsertEventReview(AvaliacaoEvento)
 
                 if(resultAvaliacaoEvento){
                     //Chama a função para receber o ID gerado no BD
                     let lastID = await avaliacaoEventoDAO.getSelectLastID()
          
                     if(lastID){
-                        //Adiciona o ID no JSON com os dados do eventoOrganizador
-                        eventoOrganizador.id_avaliacao_evento = lastID
+                        //Adiciona o ID no JSON com os dados do AvaliacaoEvento
+                        AvaliacaoEvento.id_avaliacao_evento = lastID
                         MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
                         MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
                         MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.HEADER.response         =   eventoOrganizador
+                        MESSAGES.HEADER.response         =   AvaliacaoEvento
 
                         return MESSAGES.HEADER //201
                     }else{
@@ -121,8 +121,8 @@ const inserirAvaliacaoEvento= async function(eventoOrganizador, contentType){
     }
 }
 
-//Atualiza um eventoOrganizador buscando pelo ID
-const atualizarAvaliacaoEvento = async function(eventoOrganizador, id, contentType){
+//Atualiza um AvaliacaoEvento buscando pelo ID
+const atualizarAvaliacaoEvento = async function(AvaliacaoEvento, id, contentType){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -130,8 +130,8 @@ const atualizarAvaliacaoEvento = async function(eventoOrganizador, id, contentTy
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-                //Chama a função de validar todos os dados do eventoOrganizador
-                let validar = await validarDadosAvaliacaoEvento(eventoOrganizador)
+                //Chama a função de validar todos os dados do AvaliacaoEvento
+                let validar = await validarDadosAvaliacaoEvento(AvaliacaoEvento)
 
                 if(!validar){
                 
@@ -140,24 +140,24 @@ const atualizarAvaliacaoEvento = async function(eventoOrganizador, id, contentTy
                   
                     if(validarID.status_code == 200){
                         
-                        //Adiciona o ID do eventoOrganizador no JSON de dados para ser encaminhado ao DAO
-                        eventoOrganizador.id_avaliacao_evento = Number(id)
+                        //Adiciona o ID do AvaliacaoEvento no JSON de dados para ser encaminhado ao DAO
+                        AvaliacaoEvento.id_avaliacao_evento = Number(id)
 
-                        //Chama a função para inserir um novo eventoOrganizador no BD
-                        let resultAvaliacaoEvento = await avaliacaoEventoDAO.setUpdateEventReview(eventoOrganizador)
+                        //Chama a função para inserir um novo AvaliacaoEvento no BD
+                        let resultAvaliacaoEvento = await avaliacaoEventoDAO.setUpdateEventReview(AvaliacaoEvento)
 
                         if(resultAvaliacaoEvento){
                             MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
                             MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
                             MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
-                            MESSAGES.HEADER.response.eventoOrganizador     =   eventoOrganizador           
+                            MESSAGES.HEADER.response.AvaliacaoEvento     =   AvaliacaoEvento           
 
                             return MESSAGES.HEADER //200
                         }else{
                             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
                         }
                     }else{
-                        return validarID //A função buscareventoOrganizadorID poderá retornar (400 ou 404 ou 500)
+                        return validarID //A função buscarAvaliacaoEventoID poderá retornar (400 ou 404 ou 500)
                     }    
                 }else{
                     return validar //400 referente a validação dos dados
@@ -192,7 +192,7 @@ const excluirAvaliacaoEvento = async function(id){
                         MESSAGES.HEADER.status      = MESSAGES.SUCCESS_DELETED_ITEM.status
                         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
                         MESSAGES.HEADER.message     = MESSAGES.SUCCESS_DELETED_ITEM.message
-                        MESSAGES.HEADER.response.eventoOrganizador = resultAvaliacaoEvento
+                        MESSAGES.HEADER.response.AvaliacaoEvento = resultAvaliacaoEvento
                         delete MESSAGES.HEADER.response
                         return MESSAGES.HEADER 
             
@@ -213,7 +213,7 @@ const excluirAvaliacaoEvento = async function(id){
 }
 
 
-const validarDadosAvaliacaoEvento = function(eventoOrganizador) {
+const validarDadosAvaliacaoEvento = function(AvaliacaoEvento) {
     
     const gerarErro = (campo) => ({
         DEFAULT_MESSAGES, 
@@ -221,16 +221,16 @@ const validarDadosAvaliacaoEvento = function(eventoOrganizador) {
     });
 
     // Validações rápidas
-    if (!eventoOrganizador.numero_estrelas ||  eventoOrganizador.numero_estrelas.length > 30 ) 
+    if (!AvaliacaoEvento.numero_estrelas ||  AvaliacaoEvento.numero_estrelas.length > 30 ) 
              return gerarErro('numero_estrelas'); 
              
-    if (eventoOrganizador.usuario_id == Number && eventoOrganizador.usuario_id != '' && eventoOrganizador.usuario_id != null && eventoOrganizador.usuario_id > 0) 
+    if (AvaliacaoEvento.usuario_id == Number && AvaliacaoEvento.usuario_id != '' && AvaliacaoEvento.usuario_id != null && AvaliacaoEvento.usuario_id > 0) 
         return gerarErro('ID_usuario');
 
-    if (eventoOrganizador.evento_id == Number && eventoOrganizador.evento_id != '' && eventoOrganizador.evento_id != null && eventoOrganizador.evento_id > 0) {
+    if (AvaliacaoEvento.evento_id == Number && AvaliacaoEvento.evento_id != '' && AvaliacaoEvento.evento_id != null && AvaliacaoEvento.evento_id > 0) {
         return gerarErro('ID_evento');}
 
-    if (!eventoOrganizador.data_avaliacao ||  eventoOrganizador.data_avaliacao.length > 30 ) 
+    if (!AvaliacaoEvento.data_avaliacao ||  AvaliacaoEvento.data_avaliacao.length > 30 ) 
              return gerarErro('numero_estrel'); 
                  
     return false; 

@@ -74,6 +74,8 @@ const usuarioFoto = require('./routes/usuario_foto')
 
 const eventoStatus = require('./routes/evento_status')
 
+const eventoFoto = require('./routes/evento_foto')
+
 
 
 
@@ -115,6 +117,10 @@ app.use('/v1/sonara/eventoOrganizador', eventoOrganizador)
 app.use('/v1/sonara/usuarioFoto', usuarioFoto)
 
 app.use('/v1/sonara/eventoStatus', eventoStatus)
+
+app.use('/v1/sonara/eventoFoto', eventoFoto)
+
+
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')

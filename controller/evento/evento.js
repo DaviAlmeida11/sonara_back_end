@@ -23,7 +23,7 @@ const listarEvento = async function(){
             if(resultEvento.length > 0){
             MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.generos = resultEvento
+            MESSAGES.HEADER.response.Evento = resultEvento
 
             return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
@@ -52,7 +52,7 @@ const buscarEventoId = async function(id){
                 if(resultEvento.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.generos = resultEvento[0]
+                    MESSAGES.HEADER.response.Evento = resultEvento[0]
 
                     return MESSAGES.HEADER //200
                 }else{

@@ -17,13 +17,13 @@ const listarGeneroMusical = async function(){
 
     try {
        
-        let resultGeneros = await generoMusicalDAO.getSelectAllMusicalGeners()
+        let resultGeneroMusical = await generoMusicalDAO.getSelectAllMusicalGeners()
         
-        if(resultGeneros){
-            if(resultGeneros.length > 0){
+        if(resultGeneroMusical){
+            if(resultGeneroMusical.length > 0){
             MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.generos = resultGeneros
+            MESSAGES.HEADER.response.GeneroMusical = resultGeneroMusical
 
             return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
@@ -46,13 +46,13 @@ const buscarGeneroMusicalId = async function(id){
 
         //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultGeneros = await generoMusicalDAO.getSelectByIdGender(Number(id))
+            let resultGeneroMusical = await generoMusicalDAO.getSelectByIdGender(Number(id))
 
-            if(resultGeneros){
-                if(resultGeneros.length > 0){
+            if(resultGeneroMusical){
+                if(resultGeneroMusical.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.generos = resultGeneros[0]
+                    MESSAGES.HEADER.response.GeneroMusical = resultGeneroMusical[0]
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -88,9 +88,9 @@ const inserirGeneroMusical = async function(generoMusical, contentType){
             
                 //Processamento
                 //Chama a função para inserir um novo genero no BD
-                let resultGeneros = await generoMusicalDAO.setInsertMusicalGeners(generoMusical)
+                let resultGeneroMusical = await generoMusicalDAO.setInsertMusicalGeners(generoMusical)
 
-                if(resultGeneros){
+                if(resultGeneroMusical){
                     //Chama a função para receber o ID gerado no BD
                     let lastID = await generoMusicalDAO.getSelectLastID()
          
@@ -144,9 +144,9 @@ const atualizarGeneroMusical = async function(generoMusical, id, contentType){
                         generoMusical.id_genero_musical= Number(id)
 
                         //Chama a função para inserir um novo genero no BD
-                        let resultGeneros = await generoMusicalDAO.setUpdateMusicalGeners(generoMusical)
+                        let resultGeneroMusical = await generoMusicalDAO.setUpdateMusicalGeners(generoMusical)
 
-                        if(resultGeneros){
+                        if(resultGeneroMusical){
                             MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
                             MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
                             MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
@@ -185,14 +185,14 @@ const excluirGeneroMusical = async function(id){
 
             if(validarID.status_code == 200){
 
-                let resultGenerosMusicais = await generoMusicalDAO.setDeleteMusicalGeners(Number(id))
+                let resultGeneroMusicalMusicais = await generoMusicalDAO.setDeleteMusicalGeners(Number(id))
 
-                if(resultGenerosMusicais){
+                if(resultGeneroMusicalMusicais){
                     
                         MESSAGES.HEADER.status      = MESSAGES.SUCCESS_DELETED_ITEM.status
                         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
                         MESSAGES.HEADER.message     = MESSAGES.SUCCESS_DELETED_ITEM.message
-                        MESSAGES.HEADER.response.genero = resultGenerosMusicais
+                        MESSAGES.HEADER.response.generoMusical = resultGeneroMusicalMusicais
                         delete MESSAGES.HEADER.response
                         return MESSAGES.HEADER 
             
