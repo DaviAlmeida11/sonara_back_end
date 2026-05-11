@@ -80,6 +80,8 @@ const artistaGeneroMusical = require('./routes/artista_genero_musical')
 
 const artistaEvento = require('./routes/evento_artista')
 
+const eventoArtistaStatus = require('./routes/evento_artista_status')
+
 
 //Configuração das rotas
 app.use("/v1/sonara/genero", generoRoutes)
@@ -125,6 +127,8 @@ app.use('/v1/sonara/eventoFoto', eventoFoto)
 app.use('/v1/sonara/artistaGeneroMusical', artistaGeneroMusical)
 
 app.use('/v1/sonara/eventoArtista', artistaEvento)
+
+app.use('/v1/sonara/eventoArtistaStatus', eventoArtistaStatus)
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')

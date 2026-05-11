@@ -86,13 +86,14 @@ const getUsuarioByUsuarioEmail = async function(email) {
 const setInsertUsers = async function(usuario){
     try {
         let sql = `INSERT INTO tb_usuario 
-            (nome, email, senha, cpf, data_nascimento, nacionalidade_id, endereco_id, genero_id)
+            (nome, email, senha, cpf, data_nascimento, telefone, nacionalidade_id, endereco_id, genero_id)
             VALUES (
                 "${usuario.nome}",
                 "${usuario.email}",
                 "${usuario.senha}",
                 "${usuario.cpf}",
                 "${usuario.data_nascimento}",
+                "${usuario.telefone}",
                 "${usuario.nacionalidade_id}",
                 "${usuario.endereco_id}",
                 "${usuario.genero_id}"
@@ -116,6 +117,7 @@ const setUpdateUsers = async function(usuario){
     nome = "${usuario.nome}",
     email = "${usuario.email}",
     senha = "${usuario.senha}",
+    telefone = "${usuario.telefone}"
     cpf = "${usuario.cpf}",
     data_nascimento = "${usuario.data_nascimento}",
     nacionalidade_id = "${usuario.nacionalidade_id}",
