@@ -97,7 +97,7 @@ const setInsertUsers = async function(usuario){
                 "${usuario.endereco_id}",
                 "${usuario.genero_id}"
             );`
-console.log(sql)
+
 
         let result = await knexDatabase.raw(sql)
 
@@ -108,6 +108,7 @@ console.log(sql)
     
     }
 }
+
 
 const setUpdateUsers = async function(usuario){
     try {
@@ -121,6 +122,8 @@ const setUpdateUsers = async function(usuario){
     endereco_id = "${usuario.endereco_id}",
     genero_id = "${usuario.genero_id}"
 where id_usuario = ${usuario.id_usuario}`;
+
+
 
 
         let result = await knexDatabase.raw(sql)
@@ -153,6 +156,7 @@ const setDeleteUsers = async function(id){
         return false
     }
 }
+
 
 module.exports = {
     getSelectAllUsers,

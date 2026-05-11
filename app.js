@@ -76,7 +76,9 @@ const eventoStatus = require('./routes/evento_status')
 
 const eventoFoto = require('./routes/evento_foto')
 
+const artistaGeneroMusical = require('./routes/artista_genero_musical')
 
+const artistaEvento = require('./routes/evento_artista')
 
 
 //Configuração das rotas
@@ -120,7 +122,9 @@ app.use('/v1/sonara/eventoStatus', eventoStatus)
 
 app.use('/v1/sonara/eventoFoto', eventoFoto)
 
+app.use('/v1/sonara/artistaGeneroMusical', artistaGeneroMusical)
 
+app.use('/v1/sonara/eventoArtista', artistaEvento)
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')
