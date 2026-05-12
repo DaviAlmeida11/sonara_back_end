@@ -192,11 +192,12 @@ const loginUsuario = async function(usuario){
 
             const user = await usuarioDAO.getUsuarioByUsuarioEmail( usuario.email);
 
-            console.log(user)
+         
 
             if (!user) {
 
-                return MESSAGE.ERROR_REQUIRED_FIELDS;
+              return  MESSAGE.ERROR_LOGIN
+
                 
             }
 
@@ -212,7 +213,8 @@ const loginUsuario = async function(usuario){
 
                 return MESSAGE.HEADER //200
             }else {
-            return MESSAGE.ERROR_REQUIRED_FIELDS // 400
+              return  MESSAGE.ERROR_LOGIN
+             
             }
 
         } catch (error) {

@@ -94,7 +94,6 @@ const setInsertAddress = async function(endereco){
     "${endereco.bairro}"
 );`
 
-
         let result = await knexDatabase.raw(sql)
 
         if(result)
@@ -106,6 +105,7 @@ const setInsertAddress = async function(endereco){
         return false
     }
 }
+
 
 
 const setUpdateAddress = async function(endereco){
