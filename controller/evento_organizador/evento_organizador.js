@@ -228,9 +228,6 @@ const validarDadosEventoOrganizador = function(eventoOrganizador) {
     if (eventoOrganizador.organizador_id == Number && eventoOrganizador.organizador_id != '' && eventoOrganizador.organizador_id != null && eventoOrganizador.organizador_id > 0) 
         return gerarErro('ID_Organizador');
 
-       if (
-        !eventoOrganizador.criado ||  eventoOrganizador.criado.length > 30 ) {  
-             return gerarErro('criado'); }
 
 
     return false; 

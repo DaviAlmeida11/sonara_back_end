@@ -80,9 +80,7 @@ const setInsertPhotoUser = async function(usuario_foto){
     "${usuario_foto.usuario_id}"
 
 );`
-
- 
-
+    console.log(sql)
         let result = await knexDatabase.raw(sql)
 
         if(result)
@@ -103,7 +101,7 @@ const setUpdatePhotoUser = async function(usuario_foto){
     usuario_id = "${usuario_foto.usuario_id}"
 where id_usuario_foto = ${usuario_foto.id_usuario_foto}`;
 
-console.log(sql)
+
         let result = await knexDatabase.raw(sql)
 
         if(result)

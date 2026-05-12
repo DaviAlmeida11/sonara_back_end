@@ -70,7 +70,7 @@ const getSelectLastID = async function(){
 }
 const getUsuarioByUsuarioEmail = async function(email) {
     try {
-        let sql = `select * from tb_usuario where email = '${email}'` 
+        let sql = `select * from tb_usuario where email = '${email.email}'` 
 
         const result = await knexDatabase.raw(sql)
 
@@ -136,6 +136,7 @@ const setUpdateUsers = async function(usuario){
         genero_id = ${usuario.genero_id}
     where id_usuario = ${usuario.id_usuario}`;
 
+    
 
         let result = await knexDatabase.raw(sql)
 

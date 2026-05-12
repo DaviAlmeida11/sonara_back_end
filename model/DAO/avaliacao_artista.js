@@ -84,7 +84,7 @@ const setInsertArtistReview = async function(artista){
     "${artista.data_avaliacao}"
 
 );`
-
+console.log(sql)
 
  
 

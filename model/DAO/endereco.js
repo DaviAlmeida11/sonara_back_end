@@ -117,6 +117,7 @@ const setUpdateAddress = async function(endereco){
     logradouro = "${endereco.logradouro}",
     numero = "${endereco.numero}",
     complemento = "${endereco.complemento}",
+    latitude   =  "${endereco.latitude}"
     longitude   =  "${endereco.longitude}",
     bairro      =  "${endereco.bairro}"
 where id_endereco = ${endereco.id_endereco}`
@@ -137,7 +138,7 @@ const setDeleteAddress = async function(id){
     try {
       
         let sql = `delete from tb_endereco where id_endereco=${id}`
-     
+     console.log(sql)
        
         let result = await knexDatabase.raw(sql)
 

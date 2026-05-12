@@ -75,13 +75,12 @@ const setInsertOrganizerEvent = async function(evento_organizador){
  let sql = `
 INSERT INTO tb_evento_organizador (
   evento_id,
-  organizador_id,
-  criado
+  organizador_id
 ) VALUES (
   ${evento_organizador.evento_id},
-  ${evento_organizador.organizador_id},
-  '${evento_organizador.criado}'
+  ${evento_organizador.organizador_id}
 )`
+
 
  
 
@@ -103,8 +102,7 @@ const setUpdateOrganizerEvent = async function(evento_organizador){
     let sql = `
 UPDATE tb_evento_organizador SET
   evento_id = ${evento_organizador.evento_id},
-  organizador_id = ${evento_organizador.organizador_id},
-  criado = '${evento_organizador.criado}'
+  organizador_id = ${evento_organizador.organizador_id}
 WHERE id_evento_organizador = ${evento_organizador.id_evento_organizador};
 `
 
