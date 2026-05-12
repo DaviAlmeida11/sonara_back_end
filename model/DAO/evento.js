@@ -70,18 +70,18 @@ const getSelectLastID = async function(){
 }
 
 
-const setInsertEvent = async function(foto){
+const setInsertEvent = async function(evento){
     try {
-        let sql = `insert into tb_evento (nome, descricao, local, data, hora_inicio, hora_fim, endereco)
-                    values( "${foto.nome}",
-                            "${foto.descricao}", 
-                            "${foto.local}", 
-                            "${foto.data}",
-                            "${foto.hora_inicio}",
-                            "${foto.hora_fim}",
-                            "${foto.endereco}")`
+        let sql = `insert into tb_evento (nome, descricao, local, data, hora_inicio, hora_fim, endereco_id)
+                    values( "${evento.nome}",
+                            "${evento.descricao}", 
+                            "${evento.local}", 
+                            "${evento.data}",
+                            "${evento.hora_inicio}",
+                            "${evento.hora_fim}",
+                            ${evento.endereco_id})`
 
-               
+        
         let result = await knexDatabase.raw(sql)
 
         if(result)
@@ -95,19 +95,19 @@ const setInsertEvent = async function(foto){
 }
 
 
-const setUpdateEvent = async function(foto){
+const setUpdateEvent = async function(evento){
     try {
         let sql = `update tb_evento set 
-                        nome               = "${foto.nome}",
-                        descricao          = "${foto.descricao}",
-                        local              = "${foto.local}",
-                        data               = "${foto.data}",
-                        hora_inicio        = "${foto.hora_inicio}",
-                        hora_fim           = "${foto.hora_fim}",
-                        endereco           = "${foto.endereco}"
+                        nome               = "${evento.nome}",
+                        descricao          = "${evento.descricao}",
+                        local              = "${evento.local}",
+                        data               = "${evento.data}",
+                        hora_inicio        = "${evento.hora_inicio}",
+                        hora_fim           = "${evento.hora_fim}",
+                        endereco_id         = ${evento.endereco_id}
                         
                     
-                    where id_evento = ${foto.id_evento}`
+                    where id_evento = ${evento.id_evento}`
 
         let result = await knexDatabase.raw(sql)
 

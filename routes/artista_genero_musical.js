@@ -71,8 +71,7 @@ router.put('/:id', cors(), bodyParserJson, async function(request, response) {
 router.delete('/:id', cors(), async function(request, response) {
     let idArtistaGeneroMusical = request.params.id
 
-    let ArtistaGeneroMusical = await controllerArtistaGeneroMusical.excluirArtistaGeneroMusical(id
-    )
+    let ArtistaGeneroMusical = await controllerArtistaGeneroMusical.excluirArtistaGeneroMusical(idArtistaGeneroMusical)
     response.status(ArtistaGeneroMusical.status_code)
     response.json(ArtistaGeneroMusical)
 })

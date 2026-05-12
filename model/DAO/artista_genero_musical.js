@@ -74,16 +74,13 @@ const setInsertArtistGendersSong = async function(artista_genero_musical){
     try {
 let sql = `insert into tb_artista_genero_musical (
     genero_musical_id,
-    artista_id,
-    sobre_artista,
-    motivo_inscricao
+    artista_id
 ) values (
     ${artista_genero_musical.genero_musical_id},
-    ${artista_genero_musical.artista_id},
-    "${artista_genero_musical.sobre_artista}",
-    "${artista_genero_musical.motivo_inscricao}"
+    ${artista_genero_musical.artista_id}
+ 
 )`;
-console.log(sql)
+
  
 
         let result = await knexDatabase.raw(sql)
@@ -94,7 +91,7 @@ console.log(sql)
             return false
 
     } catch (error) {
-        return false
+ 
     }
 }
 
@@ -103,10 +100,8 @@ const setUpdateArtistGendersSong = async function(artista_genero_musical){
     try {
       let sql = `update tb_artista_genero_musical set 
     genero_musical_id = "${artista_genero_musical.genero_musical_id}",
-    artista_id = "${artista_genero_musical.artista_id}",
-    sobre_artista = "${artista_genero_musical.sobre_artista}",
-    motivo_inscricao = "${artista_genero_musical.motivo_inscricao}"
-where id_artista_genero_musical = ${artista_genero_musical.id_artista}`;
+    artista_id = "${artista_genero_musical.artista_id}"
+where id_artista_genero_musical = ${artista_genero_musical.id_artista_genero_musical}`;
 
         let result = await knexDatabase.raw(sql)
 

@@ -82,7 +82,7 @@ const inserirNacionalidade = async function(nacionalidade, contentType){
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
             //Chama a função de validar todos os dados do nacionalidade
-            let validar = await validarDadosnacionalidade(nacionalidade)
+            let validar = await validarDadosNacionalidade(nacionalidade)
 
             if(!validar){
             

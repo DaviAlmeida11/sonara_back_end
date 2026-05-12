@@ -85,21 +85,28 @@ const getUsuarioByUsuarioEmail = async function(email) {
 
 const setInsertUsers = async function(usuario){
     try {
-        let sql = `INSERT INTO tb_usuario 
-            (nome, email, senha, cpf, data_nascimento, telefone, nacionalidade_id, endereco_id, genero_id)
-            VALUES (
-                "${usuario.nome}",
-                "${usuario.email}",
-                "${usuario.senha}",
-                "${usuario.cpf}",
-                "${usuario.data_nascimento}",
-                "${usuario.telefone}",
-                "${usuario.nacionalidade_id}",
-                "${usuario.endereco_id}",
-                "${usuario.genero_id}"
-
-            );`
-
+        let sql = `
+        INSERT INTO tb_usuario (
+            nome,
+            email,
+            senha,
+            cpf,
+            data_nasc,
+            nacionalidade_id,
+            endereco_id,
+            genero_id,
+            telefone
+        ) VALUES (
+            '${usuario.nome}',
+            '${usuario.email}',
+            '${usuario.senha}',
+            '${usuario.cpf}',
+            '${usuario.data_nasc}',
+            ${usuario.nacionalidade_id},
+            ${usuario.endereco_id},
+            ${usuario.genero_id},
+            ${usuario.telefone ? `'${usuario.telefone}'` : null}
+        );`
 
 
         let result = await knexDatabase.raw(sql)
@@ -108,6 +115,7 @@ const setInsertUsers = async function(usuario){
         return !!result
 
     } catch (error) {
+        console.log(error)
     
     }
 }
@@ -115,19 +123,18 @@ const setInsertUsers = async function(usuario){
 
 const setUpdateUsers = async function(usuario){
     try {
-      let sql = `update tb_usuario set 
-    nome = "${usuario.nome}",
-    email = "${usuario.email}",
-    senha = "${usuario.senha}",
-    telefone = "${usuario.telefone}"
-    cpf = "${usuario.cpf}",
-    data_nascimento = "${usuario.data_nascimento}",
-    nacionalidade_id = "${usuario.nacionalidade_id}",
-    endereco_id = "${usuario.endereco_id}",
-    genero_id = "${usuario.genero_id}"
-where id_usuario = ${usuario.id_usuario}`;
-
-
+  
+        let sql = `update tb_usuario set 
+        nome = "${usuario.nome}",
+        email = "${usuario.email}",
+        senha = "${usuario.senha}",
+        telefone = ${usuario.telefone === null ? "NULL" : `"${usuario.telefone}"`},
+        cpf = "${usuario.cpf}",
+        data_nasc = "${usuario.data_nasc}",
+        nacionalidade_id = ${usuario.nacionalidade_id},
+        endereco_id = ${usuario.endereco_id},
+        genero_id = ${usuario.genero_id}
+    where id_usuario = ${usuario.id_usuario}`;
 
 
         let result = await knexDatabase.raw(sql)

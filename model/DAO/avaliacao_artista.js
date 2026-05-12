@@ -79,11 +79,12 @@ const setInsertArtistReview = async function(artista){
     data_avaliacao
 ) values (
     "${artista.numero_estrelas}",
-    "${artista.usuario_id}",
-    "${artista.artista_id}",
+    ${artista.usuario_id},
+    ${artista.artista_id},
     "${artista.data_avaliacao}"
 
 );`
+
 
  
 
@@ -104,8 +105,8 @@ const setUpdateArtistReview = async function(artista){
     try {
       let sql = `update tb_avaliacao_artista set 
     numero_estrelas = "${artista.numero_estrelas}",
-    usuario_id = "${artista.usuario_id}",
-    artista_id = "${artista.artista_id}"
+    usuario_id = ${artista.usuario_id},
+    artista_id = ${artista.artista_id}
 where id_avaliacao_artista = ${artista.id_avaliacao_artista}`;
 
 
@@ -117,7 +118,7 @@ where id_avaliacao_artista = ${artista.id_avaliacao_artista}`;
             return false
 
     } catch (error) {
-        return false
+     
     }
 }
 

@@ -136,7 +136,7 @@ const atualizarEvento = async function(evento, id, contentType){
                 if(!validar){
                 
                     //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                     let validarID = await buscarGeneroId(id)
+                     let validarID = await buscarEventoId(id)
 
                     if(validarID.status_code == 200){
                         
@@ -238,7 +238,7 @@ const validarDadosEvento = function(evento) {
     if (!evento.hora_fim ||  evento.hora_fim.length > 80) 
         return gerarErro('hora_fim');
 
-    if (!evento.endereco || evento.endereco.length > 80) 
+    if (evento.endereco_id == Number && evento.endereco_id != '' && evento.endereco_id != null && evento.endereco_id > 0) 
         return gerarErro('Endereço');
 
     return false

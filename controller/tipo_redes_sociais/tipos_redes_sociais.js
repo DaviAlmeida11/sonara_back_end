@@ -46,7 +46,7 @@ const buscarTipoRedesSociaisId = async function(id){
 
         //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultTipoRedesSociais = await TipoRedesSociaisDAO.getSelectByIdTypeSocialMidia (Number(id))
+            let resultTipoRedesSociais = await TipoRedesSociaisDAO.getSelectByIdTypeSocialMidia(Number(id))
 
             if(resultTipoRedesSociais){
                 if(resultTipoRedesSociais.length > 0){

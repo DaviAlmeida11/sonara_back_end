@@ -18,6 +18,24 @@ router.use((request, response, next ) => {
 })
 
 
+router.post('/login', cors(), bodyParserJson, async (req, res) => {
+    const contentType = req.headers['content-type']
+
+    if (!contentType || !contentType.toUpperCase().includes('APPLICATION/JSON')) {
+        return res.status(415).json({ message: 'Content-Type deve ser application/json' })
+    }
+
+    const { email, senha } = req.body
+
+    if (!email || !senha) {
+        return res.status(400).json({ message: 'Email e senha são obrigatórios' })
+    }
+
+    const result = await controllerUsuario.loginUsuario({ email, senha })
+    return res.status(result.status_code).json(result)
+})
+
+
 
 
 // retornar todos os Usuarios

@@ -53,7 +53,7 @@ const buscarUsuarioId = async function(id){
                 if(resultusuarios.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.usuarios = resultusuarios
+                    MESSAGES.HEADER.response.usuarios = resultusuarios[0]
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -130,14 +130,18 @@ const inserirUsuario = async function(usuario, contentType){
                     let criptografiaDeSenha = crypto.hashPassword(usuario.senha)
 
                     let usuarioCriptografado = {
-                        nome: usuario.nome,
-                        email: usuario.email,
-                        senha: criptografiaDeSenha,
-                        cpf: usuario.cpf,
-                        data_nascimento: usuario.data_nascimento,
-                        nacionalidade_id: usuario.nacionalidade_id,
-                        endereco_id: usuario.endereco_id,
-                        genero_id: usuario.genero_id
+                        id_usuario: usuario.id_usuario,
+    nome: usuario.nome,
+    email: usuario.email,
+    senha: criptografiaDeSenha,
+    cpf: usuario.cpf,
+    data_nasc: usuario.data_nasc,
+    nacionalidade_id: usuario.nacionalidade_id,
+    endereco_id: usuario.endereco_id,
+    genero_id: usuario.genero_id,
+    criado: usuario.criado,
+    ultima_atualizacao: usuario.ultima_atualizacao,
+    telefone: usuario.telefone
 
                     }
 
@@ -319,29 +323,30 @@ const validarDadosUsuario = function(usuario) {
     })
 
     // Validações rápidas
-    if (!usuario.nome || usuario.nome.length > 100) 
-        return gerarErro('Nome');
-    
-    if (!usuario.email || usuario.email.length > 150) 
-        return gerarErro('Email');
+  // Validações rápidas
+if (!usuario.nome || usuario.nome.length > 100) 
+    return gerarErro('Nome');
 
-    if (!usuario.senha || usuario.senha.length > 100) 
-        return gerarErro('Senha');
+if (!usuario.email || usuario.email.length > 150) 
+    return gerarErro('Email');
 
-    if (!usuario.cpf || usuario.cpf.length > 14) 
-        return gerarErro('CPF');
+if (!usuario.senha || usuario.senha.length > 100) 
+    return gerarErro('Senha');
 
-    if (!usuario.data_nascimento || usuario.data_nascimento.length > 12) 
-        return gerarErro('Data de Nascimento');
+if (!usuario.cpf || usuario.cpf.length > 14) 
+    return gerarErro('CPF');
 
-    if (!usuario.nacionalidade_id || isNaN(usuario.nacionalidade_id))
-        return gerarErro('Nacionalidade');
+if (!usuario.data_nasc || usuario.data_nasc.length > 12) 
+    return gerarErro('Data de Nascimento');
 
-    if (!usuario.endereco_id || isNaN(usuario.endereco_id))
-        return gerarErro('Endereço');
+if (!usuario.nacionalidade_id || isNaN(usuario.nacionalidade_id))
+    return gerarErro('Nacionalidade');
 
-    if (!usuario.genero_id || isNaN(usuario.genero_id))
-        return gerarErro('Gênero');
+if (!usuario.endereco_id || isNaN(usuario.endereco_id))
+    return gerarErro('Endereço');
+
+if (!usuario.genero_id || isNaN(usuario.genero_id))
+    return gerarErro('Gênero');
 
     return false; // Retorna false se tudo estiver OK
 }
