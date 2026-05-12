@@ -97,7 +97,9 @@ const setInsertUsers = async function(usuario){
                 "${usuario.nacionalidade_id}",
                 "${usuario.endereco_id}",
                 "${usuario.genero_id}"
+
             );`
+
 
 
         let result = await knexDatabase.raw(sql)

@@ -16,7 +16,7 @@ const getSelectAllPassword = async function(){
     try {
       
         let sql = `select * from tb_recuperacao_senha order by id_recuperacao desc`
-   
+  
         let result = await knexDatabase.raw(sql)
 
         if(Array.isArray(result[0]))
@@ -87,7 +87,7 @@ const setInsertPassword = async function(recuperacao_senha){
                 "${recuperacao_senha.tentativas}",
                 "${recuperacao_senha.criado_em}"
             )`
-            console.log(sql)
+        
           
         let result = await knexDatabase.raw(sql)
 

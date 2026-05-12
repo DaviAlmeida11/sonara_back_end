@@ -15,7 +15,7 @@ const knexDatabase = knex(knexConfig.development);
 const getSelectAllArtistGenders = async function(){
     try {
       
-        let sql = `select * from tb_artista_genero order by id_artista_genero desc `
+        let sql = `select * from tb_artista_genero order by id_artista_genero desc`
 
         let result = await knexDatabase.raw(sql)
    

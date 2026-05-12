@@ -74,6 +74,6 @@ router.delete('/:id', cors(), async function(request, response) {
 
     let EventoStatus = await controllerEventoStatus.excluirEventoStatus(IdEventoStatus)
     response.status(EventoStatus.status_code)
-    response.json(evento)
+    response.json(EventoStatus)
 })
   

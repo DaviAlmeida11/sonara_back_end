@@ -72,17 +72,18 @@ const getSelectLastID = async function(){
 
 const setInsertArtistGendersSong = async function(artista_genero_musical){
     try {
-  let sql = `insert into tb_artista_genero_musical (
+let sql = `insert into tb_artista_genero_musical (
     genero_musical_id,
     artista_id,
     sobre_artista,
     motivo_inscricao
 ) values (
-    "${artista_genero_musical.genero_musical_id}",
-    "${artista_genero_musical.artista_id}",
+    ${artista_genero_musical.genero_musical_id},
+    ${artista_genero_musical.artista_id},
     "${artista_genero_musical.sobre_artista}",
     "${artista_genero_musical.motivo_inscricao}"
-);`
+)`;
+console.log(sql)
  
 
         let result = await knexDatabase.raw(sql)

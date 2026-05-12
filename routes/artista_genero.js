@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const bodyParserJson = bodyParser.json()
 
 
-const controllerArtista = require('../controller/artista/artistas')
+const controllerArtistaGenero = require('../controller/artista_genero/artista_genero')
 
 //configurção do cors 
 const router = express.Router()
@@ -16,10 +16,10 @@ router.use((request, response, next ) => {
     router.use(cors())
     next()
 })
-// ENDPOINTS DA TABELA ArtistaGenero
+// ENDPOINTS DA TABELA ArtistaGeneroGenero
 
 
-// retornar todos os ArtistaGeneros
+// retornar todos os ArtistaGeneroGeneros
 router.get('/', cors(), async function (request, response){
 
   let ArtistaGenero  = await controllerArtistaGenero.listarArtistaGenero()

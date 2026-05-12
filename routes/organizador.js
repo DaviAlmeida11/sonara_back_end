@@ -38,8 +38,6 @@ router.get('/:id', cors(), async function (request, response){
     let organizador = await controllerOrganizador.buscarOrganizadorId(idOrganizador)
     response.status(organizador.status_code)
     response.json(organizador)  
-
-
 })
 
 
