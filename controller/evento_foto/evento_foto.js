@@ -89,7 +89,7 @@ const inserireventoFoto = async function(eventoFoto, contentType){
                 //Processamento
                 //Chama a função para inserir um novo eventoFoto no BD
                 let resulteventoFoto = await eventoFotoDAO.setInsertPhotoEvent(eventoFoto)
-
+                
                 if(resulteventoFoto){
                     //Chama a função para receber o ID gerado no BD
                     let lastID = await eventoFotoDAO.getSelectLastID()
@@ -136,7 +136,7 @@ const atualizareventoFoto = async function(eventoFoto, id, contentType){
                 if(!validar){
                 
                     //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                     let validarID = await buscarGeneroId(id)
+                     let validarID = await buscareventoFotoId(id)
 
                     if(validarID.status_code == 200){
                         
@@ -185,7 +185,7 @@ const excluireventoFoto = async function(id){
 
             if(validarID.status_code == 200){
 
-                let resulteventoFoto = await eventoFotoDAO.setDeleteStatusEvent(Number(id))
+                let resulteventoFoto = await eventoFotoDAO.setDeletePhotoEvent(Number(id))
 
                 if(resulteventoFoto){
                     
@@ -226,7 +226,7 @@ const validarDadoseventoFoto = function(eventoFoto) {
      if (eventoFoto.evento_id == Number && eventoFoto.evento_id != '' && eventoFoto.evento_id != null && eventoFoto.evento_id > 0) 
         return gerarErro('ID_Evento');
 
-    if (!eventoFoto.data_hora || eventoFoto.data_hora.length > 255) 
+    if ( eventoFoto.data_hora.length > 255) 
         return gerarErro('data_hora');
 
 

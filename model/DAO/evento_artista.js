@@ -120,6 +120,7 @@ UPDATE tb_evento_artista SET
   motivo_inscricao = ${evento_artista.motivo_inscricao ? `"${evento_artista.motivo_inscricao}"` : 'null'}
 WHERE id_evento_artista = ${evento_artista.id_evento_artista};
 `
+
         let result = await knexDatabase.raw(sql)
 
         if(result)

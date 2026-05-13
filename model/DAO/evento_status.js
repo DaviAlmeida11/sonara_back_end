@@ -80,7 +80,7 @@ INSERT INTO tb_evento_status (
 ) VALUES (
   ${evento_status.evento_id},
   ${evento_status.status_id},
-  '${evento_status.data_hora}'
+   ${evento_status.data_hora ? `'${evento_status.data_hora}'` : null}
 )`
 
  
@@ -104,7 +104,7 @@ const setUpdateStatusEvent = async function(evento_status){
 UPDATE tb_evento_status SET
   evento_id = ${evento_status.evento_id},
   status_id = ${evento_status.status_id},
-  data_hora = '${evento_status.data_hora}'
+ data_hora = ${evento_status.data_hora ? `'${evento_status.data_hora}'` : null}
 WHERE id_evento_status = ${evento_status.id_evento_status};
 `
 

@@ -65,7 +65,7 @@ router.put('/:id', cors(), bodyParserJson, async function(request, response) {
     let contentType = request.headers['content-type']
 
     let EventoArtista = await controllerEventoArtista.atualizarEventoArtista(dadosBody, IdEventoArtista, contentType)
-    response.status(EventoArtista.status_code)
+  response.status(EventoArtista.status_code)
     response.json(EventoArtista)
 })
 

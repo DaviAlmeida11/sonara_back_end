@@ -72,7 +72,7 @@ const getSelectLastID = async function(){
 
 const setInsertPhotoEvent = async function(evento_foto){
     try {
- let sql = `
+let sql = `
 INSERT INTO tb_evento_foto (
   foto_id,
   evento_id,
@@ -80,10 +80,9 @@ INSERT INTO tb_evento_foto (
 ) VALUES (
   ${evento_foto.foto_id},
   ${evento_foto.evento_id},
-  '${evento_foto.data_hora}'
-)`
+  ${evento_foto.data_hora ? `'${evento_foto.data_hora}'` : null}
+)`;
 
- 
 
         let result = await knexDatabase.raw(sql)
 
@@ -100,13 +99,13 @@ INSERT INTO tb_evento_foto (
 
 const setUpdatePhotoEvent = async function(evento_foto){
     try {
-    let sql = `
+let sql = `
 UPDATE tb_evento_foto SET
   foto_id = ${evento_foto.foto_id},
   evento_id = ${evento_foto.evento_id},
-  data_hora = '${evento_foto.data_hora}'
+  data_hora = ${evento_foto.data_hora ? `'${evento_foto.data_hora}'` : null}
 WHERE id_evento_foto = ${evento_foto.id_evento_foto};
-`
+`;
 
 //precisa colocar data_hora na tabela do banco
 

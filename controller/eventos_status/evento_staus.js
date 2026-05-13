@@ -227,7 +227,7 @@ const validarDadosEventoStatus = function(EventoStatus) {
      if (EventoStatus.status_id == Number && EventoStatus.status_id != '' && EventoStatus.status_id != null && EventoStatus.status_id > 0) 
         return gerarErro('ID_Status');
 
-    if (!EventoStatus.data_hora || EventoStatus.data_hora.length > 255) 
+    if (EventoStatus.data_hora.length > 255) 
         return gerarErro('data_hora');
 
 
