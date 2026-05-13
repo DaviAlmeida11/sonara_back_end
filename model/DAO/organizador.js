@@ -77,7 +77,7 @@ const setInsertOrganizer = async function(organizador){
   let sql = `insert into tb_organizador (
     usuario_id
 ) values (
-    "${organizador.usuario_id}"
+    ${organizador.usuario_id}
 );`
 
  
@@ -97,7 +97,7 @@ const setInsertOrganizer = async function(organizador){
 const setUpdateOrganizer = async function(organizador){
     try {
       let sql = `update tb_organizador set 
-    usuario_id = "${organizador.usuario_id}" 
+    usuario_id = ${organizador.usuario_id}
 where id_organizador = ${organizador.id_organizador}`;
 
         let result = await knexDatabase.raw(sql)

@@ -97,8 +97,8 @@ const setInsertPhotoUser = async function(usuario_foto){
 const setUpdatePhotoUser = async function(usuario_foto){
     try {
       let sql = `update tb_usuario_foto set 
-    foto_id = "${usuario_foto.foto_id}",
-    usuario_id = "${usuario_foto.usuario_id}"
+    foto_id = ${usuario_foto.foto_id},
+    usuario_id = ${usuario_foto.usuario_id}
 where id_usuario_foto = ${usuario_foto.id_usuario_foto}`;
 
 

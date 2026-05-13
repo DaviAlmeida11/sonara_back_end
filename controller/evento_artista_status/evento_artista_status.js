@@ -212,30 +212,72 @@ const excluirEventoArtistaStatus = async function(id){
     }
 }
 
-const validarDadosEventoArtistaStatus = function(EventoArtistaStatus) {
-    
+const validarDadosEventoArtista = function (evento_artista) {
+
     const gerarErro = (campo) => ({
-        DEFAULT_MESSAGES, 
+        DEFAULT_MESSAGES,
         message: `${DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS.message} [Campo: ${campo}]`
     });
 
-    // Validações rápidas
-   
-    if (EventoArtistaStatus.evento_artista_id == Number && EventoArtistaStatus.evento_artista_id != '' && EventoArtistaStatus.evento_artista_id != null && EventoArtistaStatus.evento_artista_id > 0) 
-        return gerarErro('ID_Artista');
+    // Obrigatórios numéricos
+    if (
+        evento_artista.artista_id == '' ||
+        evento_artista.artista_id == null ||
+        evento_artista.artista_id <= 0 ||
+        isNaN(evento_artista.artista_id)
+    )
+        return gerarErro('artista_id');
 
-    if (EventoArtistaStatus.status == Number && EventoArtistaStatus.status != '' && EventoArtistaStatus.status != null && EventoArtistaStatus.status > 0) 
-        return gerarErro('status');
+    if (
+        evento_artista.evento_id == '' ||
+        evento_artista.evento_id == null ||
+        evento_artista.evento_id <= 0 ||
+        isNaN(evento_artista.evento_id)
+    )
+        return gerarErro('evento_id');
 
-    if (!EventoArtistaStatus.data_hora || EventoArtistaStatus.data_hora.length > 60) 
-        return gerarErro('data_hora');
+    if (
+        evento_artista.cache_esperado == '' ||
+        evento_artista.cache_esperado == null ||
+        isNaN(evento_artista.cache_esperado)
+    )
+        return gerarErro('cache_esperado');
 
+    if (
+        evento_artista.cache_ofertado == '' ||
+        evento_artista.cache_ofertado == null ||
+        isNaN(evento_artista.cache_ofertado)
+    )
+        return gerarErro('cache_ofertado');
 
-    return false
+    if (
+        evento_artista.cache_final == '' ||
+        evento_artista.cache_final == null ||
+        isNaN(evento_artista.cache_final)
+    )
+        return gerarErro('cache_final');
 
+    // Campos texto (podem ser null, mas se vierem não podem ser enormes)
+    if (
+        evento_artista.contra_proposta != null &&
+        evento_artista.contra_proposta.length > 500
+    )
+        return gerarErro('contra_proposta');
 
+    if (
+        evento_artista.sobre_artista != null &&
+        evento_artista.sobre_artista.length > 500
+    )
+        return gerarErro('sobre_artista');
+
+    if (
+        evento_artista.motivo_inscricao != null &&
+        evento_artista.motivo_inscricao.length > 500
+    )
+        return gerarErro('motivo_inscricao');
+
+    return false;
 }
-
 module.exports = {
     listarEventoArtistaStatus,
     buscarEventoArtistaStatusId,

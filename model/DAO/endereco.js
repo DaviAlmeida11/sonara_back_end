@@ -79,18 +79,14 @@ const setInsertAddress = async function(endereco){
     logradouro,
     numero,
     complemento,
-    longitude,
-    latitude,
     bairro
 ) values (
     "${endereco.cep}",
     "${endereco.cidade}",
     "${endereco.estado}",
     "${endereco.logradouro}",
-    "${endereco.numero}",
+    ${endereco.numero},
     "${endereco.complemento}",
-    "${endereco.longitude}",
-    "${endereco.latitude}",
     "${endereco.bairro}"
 );`
 
@@ -115,10 +111,8 @@ const setUpdateAddress = async function(endereco){
     cidade = "${endereco.cidade}",
     estado = "${endereco.estado}",
     logradouro = "${endereco.logradouro}",
-    numero = "${endereco.numero}",
+    numero = ${endereco.numero},
     complemento = "${endereco.complemento}",
-    latitude   =  "${endereco.latitude}"
-    longitude   =  "${endereco.longitude}",
     bairro      =  "${endereco.bairro}"
 where id_endereco = ${endereco.id_endereco}`
 
@@ -138,7 +132,7 @@ const setDeleteAddress = async function(id){
     try {
       
         let sql = `delete from tb_endereco where id_endereco=${id}`
-     console.log(sql)
+  
        
         let result = await knexDatabase.raw(sql)
 

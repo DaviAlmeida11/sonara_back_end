@@ -62,7 +62,6 @@ const evento = require('./routes/evento')
 
 const recuperacao = require('./routes/recuperacao_senha')
 
-const artistaGenero = require('./routes/artista_genero')
 
 const avaliacaoArtista = require('./routes/avaliacao_artista')
 
@@ -110,7 +109,6 @@ app.use('/v1/sonara/evento', evento)
 
 app.use('/v1/sonara/recuperacao', recuperacao)
 
-app.use('/v1/sonara/artistaGenero', artistaGenero)
 
 app.use('/v1/sonara/avaliacaoArtista', avaliacaoArtista)
 

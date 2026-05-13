@@ -80,7 +80,7 @@ const setInsertPassword = async function(recuperacao_senha){
                 tentativas,
                 criado_em
             ) values (
-                "${recuperacao_senha.usuario_id}",
+                ${recuperacao_senha.usuario_id},
                 "${recuperacao_senha.codigo}",
                 "${recuperacao_senha.expira_em}",
                 "${recuperacao_senha.usado}",

@@ -242,13 +242,6 @@ const validarDadosEndereco = async function(endereco){
         MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [complemento incorreto]' 
     return MESSAGES.ERROR_REQUIRED_FIELDS
 
-    } else if(endereco.latitude == '' || endereco.latitude == undefined || endereco.latitude == null ||  endereco.latitude.length > 14){
-     MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [latitude incorreto]' 
-    return MESSAGES.ERROR_REQUIRED_FIELDS
-
-    }else if(endereco.longitude == '' || endereco.longitude == undefined || endereco.longitude == null || endereco.longitude.length > 60){
-     MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [longitude incorreto]' 
-    return MESSAGES.ERROR_REQUIRED_FIELDS
 
     }else if(endereco.bairro == '' || endereco.bairro == undefined || endereco.bairro == null || endereco.bairro.length > 30){
     MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [bairro incorreto]' 

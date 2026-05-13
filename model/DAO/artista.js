@@ -101,7 +101,7 @@ const setUpdateArtist = async function(artista){
     try {
       let sql = `update tb_artista set 
     nome_artistico = "${artista.nome_artistico}",
-    usuario_id = "${artista.usuario_id}",
+    usuario_id = ${artista.usuario_id},
     descricao = "${artista.descricao}"
 where id_artista = ${artista.id_artista}`;
 

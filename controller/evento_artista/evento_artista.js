@@ -221,17 +221,29 @@ const validarDadosEventoArtista = function(EventoArtista) {
 
     // Validações rápidas
    
-    if (EventoArtista.artista_id == Number && EventoArtista.artista_id != '' && EventoArtista.artista_id != null && EventoArtista.artista_id > 0) 
-        return gerarErro('ID_Artista');
+    if (EventoArtista.artista_id == '' || EventoArtista.artista_id == null || EventoArtista.artista_id <= 0 || isNaN(EventoArtista.artista_id)) 
+    return gerarErro('ID_Artista');
 
-    if (EventoArtista.evento_id == Number && EventoArtista.evento_id != '' && EventoArtista.evento_id != null && EventoArtista.evento_id > 0) 
-        return gerarErro('ID_Evento');
+if (EventoArtista.evento_id == '' || EventoArtista.evento_id == null || EventoArtista.evento_id <= 0 || isNaN(EventoArtista.evento_id)) 
+    return gerarErro('ID_Evento');
 
-    if (!EventoArtista.sobre_artista || EventoArtista.sobre_artista.length > 500) 
-        return gerarErro('sobre_artista');
+if (EventoArtista.cache_esperado == '' || EventoArtista.cache_esperado == null || isNaN(EventoArtista.cache_esperado)) 
+    return gerarErro('cache_esperado');
 
-    if (!EventoArtista.motivo_inscricao || EventoArtista.motivo_inscricao.length > 500) 
-        return gerarErro('motivo_inscricao');
+if (EventoArtista.cache_ofertado == '' || EventoArtista.cache_ofertado == null || isNaN(EventoArtista.cache_ofertado)) 
+    return gerarErro('cache_ofertado');
+
+if (EventoArtista.cache_final == '' || EventoArtista.cache_final == null || isNaN(EventoArtista.cache_final)) 
+    return gerarErro('cache_final');
+
+if (EventoArtista.contra_proposta != null && isNaN(EventoArtista.contra_proposta)) 
+    return gerarErro('contra_proposta');
+
+if (EventoArtista.sobre_artista != null && EventoArtista.sobre_artista.length > 500) 
+    return gerarErro('sobre_artista');
+
+if (EventoArtista.motivo_inscricao != null && EventoArtista.motivo_inscricao.length > 500) 
+    return gerarErro('motivo_inscricao');
 
 
     return false

@@ -84,7 +84,7 @@ const setInsertArtistReview = async function(artista){
     "${artista.data_avaliacao}"
 
 );`
-console.log(sql)
+
 
  
 
@@ -104,7 +104,7 @@ console.log(sql)
 const setUpdateArtistReview = async function(artista){
     try {
       let sql = `update tb_avaliacao_artista set 
-    numero_estrelas = "${artista.numero_estrelas}",
+    numero_estrelas = ${artista.numero_estrelas},
     usuario_id = ${artista.usuario_id},
     artista_id = ${artista.artista_id}
 where id_avaliacao_artista = ${artista.id_avaliacao_artista}`;

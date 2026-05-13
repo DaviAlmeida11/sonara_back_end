@@ -78,9 +78,9 @@ const setInsertEventReview = async function(evento){
     evento_id,
     data_avaliacao
 ) values (
-    "${evento.numero_estrelas}",
-    "${evento.usuario_id}",
-    "${evento.evento_id}",
+    ${evento.numero_estrelas},
+    ${evento.usuario_id},
+    ${evento.evento_id},
     "${evento.data_avaliacao}"
 
 );`
@@ -102,9 +102,9 @@ const setInsertEventReview = async function(evento){
 const setUpdateEventReview= async function(evento){
     try {
       let sql = `update tb_avaliacao_evento set 
-    numero_estrelas = "${evento.numero_estrelas}",
-    usuario_id = "${evento.usuario_id}",
-    evento_id = "${evento.evento_id}"
+    numero_estrelas = ${evento.numero_estrelas},
+    usuario_id = ${evento.usuario_id},
+    evento_id = ${evento.evento_id}
 where id_avaliacao_evento = ${evento.id_avaliacao_evento}`;
 
 

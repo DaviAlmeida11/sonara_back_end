@@ -72,18 +72,27 @@ const getSelectLastID = async function(){
 
 const setInsertArtistEvent  = async function(evento_artista){
     try {
- let sql = `
+let sql = `
 INSERT INTO tb_evento_artista (
   artista_id,
   evento_id,
+  cache_esperado,
+  cache_ofertado,
+  cache_final,
+  contra_proposta,
+  sobre_artista,
+  motivo_inscricao
 ) VALUES (
   ${evento_artista.artista_id},
-  ${evento_artista.evento_id}
- 
-)`
-
- 
-
+  ${evento_artista.evento_id},
+  ${evento_artista.cache_esperado},
+  ${evento_artista.cache_ofertado},
+  ${evento_artista.cache_final},
+  ${evento_artista.contra_proposta ?? 'null'},
+  ${evento_artista.sobre_artista ? `"${evento_artista.sobre_artista}"` : 'null'},
+  ${evento_artista.motivo_inscricao ? `"${evento_artista.motivo_inscricao}"` : 'null'}
+)
+`
         let result = await knexDatabase.raw(sql)
 
         if(result)
@@ -99,14 +108,18 @@ INSERT INTO tb_evento_artista (
 
 const setUpdateArtistEvent = async function(evento_artista){
     try {
-    let sql = `
+   let sql = `
 UPDATE tb_evento_artista SET
   artista_id = ${evento_artista.artista_id},
-  evento_id = ${evento_artista.evento_id}
+  evento_id = ${evento_artista.evento_id},
+  cache_esperado = ${evento_artista.cache_esperado},
+  cache_ofertado = ${evento_artista.cache_ofertado},
+  cache_final = ${evento_artista.cache_final},
+  contra_proposta = ${evento_artista.contra_proposta ?? 'null'},
+  sobre_artista = ${evento_artista.sobre_artista ? `"${evento_artista.sobre_artista}"` : 'null'},
+  motivo_inscricao = ${evento_artista.motivo_inscricao ? `"${evento_artista.motivo_inscricao}"` : 'null'}
 WHERE id_evento_artista = ${evento_artista.id_evento_artista};
 `
-
-
         let result = await knexDatabase.raw(sql)
 
         if(result)
