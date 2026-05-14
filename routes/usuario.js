@@ -1,6 +1,9 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+require('dotenv').config()
+
+const {gerarToken, validarToken} = require('../middleware/jwt')
 
 const bodyParserJson = bodyParser.json()
 
@@ -18,28 +21,50 @@ router.use((request, response, next ) => {
 })
 
 
-router.post('/login', cors(), bodyParserJson, async (req, res) => {
+rrouter.post('/login', cors(), bodyParserJson, async (req, res) => {
+
     const contentType = req.headers['content-type']
 
     if (!contentType || !contentType.toUpperCase().includes('APPLICATION/JSON')) {
-        return res.status(415).json({ message: 'Content-Type deve ser application/json' })
+        return res.status(415).json({
+            message: 'Content-Type deve ser application/json'
+        })
     }
 
     const { email, senha } = req.body
 
     if (!email || !senha) {
-        return res.status(400).json({ message: 'Email e senha são obrigatórios' })
+        return res.status(400).json({
+            message: 'Email e senha são obrigatórios'
+        })
     }
 
-    const result = await controllerUsuario.loginUsuario({ email, senha })
+    const result = await controllerUsuario.loginUsuario({
+        email,
+        senha
+    })
+
+    // login válido
+    if (result.status_code === 200) {
+
+        const token = gerarToken({
+            id: result.usuario.id,
+            email: result.usuario.email
+        })
+
+        return res.status(200).json({
+            status: true,
+            token,
+            usuario: result.usuario
+        })
+    }
+
     return res.status(result.status_code).json(result)
 })
 
 
-
-
 // retornar todos os Usuarios
-router.get('/', cors(), async function (request, response){
+router.get('/', validarToken,cors(), async function (request, response){
 
   let usuario  = await controllerUsuario.listarUsuarios()
     
@@ -50,7 +75,7 @@ module.exports = router
 
 
 // pegar Usuario por id
-router.get('/:id', cors(), async function (request, response){
+router.get('/:id', validarToken, cors(), async function (request, response){
     let idUsuario = request.params.id
 
     let usuario = await controllerUsuario.buscarUsuarioId(idUsuario)
@@ -62,7 +87,7 @@ router.get('/:id', cors(), async function (request, response){
 
 
 //inserir Usuario
-router.post('/', cors(), bodyParserJson, async function (request, response) {
+router.post('/', validarToken, cors(), bodyParserJson, async function (request, response) {
 
 
     let dadosBody = request.body
@@ -87,7 +112,7 @@ router.put('/:id', cors(), bodyParserJson, async function(request, response) {
     response.json(usuario)
 })
 
-router.delete('/:id', cors(), async function(request, response) {
+router.delete('/:id', validarToken, cors(), async function(request, response) {
     let idUsuario = request.params.id
 
     let usuario = await controllerUsuario.excluirUsuario(idUsuario)
