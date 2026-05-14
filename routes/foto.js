@@ -1,6 +1,8 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const multer = require('multer')
+const upload = multer()
 
 const bodyParserJson = bodyParser.json()
 
@@ -44,31 +46,29 @@ router.get('/:id', cors(), async function (request, response){
 
 
 //inserir Foto
-router.post('/', cors(), bodyParserJson, async function (request, response) {
+router.post('/',cors(),upload.single('foto'), async function (request, response) {
 
+        let Foto = request.body
+        let file = request.file
 
-    let dadosBody = request.body
-    let contentType = request.headers['content-type']
+        let result = await controllerFoto.inserirFoto(Foto, file)
 
-    let Foto = await controllerFoto.inserirFoto(dadosBody, contentType)
-
-    response.status(Foto.status_code)
-    response.json(Foto)
+        response.status(result.status_code)
+        response.json(result)
 })
 
 
-router.put('/:id', cors(), bodyParserJson, async function(request, response) {
-    let dadosBody = request.body
-    
+router.put('/:id', cors(), upload.single('foto'), async function (request, response) {
+
+    let Foto = request.body
+    let file = request.file
     let idFoto = request.params.id
 
-    let contentType = request.headers['content-type']
+    let result = await controllerFoto.atualizarFoto(Foto, file, idFoto)
 
-    let Foto = await controllerFoto.atualizarFoto(dadosBody, idFoto, contentType)
-    response.status(Foto.status_code)
-    response.json(Foto)
+    response.status(result.status_code)
+    response.json(result)
 })
-
 router.delete('/:id', cors(), async function(request, response) {
     let idFoto = request.params.id
 

@@ -7,6 +7,8 @@
 
 const FotoDAO = require('../../model/DAO/foto.js')
 
+const { uploadFiles } = require('../upload_azure/upload_azure.js')
+
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
 
@@ -72,106 +74,106 @@ const buscarFotoId = async function(id){
 }
 
 //Insere um Foto 
-const inserirFoto = async function(Foto, contentType){
 
-    //Criando um objeto novo para as mensagens
+
+const inserirFoto = async function(Foto, file){
+
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
-        //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
-        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            //Chama a função de validar todos os dados do Foto
-            let validar = await validarDadosFoto(Foto)
+        let validar = await validarDadosFoto(Foto, file)
+        if(validar)
+            return validar
 
-            if(!validar){
-            
-                //Processamento
-                //Chama a função para inserir um novo Foto no BD
-                let resultFotos = await FotoDAO.setInsertPicture(Foto)
+        let urlFotoAzure = await uploadFiles(file)
 
-                if(resultFotos){
-                    //Chama a função para receber o ID gerado no BD
-                    let lastID = await FotoDAO.getSelectLastID()
-               
-                    if(lastID){
-                        //Adiciona o ID no JSON com os dados do Foto
-                        Foto.id = lastID
-                        MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
-                        MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
-                        MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.HEADER.response         =   Foto
-
-                        return MESSAGES.HEADER //201
-                    }else{
-                        return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
-                    }
-                    
-                }else{
-                    return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
-                }
-            }else{
-                return validar //400
-            }
-        }else{
-            return MESSAGES.ERROR_CONTENT_TYPE //415
+        if(!urlFotoAzure){
+            MESSAGES.HEADER.status = false
+            MESSAGES.HEADER.status_code = 502
+            MESSAGES.HEADER.message = "Erro ao enviar imagem para o Azure Storage."
+            return MESSAGES.HEADER
         }
+
+       
+        Foto.foto = urlFotoAzure
+
+       
+        let resultFotos = await FotoDAO.setInsertPicture(Foto)
+
+        if(resultFotos){
+
+            let lastID = await FotoDAO.getSelectLastID()
+
+            if(lastID){
+                Foto.id = lastID
+
+                MESSAGES.HEADER.status      = MESSAGES.SUCCESS_CREATED_ITEM.status
+                MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_CREATED_ITEM.status_code
+                MESSAGES.HEADER.message     = MESSAGES.SUCCESS_CREATED_ITEM.message
+                MESSAGES.HEADER.response    = Foto
+
+                return MESSAGES.HEADER
+            }else{
+                return MESSAGES.ERROR_INTERNAL_SERVER_MODEL
+            }
+
+        }else{
+            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL
+        }
+
     } catch (error) {
-        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
+       console.log(error)
     }
 }
 
 //Atualiza um Foto buscando pelo ID
-const atualizarFoto = async function(Foto, id, contentType){
-    //Criando um objeto novo para as mensagens
+const atualizarFoto = async function(Foto, file, id){
+
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
-        //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
-        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-                //Chama a função de validar todos os dados do Foto
-                let validar = await validarDadosFoto(Foto)
-
-                if(!validar){
-                
-                    //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                     let validarID = await buscarFotoId(id)
-
-                    if(validarID.status_code == 200){
-                        
-                        //Adiciona o ID do Foto no JSON de dados para ser encaminhado ao DAO
-                        Foto.id_foto = Number(id)
-
-                        //Chama a função para inserir um novo Foto no BD
-                        let resultFotos = await FotoDAO.setUpdatePicture(Foto)
-
-                        if(resultFotos){
-                            MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
-                            MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
-                            MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
-                            MESSAGES.HEADER.response.Foto     =   Foto           
-
-                            return MESSAGES.HEADER //200
-                        }else{
-                            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
-                        }
-                    }else{
-                        return validarID //A função buscarFotoID poderá retornar (400 ou 404 ou 500)
-                    }    
-                }else{
-                    return validar //400 referente a validação dos dados
-                }
-            
-        }else{
-            return MESSAGES.ERROR_CONTENT_TYPE //415
+        if (!file) {
+            MESSAGES.HEADER.status = false
+            MESSAGES.HEADER.status_code = 400
+            MESSAGES.HEADER.message = "Arquivo da foto não enviado."
+            return MESSAGES.HEADER
         }
+
+        let validarID = await buscarFotoId(id)
+        if(validarID.status_code != 200){
+            return validarID
+        }
+
+        let urlFotoAzure = await uploadFiles(file)
+
+        if(!urlFotoAzure){
+            MESSAGES.HEADER.status = false
+            MESSAGES.HEADER.status_code = 502
+            MESSAGES.HEADER.message = "Erro ao enviar imagem para o Azure Storage."
+            return MESSAGES.HEADER
+        }
+
+        Foto.foto = urlFotoAzure
+        Foto.id_foto = Number(id)
+
+        let result = await FotoDAO.setUpdatePicture(Foto)
+
+        if(result){
+            MESSAGES.HEADER.status      = MESSAGES.SUCCESS_UPDATED_ITEM.status
+            MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_UPDATED_ITEM.status_code
+            MESSAGES.HEADER.message     = MESSAGES.SUCCESS_UPDATED_ITEM.message
+            MESSAGES.HEADER.response    = Foto
+            return MESSAGES.HEADER
+        }else{
+            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL
+        }
+
     } catch (error) {
-        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
+        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER
     }
-
 }
-
 
 const excluirFoto = async function(id){
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -213,19 +215,17 @@ const excluirFoto = async function(id){
 }
 
 
-const validarDadosFoto = async function(Foto){
-    
-    
-    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+const validarDadosFoto = async (Foto, file) => {
 
-    if(Foto.foto == '' || Foto.foto == undefined || Foto.foto == null || Foto.foto.length > 500){
-        MESSAGES.ERROR_REQUIRED_FIELDS.message == '[Foto incorreta]' 
-        return MESSAGES.ERROR_REQUIRED_FIELDS
-
-    
-    }else{
-        return false
+    if (!file) {
+        return {
+            status: false,
+            status_code: 400,
+            message: "Arquivo da foto não enviado."
+        }
     }
+
+    return false
 }
 
 module.exports = {

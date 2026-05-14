@@ -27,6 +27,7 @@ const ERROR_REQUIRED_FIELDS = {status: false, status_code: 400, message: 'Não f
 const ERROR_CONTENT_TYPE = {status: false, status_code: 415, message: 'Não foi possivel processar a requisição, pois o tipo de conteúdo enviado no body não é permitido. Deve-se utilizar JSON na API!!!'}
 const ERROR_RELATION_TABLE = {status: false, status_code: 200, message: 'A requisição foi bem sucedida na criação do item principal, porém houveram problemas na tabela de relacionamento !!!'}
 const ERROR_LOGIN = {status: false, status_code: 401,message:'Senha ou Email invalidos' }
+const ERROR_UPLOAD_AZURE =  {status: false, status_code: 404, message: "error na configuracao para da azure"}
 /************************ MENSAGENS DE SUCESSO DO PROJETO ***************************************/
 const SUCCESS_REQUEST = {status: true, status_code: 200, message: 'Requisição bem sucedida!!!'}
 const SUCCESS_CREATED_ITEM = {status: true, status_code: 201, message: 'Requisição bem sucedida, objeto criado com sucesso!!!'}

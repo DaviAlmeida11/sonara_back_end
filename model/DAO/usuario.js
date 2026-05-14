@@ -70,19 +70,19 @@ const getSelectLastID = async function(){
 }
 const getUsuarioByUsuarioEmail = async function(email) {
     try {
-        let sql = `select * from tb_usuario where email = '${email.email}'` 
+        let sql = `select * from tb_usuario where email = '${email}'`
 
         const result = await knexDatabase.raw(sql)
 
-        if(Array.isArray(result[0]) && result[0].length > 0)
+        if (Array.isArray(result[0]) && result[0].length > 0)
             return result[0][0]
         else
             return false
-    } catch(error) {
+
+    } catch (error) {
         return false
     }
 }
-
 const setInsertUsers = async function(usuario){
     try {
         let sql = `
