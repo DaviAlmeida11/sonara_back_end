@@ -7,6 +7,12 @@
 
 const eventoDAO = require('../../model/DAO/evento.js')
 
+const enderecoEventoDAO = require('../../model/DAO/endereco_evento.js')
+
+const eventoOrganizadorDAO = require('../../model/DAO/evento_organizador.js')
+
+const viewBuscarFotoEventoDAO = require('../../model/DAO/VEWS/evento_fotos.js')
+
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
 
@@ -72,55 +78,113 @@ const buscarEventoId = async function(id){
 }
 
 //Insere um evento 
-const inserirEvento = async function(evento, contentType){
+const inserirEvento = async function (evento, contentType) {
 
-    //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
-        //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
-        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            //Chama a função de validar todos os dados do evento
-            let validar = await validarDadosEvento(evento)
-
-            if(!validar){
-            
-                //Processamento
-                //Chama a função para inserir um novo evento no BD
-                let resultEvento = await eventoDAO.setInsertEvent(evento)
-
-                if(resultEvento){
-                    //Chama a função para receber o ID gerado no BD
-                    let lastID = await eventoDAO.getSelectLastID()
-               
-                    if(lastID){
-                        //Adiciona o ID no JSON com os dados do evento
-                        evento.id_evento = lastID
-                        MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
-                        MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
-                        MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.HEADER.response         =   evento
-
-                        return MESSAGES.HEADER //201
-                    }else{
-                        return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
-                    }
-                    
-                }else{
-                    return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
-                }
-            }else{
-                return validar //400
-            }
-        }else{
+        if (String(contentType).toUpperCase() !== 'APPLICATION/JSON') {
             return MESSAGES.ERROR_CONTENT_TYPE //415
         }
+
+        // ================= VALIDA EVENTO =================
+        let validarEvento = await validarDadosEvento(evento)
+
+        if (validarEvento) {
+            return validarEvento //400
+        }
+
+        // ================= INSERE EVENTO =================
+        let resultEvento = await eventoDAO.setInsertEvent(evento)
+
+        if (!resultEvento) {
+            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+        }
+
+        let lastIDEvento = await eventoDAO.getSelectLastID()
+
+        if (!lastIDEvento) {
+            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+        }
+
+        evento.id_evento = lastIDEvento.id_evento
+
+        // ================= ENDEREÇO =================
+        let enderecoEvento = {
+            cep:         evento.cep,
+            cidade:      evento.cidade,
+            estado:      evento.estado,
+            logradouro:  evento.logradouro,
+            numero:      evento.numero,
+            complemento: evento.complemento,
+            bairro:      evento.bairro,
+            evento_id:   lastIDEvento.id_evento
+        }
+
+        let validarEndereco = await validarDadosEvento(enderecoEvento)
+
+        if (validarEndereco) {
+            return validarEndereco //400
+        }
+
+        let resultEndereco = await enderecoEventoDAO.setInsertAddressEvent(enderecoEvento)
+
+        if (!resultEndereco) {
+            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+        }
+
+        // ================= EVENTO ORGANIZADOR =================
+        let eventoOrganizador = {
+            evento_id: evento.id_evento,
+            organizador_id: evento.organizador_id
+        }
+
+        let validarEventoOrg = await validarDadosEvento(eventoOrganizador)
+
+        if (validarEventoOrg) {
+            return validarEventoOrg //400
+        }
+
+        let resultEventoOrg = await eventoOrganizadorDAO.setInsertOrganizerEvent(eventoOrganizador)
+
+        if (!resultEventoOrg) {
+            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+        }
+
+        let lastIDOrg = await eventoOrganizadorDAO.getSelectLastID()
+
+        if (!lastIDOrg) {
+            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+        }
+
+        eventoOrganizador.id_evento_organizador = lastIDOrg.id_evento_organizador
+
+        // ================= BUSCA FOTOS =================
+        let fotos = await viewBuscarFotoEventoDAO.getSelectViewEventPhoto(evento.id_evento)
+
+        if (!fotos) {
+            fotos = []
+        }
+
+        // ================= RETORNO FINAL =================
+        MESSAGES.HEADER.status      = MESSAGES.SUCCESS_CREATED_ITEM.status
+        MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_CREATED_ITEM.status_code
+        MESSAGES.HEADER.message     = MESSAGES.SUCCESS_CREATED_ITEM.message
+        MESSAGES.HEADER.response    = {
+            evento,
+            endereco: enderecoEvento,
+            evento_organizador: eventoOrganizador,
+            fotos: fotos
+        }
+
+        return MESSAGES.HEADER //201
+
     } catch (error) {
+        console.log(error)
         return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 }
-
 //Atualiza um evento buscando pelo ID
 const atualizarEvento = async function(evento, id, contentType){
     //Criando um objeto novo para as mensagens
@@ -212,43 +276,65 @@ const excluirEvento = async function(id){
     }
 }
 
-const validarDadosEvento = function(evento) {
-    
+const validarDadosEvento = function (evento) {
+
     const gerarErro = (campo) => ({
-        DEFAULT_MESSAGES, 
+        ...DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS,
         message: `${DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS.message} [Campo: ${campo}]`
     });
 
-    // Validações rápidas
-    if (!evento.nome || evento.nome.length > 100) 
-        return gerarErro('Nome');
-    
-    if (!evento.descricao || evento.descricao.length > 500) 
+    // ================= EVENTO =================
+    if (!evento.nome || evento.nome.length > 100)
+        return gerarErro('nome');
+
+    if (!evento.descricao || evento.descricao.length > 500)
         return gerarErro('descricao');
 
-    if (!evento.local || evento.local.length > 255) 
+    if (!evento.local || evento.local.length > 255)
         return gerarErro('local');
 
-    if (!evento.data || evento.data.length > 20) 
+    if (!evento.data || evento.data.length > 20)
         return gerarErro('data');
 
-    if (!evento.hora_inicio || evento.hora_inicio.length > 20) 
+    if (!evento.hora_inicio || evento.hora_inicio.length > 20)
         return gerarErro('hora_inicio');
 
-    if (!evento.hora_fim ||  evento.hora_fim.length > 80) 
+    if (!evento.hora_fim || evento.hora_fim.length > 80)
         return gerarErro('hora_fim');
 
-    if (evento.endereco_id == Number && evento.endereco_id != '' && evento.endereco_id != null && evento.endereco_id > 0) 
-        return gerarErro('Endereço');
-    
-   if(evento.usuario_id == '' || evento.usuario_id == undefined || evento.usuario_id == null || isNaN(evento.usuario_id)){
-        MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [usuario_id incorreto]' 
-    return MESSAGES.ERROR_REQUIRED_FIELDS
+    if (!evento.usuario_id || isNaN(evento.usuario_id))
+        return gerarErro('usuario_id');
 
-    }
-    return false
+    // ================= ENDEREÇO =================
+    if (!evento.cep || evento.cep.length > 11)
+        return gerarErro('cep');
 
+    if (!evento.cidade || evento.cidade.length > 170)
+        return gerarErro('cidade');
 
+    if (!evento.estado || evento.estado.length > 25)
+        return gerarErro('estado');
+
+    if (!evento.logradouro || evento.logradouro.length > 255)
+        return gerarErro('logradouro');
+
+    if (!evento.numero || isNaN(evento.numero))
+        return gerarErro('numero');
+
+    if (!evento.complemento || evento.complemento.length > 100)
+        return gerarErro('complemento');
+
+    if (!evento.bairro || evento.bairro.length > 100)
+        return gerarErro('bairro');
+
+    // ================= EVENTO ORGANIZADOR =================
+    if (!evento.evento_id || isNaN(evento.evento_id) || evento.evento_id <= 0)
+        return gerarErro('evento_id');
+
+    if (!evento.organizador_id || isNaN(evento.organizador_id) || evento.organizador_id <= 0)
+        return gerarErro('organizador_id');
+
+    return false;
 }
 
 

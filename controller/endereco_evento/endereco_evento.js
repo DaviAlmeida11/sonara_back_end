@@ -141,7 +141,7 @@ const atualizarEnderecoEvento = async function(endereco, id, contentType){
                     if(validarID.status_code == 200){
                         
                         //Adiciona o ID do endereco no JSON de dados para ser encaminhado ao DAO
-                        endereco.id_endereco = Number(id)
+                        endereco.id_endereco_evento = Number(id)
 
                         //Chama a função para inserir um novo endereco no BD
                         let resultEnderecoEvento = await enderecoEventoDAO.setUpdateAddressEvent(endereco)

@@ -15,7 +15,7 @@ const knexDatabase = knex(knexConfig.development);
 const getSelectAllAddressEvent = async function(){
     try {
       
-        let sql = `select * from tb_enderco_evento order by id_enderco_evento desc`
+        let sql = `select * from tb_endereco_evento order by id_endereco_evento desc`
     
         let result = await knexDatabase.raw(sql)
 
@@ -34,7 +34,7 @@ const getSelectAllAddressEvent = async function(){
 const getSelectByIdAddressEvent = async function(id){
     try {
     
-        let sql = `select * from tb_enderco_evento where id_enderco_evento=${id}`
+        let sql = `select * from tb_endereco_evento where id_endereco_evento=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -53,13 +53,13 @@ const getSelectByIdAddressEvent = async function(id){
 const getSelectLastID = async function(){
     try {
         
-        let sql = `select id_enderco_evento from tb_enderco_evento order by id_enderco_evento desc limit 1`
+        let sql = `select id_endereco_evento from tb_endereco_evento order by id_endereco_evento desc limit 1`
 
        
         let result = await knexDatabase.raw(sql)
  
         if(Array.isArray(result))
-            return Number(result[0][0].id_enderco_evento)
+            return Number(result[0][0].id_endereco_evento)
         else
             return false
 
@@ -72,7 +72,7 @@ const getSelectLastID = async function(){
 
 const setInsertAddressEvent = async function(enderco_evento){
     try {
-  let sql = `insert into tb_enderco_evento (
+  let sql = `insert into tb_endereco_evento (
     cep,
     cidade,
     estado,
@@ -108,16 +108,16 @@ const setInsertAddressEvent = async function(enderco_evento){
 
 const setUpdateAddressEvent = async function(enderco_evento){
     try {
-      let sql = `update tb_enderco_evento set 
+      let sql = `update tb_endereco_evento set 
     cep = "${enderco_evento.cep}",
     cidade = "${enderco_evento.cidade}",
     estado = "${enderco_evento.estado}",
     logradouro = "${enderco_evento.logradouro}",
     numero = ${enderco_evento.numero},
     complemento = "${enderco_evento.complemento}",
-    bairro      =  "${enderco_evento.bairro}"
+    bairro      =  "${enderco_evento.bairro}",
     evento_id     = ${enderco_evento.evento_id}
-where id_enderco_evento = ${enderco_evento.id_enderco_evento}`
+where id_endereco_evento = ${enderco_evento.id_endereco_evento}`
 
         let result = await knexDatabase.raw(sql)
 
@@ -134,7 +134,7 @@ where id_enderco_evento = ${enderco_evento.id_enderco_evento}`
 const setDeleteAddressEvent = async function(id){
     try {
       
-        let sql = `delete from tb_enderco_evento where id_enderco_evento=${id}`
+        let sql = `delete from tb_endereco_evento where id_endereco_evento=${id}`
   
        
         let result = await knexDatabase.raw(sql)

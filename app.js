@@ -81,6 +81,8 @@ const artistaEvento = require('./routes/evento_artista')
 
 const eventoArtistaStatus = require('./routes/evento_artista_status')
 
+const enderecoEvento = require("./routes/endereco_evento")
+
 
 //Configuração das rotas
 app.use("/v1/sonara/genero", generoRoutes)
@@ -108,6 +110,8 @@ app.use('/v1/sonara/foto', foto)
 app.use('/v1/sonara/evento', evento)
 
 app.use('/v1/sonara/recuperacao', recuperacao)
+
+app.use("/v1/sonara/enderecoEvento", enderecoEvento)
 
 
 app.use('/v1/sonara/avaliacaoArtista', avaliacaoArtista)

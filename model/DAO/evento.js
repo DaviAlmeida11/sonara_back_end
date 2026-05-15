@@ -78,8 +78,7 @@ const setInsertEvent = async function(evento){
                             "${evento.local}", 
                             "${evento.data}",
                             "${evento.hora_inicio}",
-                            "${evento.hora_fim}",
-                            ${evento.endereco_id})`
+                            "${evento.hora_fim}")`
 
     
         let result = await knexDatabase.raw(sql)

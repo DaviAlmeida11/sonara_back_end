@@ -214,7 +214,7 @@ const inserirUsuario = async function (usuario, contentType) {
                 usuario_id: lastIDUsuario.id_usuario
             }
 
-            let resultOrganizador = await organizadorDAO.setInsertOrganizador(organizador)
+            let resultOrganizador = await organizadorDAO.setInsertOrganizer(organizador)
 
             if (!resultOrganizador) {
                 return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
