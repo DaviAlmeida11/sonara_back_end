@@ -12,10 +12,10 @@ const knexDatabase = knex(knexConfig.development);
 
 
 
-const getSelectAllAddress = async function(){
+const getSelectAllAddressEvent = async function(){
     try {
       
-        let sql = `select * from tb_endereco order by id_endereco desc`
+        let sql = `select * from tb_enderco_evento order by id_enderco_evento desc`
     
         let result = await knexDatabase.raw(sql)
 
@@ -31,10 +31,10 @@ const getSelectAllAddress = async function(){
 }
 
 //Retorna um filme filtrando pelo ID do banco de dados
-const getSelectByIdAddress = async function(id){
+const getSelectByIdAddressEvent = async function(id){
     try {
     
-        let sql = `select * from tb_endereco where id_endereco=${id}`
+        let sql = `select * from tb_enderco_evento where id_enderco_evento=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -53,13 +53,13 @@ const getSelectByIdAddress = async function(id){
 const getSelectLastID = async function(){
     try {
         
-        let sql = `select id_endereco from tb_endereco order by id_endereco desc limit 1`
+        let sql = `select id_enderco_evento from tb_enderco_evento order by id_enderco_evento desc limit 1`
 
        
         let result = await knexDatabase.raw(sql)
  
         if(Array.isArray(result))
-            return Number(result[0][0].id_endereco)
+            return Number(result[0][0].id_enderco_evento)
         else
             return false
 
@@ -70,9 +70,9 @@ const getSelectLastID = async function(){
 }
 
 
-const setInsertAddress = async function(endereco){
+const setInsertAddressEvent = async function(enderco_evento){
     try {
-  let sql = `insert into tb_endereco (
+  let sql = `insert into tb_enderco_evento (
     cep,
     cidade,
     estado,
@@ -80,16 +80,16 @@ const setInsertAddress = async function(endereco){
     numero,
     complemento,
     bairro,
-    usuario_id
+    evento_id
 ) values (
-    "${endereco.cep}",
-    "${endereco.cidade}",
-    "${endereco.estado}",
-    "${endereco.logradouro}",
-    ${endereco.numero},
-    "${endereco.complemento}",
-    "${endereco.bairro}",
-    ${endereco.usuario_id}
+    "${enderco_evento.cep}",
+    "${enderco_evento.cidade}",
+    "${enderco_evento.estado}",
+    "${enderco_evento.logradouro}",
+    ${enderco_evento.numero},
+    "${enderco_evento.complemento}",
+    "${enderco_evento.bairro}",
+    ${enderco_evento.evento_id}
 );`
 
         let result = await knexDatabase.raw(sql)
@@ -106,18 +106,18 @@ const setInsertAddress = async function(endereco){
 
 
 
-const setUpdateAddress = async function(endereco){
+const setUpdateAddressEvent = async function(enderco_evento){
     try {
-      let sql = `update tb_endereco set 
-    cep = "${endereco.cep}",
-    cidade = "${endereco.cidade}",
-    estado = "${endereco.estado}",
-    logradouro = "${endereco.logradouro}",
-    numero = ${endereco.numero},
-    complemento = "${endereco.complemento}",
-    bairro      =  "${endereco.bairro}"
-    usuario_id     = ${endereco.usuario_id}
-where id_endereco = ${endereco.id_endereco}`
+      let sql = `update tb_enderco_evento set 
+    cep = "${enderco_evento.cep}",
+    cidade = "${enderco_evento.cidade}",
+    estado = "${enderco_evento.estado}",
+    logradouro = "${enderco_evento.logradouro}",
+    numero = ${enderco_evento.numero},
+    complemento = "${enderco_evento.complemento}",
+    bairro      =  "${enderco_evento.bairro}"
+    evento_id     = ${enderco_evento.evento_id}
+where id_enderco_evento = ${enderco_evento.id_enderco_evento}`
 
         let result = await knexDatabase.raw(sql)
 
@@ -127,14 +127,14 @@ where id_endereco = ${endereco.id_endereco}`
             return false
 
     } catch (error) {
-       
+        console.log(error)
     }
 }
 
-const setDeleteAddress = async function(id){
+const setDeleteAddressEvent = async function(id){
     try {
       
-        let sql = `delete from tb_endereco where id_endereco=${id}`
+        let sql = `delete from tb_enderco_evento where id_enderco_evento=${id}`
   
        
         let result = await knexDatabase.raw(sql)
@@ -151,10 +151,10 @@ const setDeleteAddress = async function(id){
 }
 
 module.exports = {
-    getSelectAllAddress,
-    getSelectByIdAddress,
-    setInsertAddress,
-    setUpdateAddress,
+    getSelectAllAddressEvent,
+    getSelectByIdAddressEvent,
+    setInsertAddressEvent,
+    setUpdateAddressEvent,
     getSelectLastID,
-    setDeleteAddress
+    setDeleteAddressEvent
 } 

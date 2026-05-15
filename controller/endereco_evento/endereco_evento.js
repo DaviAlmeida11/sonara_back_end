@@ -5,25 +5,25 @@
  * Versão: 1.0
 *****************************************************************************/
 
-const eventoDAO = require('../../model/DAO/evento.js')
+const  enderecoEventoDAO = require('../../model/DAO/endereco_evento.js')
 
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
 
 
-const listarEvento = async function(){
+const listarEnderecoEvento = async function(){
     
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
        
-        let resultEvento = await eventoDAO.getSelectAllEvent()
+        let resultEnderecoEvento = await enderecoEventoDAO.getSelectAllAddressEvent()
         
-        if(resultEvento){
-            if(resultEvento.length > 0){
+        if(resultEnderecoEvento){
+            if(resultEnderecoEvento.length > 0){
             MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.Evento = resultEvento
+            MESSAGES.HEADER.response.EnderecoEvento = resultEnderecoEvento
 
             return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
@@ -37,8 +37,8 @@ const listarEvento = async function(){
 
 }
 
-//Retorna um evento fultrando pelo ID
-const buscarEventoId = async function(id){
+//Retorna um endereco fultrando pelo ID
+const buscarEnderecoEventoId = async function(id){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -46,13 +46,13 @@ const buscarEventoId = async function(id){
 
         //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultEvento = await eventoDAO.getSelectByIdEvent(Number(id))
+            let resultEnderecoEvento = await enderecoEventoDAO.getSelectByIdAddressEvent(Number(id))
 
-            if(resultEvento){
-                if(resultEvento.length > 0){
+            if(resultEnderecoEvento){
+                if(resultEnderecoEvento.length > 0){
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response.Evento = resultEvento[0]
+                    MESSAGES.HEADER.response.EnderecoEvento = resultEnderecoEvento[0]
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -62,7 +62,7 @@ const buscarEventoId = async function(id){
                 return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
             }
         }else{
-            MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [ID incorreto]'
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [ID incorreto]'
             return MESSAGES.ERROR_REQUIRED_FIELDS //400
         }
 
@@ -71,8 +71,8 @@ const buscarEventoId = async function(id){
     }
 }
 
-//Insere um evento 
-const inserirEvento = async function(evento, contentType){
+//Insere um  endereco
+const inserirEnderecoEvento = async function(endereco, contentType){
 
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -81,26 +81,26 @@ const inserirEvento = async function(evento, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-            //Chama a função de validar todos os dados do evento
-            let validar = await validarDadosEvento(evento)
+            //Chama a função de validar todos os dados do endereco
+            let validar = await validarDadosEnderecoEvento(endereco)
 
             if(!validar){
             
                 //Processamento
-                //Chama a função para inserir um novo evento no BD
-                let resultEvento = await eventoDAO.setInsertEvent(evento)
+                //Chama a função para inserir um novo endereco no BD
+                let resultEnderecoEvento = await enderecoEventoDAO.setInsertAddressEvent(endereco)
 
-                if(resultEvento){
+                if(resultEnderecoEvento){
                     //Chama a função para receber o ID gerado no BD
-                    let lastID = await eventoDAO.getSelectLastID()
-               
+                    let lastID = await enderecoEventoDAO.getSelectLastID()
+            
                     if(lastID){
-                        //Adiciona o ID no JSON com os dados do evento
-                        evento.id_evento = lastID
+                        //Adiciona o ID no JSON com os dados do endereco
+                        endereco.id = lastID
                         MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
                         MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
                         MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.HEADER.response         =   evento
+                        MESSAGES.HEADER.response         =   endereco
 
                         return MESSAGES.HEADER //201
                     }else{
@@ -121,8 +121,8 @@ const inserirEvento = async function(evento, contentType){
     }
 }
 
-//Atualiza um evento buscando pelo ID
-const atualizarEvento = async function(evento, id, contentType){
+//Atualiza um endereco buscando pelo ID
+const atualizarEnderecoEvento = async function(endereco, id, contentType){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -130,34 +130,34 @@ const atualizarEvento = async function(evento, id, contentType){
         //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-                //Chama a função de validar todos os dados do evento
-                let validar = await validarDadosEvento(evento)
+                //Chama a função de validar todos os dados do endereco
+                let validar = await validarDadosEnderecoEvento(endereco)
 
                 if(!validar){
                 
                     //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                     let validarID = await buscarEventoId(id)
+                     let validarID = await buscarEnderecoEventoId(id)
 
                     if(validarID.status_code == 200){
                         
-                        //Adiciona o ID do evento no JSON de dados para ser encaminhado ao DAO
-                        evento.id_evento = Number(id)
+                        //Adiciona o ID do endereco no JSON de dados para ser encaminhado ao DAO
+                        endereco.id_endereco = Number(id)
 
-                        //Chama a função para inserir um novo evento no BD
-                        let resultEvento = await eventoDAO.setUpdateEvent(evento)
+                        //Chama a função para inserir um novo endereco no BD
+                        let resultEnderecoEvento = await enderecoEventoDAO.setUpdateAddressEvent(endereco)
 
-                        if(resultEvento){
+                        if(resultEnderecoEvento){
                             MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
                             MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
                             MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
-                            MESSAGES.HEADER.response.evento     =   evento           
+                            MESSAGES.HEADER.response.endereco     =   endereco           
 
                             return MESSAGES.HEADER //200
                         }else{
                             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
                         }
                     }else{
-                        return validarID //A função buscargeneroID poderá retornar (400 ou 404 ou 500)
+                        return validarID //A função buscarenderecoID poderá retornar (400 ou 404 ou 500)
                     }    
                 }else{
                     return validar //400 referente a validação dos dados
@@ -173,7 +173,7 @@ const atualizarEvento = async function(evento, id, contentType){
 }
 
 
-const excluirEvento = async function(id){
+const excluirEnderecoEvento = async function(id){
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
@@ -181,18 +181,18 @@ const excluirEvento = async function(id){
       
         if(!isNaN(id) && id != '' && id != null && id > 0){
 
-            let validarID = await buscarEventoId(id)
+            let validarID = await buscarEnderecoEventoId(id)
 
             if(validarID.status_code == 200){
 
-                let resultEvento = await eventoDAO.setDeleteEvent(Number(id))
+                let resultEnderecoEvento = await enderecoEventoDAO.setDeleteAddressEvent(Number(id))
 
-                if(resultEvento){
+                if(resultEnderecoEvento){
                     
                         MESSAGES.HEADER.status      = MESSAGES.SUCCESS_DELETED_ITEM.status
                         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
                         MESSAGES.HEADER.message     = MESSAGES.SUCCESS_DELETED_ITEM.message
-                        MESSAGES.HEADER.response.evento = resultEvento
+                        MESSAGES.HEADER.response.endereco = resultEnderecoEvento
                         delete MESSAGES.HEADER.response
                         return MESSAGES.HEADER 
             
@@ -203,7 +203,7 @@ const excluirEvento = async function(id){
                 return MESSAGES.ERROR_NOT_FOUND 
             }
         }else{
-            MESSAGES.ERROR_REQUIRED_FIELDS.message == '[ID incorreto]'
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [ID incorreto]'
             return MESSAGES.ERROR_REQUIRED_FIELDS 
         }
 
@@ -212,50 +212,56 @@ const excluirEvento = async function(id){
     }
 }
 
-const validarDadosEvento = function(evento) {
+
+const validarDadosEnderecoEvento = async function(endereco){
     
-    const gerarErro = (campo) => ({
-        DEFAULT_MESSAGES, 
-        message: `${DEFAULT_MESSAGES.ERROR_REQUIRED_FIELDS.message} [Campo: ${campo}]`
-    });
-
-    // Validações rápidas
-    if (!evento.nome || evento.nome.length > 100) 
-        return gerarErro('Nome');
     
-    if (!evento.descricao || evento.descricao.length > 500) 
-        return gerarErro('descricao');
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
-    if (!evento.local || evento.local.length > 255) 
-        return gerarErro('local');
-
-    if (!evento.data || evento.data.length > 20) 
-        return gerarErro('data');
-
-    if (!evento.hora_inicio || evento.hora_inicio.length > 20) 
-        return gerarErro('hora_inicio');
-
-    if (!evento.hora_fim ||  evento.hora_fim.length > 80) 
-        return gerarErro('hora_fim');
-
-    if (evento.endereco_id == Number && evento.endereco_id != '' && evento.endereco_id != null && evento.endereco_id > 0) 
-        return gerarErro('Endereço');
+    if(endereco.cep == '' || endereco.cep == undefined || endereco.cep == null || endereco.cep.length > 11){
+        MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [cep incorreto]' 
+        return MESSAGES.ERROR_REQUIRED_FIELDS
     
-   if(evento.usuario_id == '' || evento.usuario_id == undefined || evento.usuario_id == null || isNaN(evento.usuario_id)){
-        MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [usuario_id incorreto]' 
+    }else if(endereco.cidade == '' || endereco.cidade == undefined || endereco.cidade == null || endereco.cidade.length > 170) {
+           MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [endereco incorreto]' 
+        return MESSAGES.ERROR_REQUIRED_FIELDS
+
+    }else if(endereco.estado == '' || endereco.estado == undefined || endereco.estado == null || endereco.estado.length > 25){
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [estadoo incorreto]' 
+        return MESSAGES.ERROR_REQUIRED_FIELDS
+
+    } else if(endereco.logradouro == '' || endereco.logradouro == undefined || endereco.logradouro == null ||  endereco.logradouro.length > 14){
+         MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [logradouro incorreto]' 
+        return MESSAGES.ERROR_REQUIRED_FIELDS
+
+    }else if(endereco.numero == '' || endereco.numero == undefined || endereco.numero == null || endereco.numero.length > 30){
+         MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [numero incorreto]' 
+        return MESSAGES.ERROR_REQUIRED_FIELDS
+
+    }else if(endereco.complemento == '' || endereco.complemento == undefined || endereco.complemento == null || endereco.complemento.length > 25){
+        MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [complemento incorreto]' 
     return MESSAGES.ERROR_REQUIRED_FIELDS
 
-    }
-    return false
 
+    }else if(endereco.bairro == '' || endereco.bairro == undefined || endereco.bairro == null || endereco.bairro.length > 30){
+    MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [bairro incorreto]' 
+   return MESSAGES.ERROR_REQUIRED_FIELDS
+
+    }else if(endereco.evento_id == '' || endereco.evento_id == undefined || endereco.evento_id == null || isNaN(endereco.evento_id)){
+        MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [evento_id incorreto]' 
+    return MESSAGES.ERROR_REQUIRED_FIELDS
+
+   
+    }else{
+        return false
+    }
 
 }
 
-
 module.exports = {
-    listarEvento,
-    buscarEventoId,
-    inserirEvento,
-    atualizarEvento,
-    excluirEvento
+    listarEnderecoEvento,
+    buscarEnderecoEventoId,
+    inserirEnderecoEvento,
+    atualizarEnderecoEvento,
+    excluirEnderecoEvento
 }
