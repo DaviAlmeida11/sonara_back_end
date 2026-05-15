@@ -5,9 +5,7 @@
  * Versão: 1.0
 *****************************************************************************/
 
-const  ArtistaDAO = require('../../model/DAO/artista.js')
-
-
+const  artistaDAO = require('../../model/DAO/artista.js')
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
 
 
@@ -17,7 +15,7 @@ const listarArtista = async function(){
 
     try {
        
-        let resultArtista = await ArtistaDAO.getSelectAllArtist()
+        let resultArtista = await artistaDAO.getSelectAllArtist()
       
         if(resultArtista){
             if(resultArtista.length > 0){
@@ -46,7 +44,7 @@ const buscarArtistaId = async function(id){
 
         //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultArtista = await ArtistaDAO.getSelectByIdArtist(Number(id))
+            let resultArtista = await artistaDAO.getSelectByIdArtist(Number(id))
 
             if(resultArtista){
                 if(resultArtista.length > 0){
@@ -72,7 +70,7 @@ const buscarArtistaId = async function(id){
 }
 
 //Insere um  Artista
-const inserirArtista = async function(Artista, contentType){
+const inserirArtista = async function(artista, contentType){
 
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -82,25 +80,26 @@ const inserirArtista = async function(Artista, contentType){
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
             //Chama a função de validar todos os dados do Artista
-            let validar = await validarDadosArtista(Artista)
+            let validar = await validarDadosArtista(artista)
 
             if(!validar){
             
                 //Processamento
                 //Chama a função para inserir um novo Artista no BD
-                let resultArtista = await ArtistaDAO.setInsertArtist(Artista)
+                let resultArtista = await artistaDAO.setInsertArtist(artista)
 
                 if(resultArtista){
                     //Chama a função para receber o ID gerado no BD
-                    let lastID = await ArtistaDAO.getSelectLastID()
-         
+                    let lastID = await artistaDAO.getSelectLastID()
+                    
+                    
                     if(lastID){
                         //Adiciona o ID no JSON com os dados do Artista
-                        Artista.id_artista = lastID
+                        artista.id_artista = lastID
                         MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_CREATED_ITEM.status
                         MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_CREATED_ITEM.status_code
                         MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.HEADER.response         =   Artista
+                        MESSAGES.HEADER.response         =   artista
 
                         return MESSAGES.HEADER //201
                     }else{
@@ -122,7 +121,7 @@ const inserirArtista = async function(Artista, contentType){
 }
 
 //Atualiza um Artista buscando pelo ID
-const atualizarArtista = async function(Artista, id, contentType){
+const atualizarArtista = async function(artista, id, contentType){
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -131,7 +130,7 @@ const atualizarArtista = async function(Artista, id, contentType){
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
                 //Chama a função de validar todos os dados do Artista
-                let validar = await validarDadosArtista(Artista)
+                let validar = await validarDadosArtista(artista)
 
                 if(!validar){
                 
@@ -141,16 +140,16 @@ const atualizarArtista = async function(Artista, id, contentType){
                     if(validarID.status_code == 200){
                         
                         //Adiciona o ID do Artista no JSON de dados para ser encaminhado ao DAO
-                        Artista.id_artista = Number(id)
+                        artista.id_artista = Number(id)
 
                         //Chama a função para inserir um novo Artista no BD
-                        let resultArtista = await ArtistaDAO.setUpdateArtist(Artista)
+                        let resultArtista = await artistaDAO.setUpdateArtist(artista)
 
                         if(resultArtista){
                             MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
                             MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
                             MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
-                            MESSAGES.HEADER.response.Artista     =   Artista           
+                            MESSAGES.HEADER.response.Artista     =   artista           
 
                             return MESSAGES.HEADER //200
                         }else{
@@ -185,7 +184,7 @@ const excluirArtista = async function(id){
 
             if(validarID.status_code == 200){
 
-                let resultArtista = await ArtistaDAO.setDeleteArtist(Number(id))
+                let resultArtista = await artistaDAO.setDeleteArtist(Number(id))
 
                 if(resultArtista){
                     

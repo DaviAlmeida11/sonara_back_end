@@ -50,21 +50,14 @@ const getSelectByIdArtist = async function(id){
     }
 }
 
-const getSelectLastID = async function(){
+const getSelectLastID = async function() {
     try {
-        
-        let sql = `select id_artista from tb_artista order by id_artista desc limit 1`
-
-      
-        let result = await knexDatabase.raw(sql)
- 
-        if(Array.isArray(result))
-            return Number(result[0][0].id_artista)
-        else
-            return false
-
+        let result = await knexDatabase('tb_artista')
+            .max('id_artista as id_artista')
+            .first()
+        return result
     } catch (error) {
-
+        console.log(error)
         return false
     }
 }
@@ -78,7 +71,7 @@ const setInsertArtist = async function(artista){
     descricao
 ) values (
     "${artista.nome_artistico}",
-    "${artista.usuario_id}",
+     ${artista.usuario_id},
     "${artista.descricao}"
 
 );`
@@ -92,7 +85,7 @@ const setInsertArtist = async function(artista){
             return false
 
     } catch (error) {
-        return false
+        console.log(error)
     }
 }
 

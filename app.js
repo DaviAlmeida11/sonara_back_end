@@ -6,6 +6,7 @@
  **********************************************************************************************/
 
 //Import das bibliotecas para criar a API
+require('dotenv').config()  
 const express = require('express')
 const cors = require('cors')
 const multer = require('multer')
@@ -26,12 +27,11 @@ const PORT = process.PORT || 8080
 const app = express()
 
 //Configurações do cors
+app.use(cors())
+app.use(express.json())
 app.use((request, response, next) => {
     response.header('Access-Control-Allow-Origin', '*')
-    response.header('Acess-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-
-    app.use(cors())
-    app.use(express.json())
+    response.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
     next()
 })
 

@@ -79,7 +79,8 @@ const setInsertAddress = async function(endereco){
     logradouro,
     numero,
     complemento,
-    bairro
+    bairro,
+    usuario_id
 ) values (
     "${endereco.cep}",
     "${endereco.cidade}",
@@ -87,7 +88,8 @@ const setInsertAddress = async function(endereco){
     "${endereco.logradouro}",
     ${endereco.numero},
     "${endereco.complemento}",
-    "${endereco.bairro}"
+    "${endereco.bairro}",
+    ${endereco.usuario_id}
 );`
 
         let result = await knexDatabase.raw(sql)
@@ -124,7 +126,7 @@ where id_endereco = ${endereco.id_endereco}`
             return false
 
     } catch (error) {
-        return false
+        console.log(error)
     }
 }
 
