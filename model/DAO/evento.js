@@ -33,38 +33,29 @@ const getSelectAllEvent = async function(){
 //Retorna um filme filtrando pelo ID do banco de dados
 const getSelectByIdEvent = async function(id){
     try {
-    
         let sql = `select * from tb_evento where id_evento=${id}`
-        
-       
         let result = await knexDatabase.raw(sql)
 
         if(Array.isArray(result[0]))
-            return result
+            return result[0]  
         else
             return false
-
     } catch (error) {
-      
         return false
     }
 }
 
+
 const getSelectLastID = async function(){
     try {
-        
         let sql = `select id_evento from tb_evento order by id_evento desc limit 1`
-
-       
         let result = await knexDatabase.raw(sql)
- 
-        if(Array.isArray(result))
-            return Number(result[0][0].id_evento)
+
+        if(Array.isArray(result[0]))
+            return result[0][0] 
         else
             return false
-
     } catch (error) {
-
         return false
     }
 }
@@ -72,22 +63,19 @@ const getSelectLastID = async function(){
 
 const setInsertEvent = async function(evento){
     try {
-        let sql = `insert into tb_evento (nome, descricao, local, data, hora_inicio, hora_fim, endereco_id)
+        let sql = `insert into tb_evento (nome, descricao, local, data, hora_inicio, hora_fim)
                     values( "${evento.nome}",
                             "${evento.descricao}", 
                             "${evento.local}", 
                             "${evento.data}",
                             "${evento.hora_inicio}",
                             "${evento.hora_fim}")`
-
-    
         let result = await knexDatabase.raw(sql)
 
         if(result)
             return true
         else
             return false
-
     } catch (error) {
         return false
     }
