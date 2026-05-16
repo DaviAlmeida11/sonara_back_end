@@ -12,10 +12,10 @@ const knexDatabase = knex(knexConfig.development);
 
 
 
-const getSelectViewUserPerfil = async function(){
+const getSelectEventPhoto = async function(id_evento){
     try {
       
-        let sql = `SELECT id_foto, url_foto FROM vw_evento_fotos`
+        let sql = `SELECT id_foto, url_foto FROM vw_evento_fotos where id_evento = ${id_evento}`
 
         let result = await knexDatabase.raw(sql)
    

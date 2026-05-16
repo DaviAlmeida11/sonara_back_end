@@ -51,7 +51,7 @@ router.post('/', cors(), bodyParserJson, async function (request, response) {
     let contentType = request.headers['content-type']
 
     let RedesSociais = await controllerRedesSociais.inserirRedesSociais(dadosBody, contentType)
-console.log(RedesSociais)
+
     response.status(RedesSociais.status_code)
     response.json(RedesSociais)
 })
