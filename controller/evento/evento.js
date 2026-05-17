@@ -1,7 +1,7 @@
 /******************************************************************************
- * Objetivo: Arquivo responsável pela conexão de cassa de show com cantores
+ * Objetivo: Arquivo responsável pela conexãode cassa de show com cantores
  * Data: 25/04/2026
- * Autor: Davi de Almeida Santos
+ * Autor: Davi de Alemida Santos
  * Versão: 1.0
 *****************************************************************************/
 
@@ -24,24 +24,18 @@ const listarEvento = async function(){
     try {
        
         let resultEvento = await eventoDAO.getSelectAllEvent()
-        let fotos = await viewBuscarFotoEventoDAO.getSelectAllEventPhoto()
-        let organizadores = await eventoOrganizadorDAO.getSelectAllOrganizerEvent()
         
         if(resultEvento){
             if(resultEvento.length > 0){
-                MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
-                MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                MESSAGES.HEADER.message     = MESSAGES.SUCCESS_REQUEST.message
-                MESSAGES.HEADER.response    = resultEvento.map(evento => ({
-                    ...evento,
-                    fotos: fotos.filter(foto => foto.id_evento === evento.id_evento),
-                    organizadores: organizadores.filter(org => org.evento_id === evento.id_evento)
-                }))
-        
-                return MESSAGES.HEADER
-            }else{
+            MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
+            MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
+            MESSAGES.HEADER.response.Evento = resultEvento
+
+            return MESSAGES.HEADER
                 return MESSAGES.ERROR_NOT_FOUND //404
             }
+        }else{
+            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
         }
     } catch (error) {
         return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
@@ -49,27 +43,22 @@ const listarEvento = async function(){
 
 }
 
-//Retorna um evento filtrando pelo ID
+//Retorna um evento fultrando pelo ID
 const buscarEventoId = async function(id){
+    //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
 
+        //Validação da chegada do ID
         if(!isNaN(id) && id != '' && id != null && id > 0){
             let resultEvento = await eventoDAO.getSelectByIdEvent(Number(id))
 
             if(resultEvento){
                 if(resultEvento.length > 0){
-                    let fotos = await viewBuscarFotoEventoDAO.getSelectViewEventPhoto(Number(id))
-                    let organizadores = await eventoOrganizadorDAO.getSelectOrganizerEventByIdEvent(Number(id))
-
-                    MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
+                    MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.HEADER.response    = {
-                        ...resultEvento[0],
-                        fotos: fotos || [],
-                        organizadores: organizadores || []
-                    }
+                    MESSAGES.HEADER.response.Evento = resultEvento[0]
 
                     return MESSAGES.HEADER //200
                 }else{
@@ -133,6 +122,12 @@ const inserirEvento = async function (evento, contentType) {
             evento_id:   lastIDEvento.id_evento
         }
 
+        let validarEndereco = await validarDadosEvento(enderecoEvento)
+
+        if (validarEndereco) {
+            return validarEndereco //400
+        }
+
         let resultEndereco = await enderecoEventoDAO.setInsertAddressEvent(enderecoEvento)
 
         if (!resultEndereco) {
@@ -143,6 +138,12 @@ const inserirEvento = async function (evento, contentType) {
         let eventoOrganizador = {
             evento_id: evento.id_evento,
             organizador_id: evento.organizador_id
+        }
+
+        let validarEventoOrg = await validarDadosEvento(eventoOrganizador)
+
+        if (validarEventoOrg) {
+            return validarEventoOrg //400
         }
 
         let resultEventoOrg = await eventoOrganizadorDAO.setInsertOrganizerEvent(eventoOrganizador)
@@ -255,7 +256,8 @@ const excluirEvento = async function(id){
                         MESSAGES.HEADER.status      = MESSAGES.SUCCESS_DELETED_ITEM.status
                         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
                         MESSAGES.HEADER.message     = MESSAGES.SUCCESS_DELETED_ITEM.message
-
+                        MESSAGES.HEADER.response.evento = resultEvento
+                        delete MESSAGES.HEADER.response
                         return MESSAGES.HEADER 
             
                 }else{
@@ -265,12 +267,12 @@ const excluirEvento = async function(id){
                 return MESSAGES.ERROR_NOT_FOUND 
             }
         }else{
-            MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [ID incorreto]' 
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == '[ID incorreto]'
             return MESSAGES.ERROR_REQUIRED_FIELDS 
         }
 
     } catch (error) {
-        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER 
+        console.log(error)
     }
 }
 
@@ -282,55 +284,87 @@ const validarDadosEvento = function (evento) {
     });
 
     // ================= EVENTO =================
-    if (!evento.nome || evento.nome.length > 100)
-        return gerarErro('nome');
+    if (evento.nome !== undefined) {
+        if (!evento.nome || evento.nome.length > 100)
+            return gerarErro('nome');
+    }
 
-    if (!evento.descricao || evento.descricao.length > 500)
-        return gerarErro('descricao');
+    if (evento.descricao !== undefined) {
+        if (!evento.descricao || evento.descricao.length > 500)
+            return gerarErro('descricao');
+    }
 
-    if (!evento.local || evento.local.length > 255)
-        return gerarErro('local');
+    if (evento.local !== undefined) {
+        if (!evento.local || evento.local.length > 255)
+            return gerarErro('local');
+    }
 
-    if (!evento.data || evento.data.length > 20)
-        return gerarErro('data');
+    if (evento.data !== undefined) {
+        if (!evento.data || evento.data.length > 20)
+            return gerarErro('data');
+    }
 
-    if (!evento.hora_inicio || evento.hora_inicio.length > 20)
-        return gerarErro('hora_inicio');
+    if (evento.hora_inicio !== undefined) {
+        if (!evento.hora_inicio || evento.hora_inicio.length > 20)
+            return gerarErro('hora_inicio');
+    }
 
-    if (!evento.hora_fim || evento.hora_fim.length > 80)
-        return gerarErro('hora_fim');
+    if (evento.hora_fim !== undefined) {
+        if (!evento.hora_fim || evento.hora_fim.length > 80)
+            return gerarErro('hora_fim');
+    }
 
-    if (!evento.usuario_id || isNaN(evento.usuario_id))
-        return gerarErro('usuario_id');
+    if (evento.usuario_id !== undefined) {
+        if (!evento.usuario_id || isNaN(evento.usuario_id))
+            return gerarErro('usuario_id');
+    }
 
     // ================= ENDEREÇO =================
-    if (!evento.cep || evento.cep.length > 11)
-        return gerarErro('cep');
+    if (evento.cep !== undefined) {
+        if (!evento.cep || evento.cep.length > 11)
+            return gerarErro('cep');
+    }
 
-    if (!evento.cidade || evento.cidade.length > 170)
-        return gerarErro('cidade');
+    if (evento.cidade !== undefined) {
+        if (!evento.cidade || evento.cidade.length > 170)
+            return gerarErro('cidade');
+    }
 
-    if (!evento.estado || evento.estado.length > 25)
-        return gerarErro('estado');
+    if (evento.estado !== undefined) {
+        if (!evento.estado || evento.estado.length > 25)
+            return gerarErro('estado');
+    }
 
-    if (!evento.logradouro || evento.logradouro.length > 255)
-        return gerarErro('logradouro');
+    if (evento.logradouro !== undefined) {
+        if (!evento.logradouro || evento.logradouro.length > 255)
+            return gerarErro('logradouro');
+    }
 
-    if (!evento.numero || isNaN(evento.numero))
-        return gerarErro('numero');
+    if (evento.numero !== undefined) {
+        if (!evento.numero || isNaN(evento.numero))
+            return gerarErro('numero');
+    }
 
-    if (evento.complemento && evento.complemento.length > 100)
-        return gerarErro('complemento');
+    if (evento.complemento !== undefined) {
+        if (!evento.complemento || evento.complemento.length > 100)
+            return gerarErro('complemento');
+    }
 
-    if (!evento.bairro || evento.bairro.length > 100)
-        return gerarErro('bairro');
+    if (evento.bairro !== undefined) {
+        if (!evento.bairro || evento.bairro.length > 100)
+            return gerarErro('bairro');
+    }
 
     // ================= EVENTO ORGANIZADOR =================
-    if (!evento.evento_id || isNaN(evento.evento_id) || evento.evento_id <= 0)
-        return gerarErro('evento_id');
+    if (evento.evento_id !== undefined) {
+        if (isNaN(evento.evento_id) || evento.evento_id <= 0)
+            return gerarErro('evento_id');
+    }
 
-    if (!evento.organizador_id || isNaN(evento.organizador_id) || evento.organizador_id <= 0)
-        return gerarErro('organizador_id');
+    if (evento.organizador_id !== undefined) {
+        if (isNaN(evento.organizador_id) || evento.organizador_id <= 0)
+            return gerarErro('organizador_id');
+    }
 
     return false;
 }
