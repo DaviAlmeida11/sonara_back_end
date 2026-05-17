@@ -14,35 +14,75 @@ const eventoOrganizadorDAO = require('../../model/DAO/evento_organizador.js')
 const viewBuscarFotoEventoDAO = require('../../model/DAO/VEWS/evento_fotos.js')
 
 
+
+
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
 
 
-const listarEvento = async function(){
-    
+const listarEvento = async function () {
+
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
-       
+
         let resultEvento = await eventoDAO.getSelectAllEvent()
-        
-        if(resultEvento){
-            if(resultEvento.length > 0){
-            MESSAGES.HEADER.status      = MESSAGES.SUCCESS_REQUEST.status
+
+        if (resultEvento && resultEvento.length > 0) {
+
+            let listaEventosMontados = []
+
+            for (let itemEvento of resultEvento) {
+
+                // ================= ENDEREÇO (DADO PURO) =================
+                let endereco = await enderecoEventoDAO.getSelectByIdAddressEvent(itemEvento.id_evento)
+
+                if (!endereco) {
+                    endereco = {}
+                }
+
+                // ================= ORGANIZADOR (DADO PURO) =================
+                let organizador = await eventoOrganizadorDAO.getSelectByIdOrganizerEvent(itemEvento.id_evento)
+
+                if (!organizador) {
+                    organizador = {}
+                }
+
+                // ================= FOTOS (DADO PURO + [0]) =================
+                let fotosBanco = await viewBuscarFotoEventoDAO.getSelectAllEventPhoto(itemEvento.id_evento)
+
+                let fotos = {}
+
+                if (fotosBanco && fotosBanco.length > 0) {
+                    fotos = {
+                        id_foto: fotosBanco[0].id_foto,
+                        caminho: fotosBanco[0].caminho
+                    }
+                }
+
+                // ================= MONTA OBJETO FINAL =================
+                listaEventosMontados.push({
+                    evento: itemEvento,
+                    endereco: endereco,
+                    evento_organizador: organizador,
+                    fotos: fotos
+                })
+            }
+
+            MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.Evento = resultEvento
+            MESSAGES.HEADER.response = listaEventosMontados
 
             return MESSAGES.HEADER
-                return MESSAGES.ERROR_NOT_FOUND //404
-            }
-        }else{
-            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+
+        } else {
+            return MESSAGES.ERROR_NOT_FOUND
         }
+
     } catch (error) {
-        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
+        console.log(error)
+        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER
     }
-
 }
-
 //Retorna um evento fultrando pelo ID
 const buscarEventoId = async function(id){
     //Criando um objeto novo para as mensagens
