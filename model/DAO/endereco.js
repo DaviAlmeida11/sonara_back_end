@@ -31,22 +31,25 @@ const getSelectAllAddress = async function(){
 }
 
 //Retorna um filme filtrando pelo ID do banco de dados
-const getSelectByIdAddress = async function(id){
-    try {
-    
-        let sql = `select * from tb_endereco where id_endereco=${id}`
-        
-       
-        let result = await knexDatabase.raw(sql)
+const getSelectByIdAddress = async (id) => {
 
-        if(Array.isArray(result[0]))
-            return result
-        else
-            return false
+    try {
+
+        let sql = `SELECT * FROM tb_endereco_evento WHERE evento_id = ?`
+
+        let result = await knexDatabase.raw(sql, [id])
+
+        const rows = result?.[0]
+
+        if (Array.isArray(rows) && rows.length > 0) {
+            return rows[0]   // 🔥 objeto limpo (sem buffer/metadata)
+        }
+
+        return {}
 
     } catch (error) {
-      
-        return false
+        console.log(error)
+        return {}
     }
 }
 

@@ -6,30 +6,26 @@
 *****************************************************************************/
 
 const knex = require('knex');
-const knexConfig = require('../database_conf/knex');
+const knexConfig = require('../../database_conf/knex');
 
 const knexDatabase = knex(knexConfig.development);
 
 
 
-const getSelectViewUserPerfil = async function(){
+const getSelectViewUserPhoto = async function(id_usuario){
     try {
-      
-        let sql = `select * from vw_perfil_usuario`
-
+        let sql = `SELECT id_foto, url_foto, id_usaurio FROM vw_usuario_com_foto where id_evento = ${id_usuario}`
         let result = await knexDatabase.raw(sql)
-   
+
         if(Array.isArray(result[0]))
             return result[0]
         else
             return false
-
     } catch (error) {
-       
         return false
     }
 }
 
 module.exports = {
-    getSelectViewUserPerfil
+    getSelectViewUserPhoto
 }

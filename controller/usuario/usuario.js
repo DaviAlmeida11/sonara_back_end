@@ -12,6 +12,7 @@ const controllerEndereco = require('../endereco/endereco.js')
 const artistaDAO = require('../../model/DAO/artista.js')
 const organizadorDAO = require('../../model/DAO/organizador.js')
 const artistaGeneroMusicalDAO = require('../../model/DAO/artista_genero_musical.js')
+const viewUsuarioFoto = require('../../model/DAO/VEWS/usuario_foto.js')
 
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
@@ -24,24 +25,70 @@ const listarUsuarios = async function () {
 
     try {
 
-        let resultusuarios = await usuarioDAO.getSelectAllUsers()
+        let resultUsuarios = await usuarioDAO.getSelectAllUsers()
 
-        if (resultusuarios) {
-            if (resultusuarios.length > 0) {
-                MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
-                MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                MESSAGES.HEADER.response.usuarios = resultusuarios
+        if (resultUsuarios && resultUsuarios.length > 0) {
 
-                return MESSAGES.HEADER
-                return MESSAGES.ERROR_NOT_FOUND //404
+            let listaUsuariosMontados = []
+
+            for (let itemUsuario of resultUsuarios) {
+
+                // ================= FOTO =================
+                let fotoBanco = await viewUsuarioFoto.getSelectViewUserPhoto(itemUsuario.id_usuario)
+
+                let foto = {}
+
+                if (fotoBanco && fotoBanco.length > 0) {
+                    foto = {
+                        id_foto: fotoBanco[0].id_foto,
+                        caminho: fotoBanco[0].caminho
+                    }
+                }
+
+                // ================= ENDEREÇO =================
+                let endereco = await enderecoDAO.getSelectByIdAddress(itemUsuario.id_usuario)
+
+                if (!endereco) {
+                    endereco = {}
+                }
+
+                // ================= ARTISTA =================
+                let artista = await artistaDAO.getSelectByIdArtist(itemUsuario.id_usuario)
+
+                if (!artista) {
+                    artista = {}
+                }
+
+                // ================= ORGANIZADOR =================
+                let organizador = await organizadorDAO.getSelectByIdOrganizer(itemUsuario.id_usuario)
+
+                if (!organizador) {
+                    organizador = {}
+                }
+
+                // ================= MONTAGEM FINAL =================
+                listaUsuariosMontados.push({
+                    usuario: itemUsuario,
+                    foto: foto,
+                    endereco: endereco,
+                    artista: artista,
+                    organizador: organizador
+                })
             }
-        } else {
-            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
-        }
-    } catch (error) {
-        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
-    }
 
+            MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
+            MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
+            MESSAGES.HEADER.response = listaUsuariosMontados
+
+            return MESSAGES.HEADER
+        }
+
+        return MESSAGES.ERROR_NOT_FOUND
+
+    } catch (error) {
+        console.log(error)
+        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER
+    }
 }
 
 //Retorna um usuario fultrando pelo ID

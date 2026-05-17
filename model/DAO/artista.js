@@ -31,22 +31,25 @@ const getSelectAllArtist = async function(){
 }
 
 //Retorna um filme filtrando pelo ID do banco de dados
-const getSelectByIdArtist = async function(id){
-    try {
-    
-        let sql = `select * from tb_artista where id_artista=${id}`
-        
-       
-        let result = await knexDatabase.raw(sql)
+const getSelectByIdArtist = async function (id) {
 
-        if(Array.isArray(result[0]))
-            return result
-        else
-            return false
+    try {
+
+        let sql = `SELECT * FROM tb_artista WHERE id_artista = ?`
+
+        let result = await knexDatabase.raw(sql, [id])
+
+        const rows = result?.[0]
+
+        if (Array.isArray(rows) && rows.length > 0) {
+            return rows[0]   // 🔥 objeto limpo (sem buffer)
+        }
+
+        return {}
 
     } catch (error) {
-      
-        return false
+        console.log(error)
+        return {}
     }
 }
 
