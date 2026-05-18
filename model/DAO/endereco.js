@@ -30,19 +30,35 @@ const getSelectAllAddress = async function(){
     }
 }
 
-//Retorna um filme filtrando pelo ID do banco de dados
-const getSelectByIdAddress = async (id) => {
+
+
+const getSelectByIdAddress = async function(id){
+    try {
+        let sql = `select * from tb_endereco where id_endereco=${id}`
+        let result = await knexDatabase.raw(sql)
+
+        if(Array.isArray(result[0]))
+            return result[0]  
+        else
+            return false
+    } catch (error) {
+        return false
+    }
+}
+
+
+const getSelectByIdAddressUser = async (id) => {
 
     try {
 
-        let sql = `SELECT * FROM tb_endereco_evento WHERE evento_id = ?`
+        let sql = `SELECT * FROM tb_endereco WHERE usuario_id = ?`
 
         let result = await knexDatabase.raw(sql, [id])
 
         const rows = result?.[0]
 
         if (Array.isArray(rows) && rows.length > 0) {
-            return rows[0]   // 🔥 objeto limpo (sem buffer/metadata)
+            return rows[0]   
         }
 
         return {}
@@ -159,5 +175,6 @@ module.exports = {
     setInsertAddress,
     setUpdateAddress,
     getSelectLastID,
-    setDeleteAddress
+    setDeleteAddress,
+    getSelectByIdAddressUser
 } 

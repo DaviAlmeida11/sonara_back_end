@@ -33,40 +33,40 @@ const listarUsuarios = async function () {
 
             for (let itemUsuario of resultUsuarios) {
 
-                // ================= FOTO =================
+                // ================= FOTO (DADO PURO + [0]) =================
                 let fotoBanco = await viewUsuarioFoto.getSelectViewUserPhoto(itemUsuario.id_usuario)
 
                 let foto = {}
 
                 if (fotoBanco && fotoBanco.length > 0) {
                     foto = {
-                        id_foto: fotoBanco[0].id_foto,
+                        id_foto: fotoBanco[0].id_usuario_foto,
                         caminho: fotoBanco[0].caminho
                     }
                 }
 
-                // ================= ENDEREÇO =================
-                let endereco = await enderecoDAO.getSelectByIdAddress(itemUsuario.id_usuario)
+                // ================= ENDEREÇO (DADO PURO) =================
+                let endereco = await enderecoDAO.getSelectByIdAddressUser(itemUsuario.id_usuario)
 
                 if (!endereco) {
                     endereco = {}
                 }
 
-                // ================= ARTISTA =================
-                let artista = await artistaDAO.getSelectByIdArtist(itemUsuario.id_usuario)
+                // ================= ARTISTA (DADO PURO) =================
+                let artista = await artistaDAO.getSelectByIdArtistUser(itemUsuario.id_usuario)
 
                 if (!artista) {
                     artista = {}
                 }
 
-                // ================= ORGANIZADOR =================
-                let organizador = await organizadorDAO.getSelectByIdOrganizer(itemUsuario.id_usuario)
+                // ================= ORGANIZADOR (DADO PURO) =================
+                let organizador = await organizadorDAO.getSelectByIdOrganizerUser(itemUsuario.id_usuario)
 
                 if (!organizador) {
                     organizador = {}
                 }
 
-                // ================= MONTAGEM FINAL =================
+                // ================= MONTA OBJETO FINAL =================
                 listaUsuariosMontados.push({
                     usuario: itemUsuario,
                     foto: foto,
@@ -81,9 +81,10 @@ const listarUsuarios = async function () {
             MESSAGES.HEADER.response = listaUsuariosMontados
 
             return MESSAGES.HEADER
-        }
 
-        return MESSAGES.ERROR_NOT_FOUND
+        } else {
+            return MESSAGES.ERROR_NOT_FOUND
+        }
 
     } catch (error) {
         console.log(error)

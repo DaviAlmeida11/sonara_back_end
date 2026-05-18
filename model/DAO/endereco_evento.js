@@ -29,9 +29,7 @@ const getSelectAllAddressEvent = async function(){
         return false
     }
 }
-
-//Retorna um filme filtrando pelo ID do banco de dados
-const getSelectByIdAddressEvent = async (id) => {
+const getSelectByIdAddressEventEvent = async (id) => {
 
     let sql = `SELECT * FROM tb_endereco_evento WHERE evento_id = ?`
 
@@ -40,11 +38,28 @@ const getSelectByIdAddressEvent = async (id) => {
     const rows = result?.[0]
 
     if (Array.isArray(rows) && rows.length > 0) {
-        return rows[0]   // 🔥 ISSO resolve seu problema
+        return rows[0]   
     }
 
     return {}
 }
+
+//Retorna um filme filtrando pelo ID do banco de dados
+const getSelectByIdAddressEvent = async (id) => {
+
+    let sql =  `select * from tb_endereco_evento where id_endereco_evento=${id}`
+
+    let result = await knexDatabase.raw(sql, [id])
+
+    const rows = result?.[0]
+
+    if (Array.isArray(rows) && rows.length > 0) {
+        return rows[0]   
+    }
+
+    return {}
+}
+
 
 const getSelectLastID = async function(){
     try {
@@ -152,5 +167,6 @@ module.exports = {
     setInsertAddressEvent,
     setUpdateAddressEvent,
     getSelectLastID,
-    setDeleteAddressEvent
+    setDeleteAddressEvent,
+    getSelectByIdAddressEventEvent
 } 

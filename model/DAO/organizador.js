@@ -33,11 +33,11 @@ const getSelectAllOrganizer = async function(){
 
 
 //Retorna um filme filtrando pelo ID do banco de dados
-const getSelectByIdOrganizer = async function (id) {
+const getSelectByIdOrganizerUser = async function (id) {
 
     try {
 
-        let sql = `SELECT * FROM tb_organizador WHERE id_organizador = ?`
+        let sql = `SELECT * FROM tb_organizador WHERE id_usuario = ?`
 
         let result = await knexDatabase.raw(sql, [id])
 
@@ -54,6 +54,27 @@ const getSelectByIdOrganizer = async function (id) {
         return {}
     }
 }
+
+const getSelectByIdOrganizer = async function(id){
+    try {
+    
+        let sql = `select * from tb_organizador where id_organizador=${id}`
+        
+       
+        let result = await knexDatabase.raw(sql)
+
+        if(Array.isArray(result[0]))
+            return result
+        else
+            return false
+
+    } catch (error) {
+      
+        return false
+    }
+}
+
+
 
 const getSelectLastID = async function(){
     try {
@@ -140,5 +161,6 @@ module.exports = {
     setInsertOrganizer,
     setUpdateOrganizer,
     getSelectLastID,
+    getSelectByIdOrganizerUser,
     setDeleteOrganizer
 } 

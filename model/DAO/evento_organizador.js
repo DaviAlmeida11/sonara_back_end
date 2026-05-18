@@ -30,14 +30,13 @@ const getSelectAllOrganizerEvent = async function () {
     }
 }
 
-//Retorna um filme filtrando pelo ID do banco de dados
-const getSelectByIdOrganizerEvent = async function (id) {
+const getSelectByIdOrganizerEvent = async function(id){
     try {
         let sql = `select * from tb_evento_organizador where id_evento_organizador=${id}`
         let result = await knexDatabase.raw(sql)
 
-        if (Array.isArray(result[0]))
-            return result[0]
+        if(Array.isArray(result[0]))
+            return result[0]  
         else
             return false
     } catch (error) {

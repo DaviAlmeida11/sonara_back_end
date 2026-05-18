@@ -34,21 +34,22 @@ const listarEvento = async function () {
             for (let itemEvento of resultEvento) {
 
                 // ================= ENDEREÇO (DADO PURO) =================
-                let endereco = await enderecoEventoDAO.getSelectByIdAddressEvent(itemEvento.id_evento)
+                let endereco = await enderecoEventoDAO.getSelectByIdAddressEventEvent(itemEvento.id_evento)
+        
 
                 if (!endereco) {
                     endereco = {}
                 }
 
                 // ================= ORGANIZADOR (DADO PURO) =================
-                let organizador = await eventoOrganizadorDAO.getSelectByIdOrganizerEvent(itemEvento.id_evento)
+                let organizador = await eventoOrganizadorDAO.getSelectOrganizerEventByIdEvent(itemEvento.id_evento)
 
                 if (!organizador) {
                     organizador = {}
                 }
 
                 // ================= FOTOS (DADO PURO + [0]) =================
-                let fotosBanco = await viewBuscarFotoEventoDAO.getSelectAllEventPhoto(itemEvento.id_evento)
+                let fotosBanco = await viewBuscarFotoEventoDAO.getSelectViewEventPhoto(itemEvento.id_evento)
 
                 let fotos = {}
 
