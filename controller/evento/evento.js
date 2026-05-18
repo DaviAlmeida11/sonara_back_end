@@ -54,24 +54,28 @@ const listarEvento = async function () {
                 let fotos = {}
 
                 if (fotosBanco && fotosBanco.length > 0) {
-                    fotos = {
+                    fotos = [
+                        {
                         id_foto: fotosBanco[0].id_foto,
-                        caminho: fotosBanco[0].caminho
+                        caminho: fotosBanco[0].url_foto
                     }
+                ]
                 }
+                
+
+                itemEvento.endereco = endereco
+                itemEvento.fotos = fotos
+                itemEvento.organizador = organizador
 
                 // ================= MONTA OBJETO FINAL =================
-                listaEventosMontados.push({
-                    evento: itemEvento,
-                    endereco: endereco,
-                    evento_organizador: organizador,
-                    fotos: fotos
-                })
+                listaEventosMontados.push(
+                    itemEvento
+                )
             }
 
             MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response = listaEventosMontados
+            MESSAGES.HEADER.response.eventos = listaEventosMontados
 
             return MESSAGES.HEADER
 
@@ -204,9 +208,16 @@ const inserirEvento = async function (evento, contentType) {
         // ================= BUSCA FOTOS =================
         let fotos = await viewBuscarFotoEventoDAO.getSelectViewEventPhoto(evento.id_evento)
 
-        if (!fotos) {
-            fotos = []
+
+        if (fotosBanco && fotosBanco.length > 0) {
+            fotos = [
+                {
+                id_foto: fotosBanco[0].id_foto,
+                caminho: fotosBanco[0].url_foto
+            }
+        ]
         }
+        
 
         // ================= RETORNO FINAL =================
         MESSAGES.HEADER.status      = MESSAGES.SUCCESS_CREATED_ITEM.status
@@ -216,7 +227,7 @@ const inserirEvento = async function (evento, contentType) {
             evento,
             endereco: enderecoEvento,
             evento_organizador: eventoOrganizador,
-            fotos: fotos
+            fotos
         }
 
         return MESSAGES.HEADER //201
@@ -276,9 +287,13 @@ const atualizarEvento = async function (evento, id, contentType) {
 
         // ================= BUSCA FOTOS =================
         let fotos = await viewBuscarFotoEventoDAO.getSelectViewEventPhoto(evento.id_evento)
-
-        if (!fotos) {
-            fotos = []
+        if (fotosBanco && fotosBanco.length > 0) {
+            fotos = [
+                {
+                id_foto: fotosBanco[0].id_foto,
+                caminho: fotosBanco[0].url_foto
+            }
+        ]
         }
 
         // ================= RETORNO IGUAL AO INSERT =================
@@ -338,6 +353,7 @@ const excluirEvento = async function(id){
     } catch (error) {
         console.log(error)
     }
+
 }
 
 const validarDadosEvento = function (evento) {

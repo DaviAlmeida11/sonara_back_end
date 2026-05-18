@@ -40,8 +40,8 @@ const listarUsuarios = async function () {
 
                 if (fotoBanco && fotoBanco.length > 0) {
                     foto = {
-                        id_foto: fotoBanco[0].id_usuario_foto,
-                        caminho: fotoBanco[0].caminho
+                        id_foto: fotoBanco[0].id_foto,
+                        caminho: fotoBanco[0].url_foto
                     }
                 }
 
@@ -66,19 +66,19 @@ const listarUsuarios = async function () {
                     organizador = {}
                 }
 
+                itemUsuario.endereco = endereco
+                itemUsuario.artista = artista
+                itemUsuario.organiazdor = organizador
+
                 // ================= MONTA OBJETO FINAL =================
-                listaUsuariosMontados.push({
-                    usuario: itemUsuario,
-                    foto: foto,
-                    endereco: endereco,
-                    artista: artista,
-                    organizador: organizador
-                })
+                listaUsuariosMontados.push(
+                   itemUsuario
+                )
             }
 
             MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response = listaUsuariosMontados
+            MESSAGES.HEADER.response.itemUsuario = listaUsuariosMontados
 
             return MESSAGES.HEADER
 
@@ -326,6 +326,7 @@ const loginUsuario = async function (usuario) {
 
 
         }
+    
 
         let senhaVerificada = crypto.verifyPassword(usuario.senha, user.senha)
 
@@ -434,7 +435,7 @@ const atualizarUsuario = async function (usuario, id, contentType) {
             }
         }
 
-        // ================= RETORNO IGUAL AO INSERT =================
+        
         let fotoBanco = await viewUsuarioFoto.getSelectViewUserPhoto(usuario.id_usuario)
 
         let foto = {}
