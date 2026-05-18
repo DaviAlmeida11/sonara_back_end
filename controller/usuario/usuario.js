@@ -80,7 +80,7 @@ const listarUsuarios = async function () {
                 itemUsuario.endereco = endereco
                 itemUsuario.artista = artista
                 itemUsuario.organiazdor = organizador
-                itemUsuario.generoId = generoMusicais
+                itemUsuario.generoId = generosMusicais
 
                 // ================= MONTA OBJETO FINAL =================
                 listaUsuariosMontados.push(
