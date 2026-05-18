@@ -329,35 +329,51 @@ const loginUsuario = async function (usuario) {
 
     try {
 
-        const user = await usuarioDAO.getUsuarioByUsuarioEmail(usuario.email);
-
-
+        const user = await usuarioDAO.getUsuarioByUsuarioEmail(usuario.email)
 
         if (!user) {
-
             return MESSAGE.ERROR_LOGIN
-
-
         }
-    
 
-        let senhaVerificada = crypto.verifyPassword(usuario.senha, user.senha)
-
+        const senhaVerificada = await crypto.verifyPassword(
+            usuario.senha,
+            user.senha
+        )
 
         if (senhaVerificada) {
+
+            // Busca as fotos do usuário/evento
+            const fotosBanco = await viewUsuarioFoto.getSelectViewUserPhoto(user.id_usuario)
+
+            let fotos = []
+
+            if (fotosBanco && fotosBanco.length > 0) {
+
+                fotos = fotosBanco.map(foto => ({
+                    id_foto: foto.id_foto,
+                    caminho: foto.url_foto
+                }))
+            }
+
+            // adiciona fotos no objeto do usuário
+            user.fotos = fotos
 
 
             MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
             MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
+
             MESSAGE.HEADER.response.usuario = user
 
-            return MESSAGE.HEADER //200
+            return MESSAGE.HEADER
+
         } else {
             return MESSAGE.ERROR_LOGIN
-
         }
 
     } catch (error) {
+
+        console.log(error)
+
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 
