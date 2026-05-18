@@ -15,7 +15,7 @@ const knexDatabase = knex(knexConfig.development);
 const getSelectAllEvent = async function(){
     try {
       
-        let sql = `select * from tb_evento order by id_evento desc`
+        let sql = `select * from vw_evento`
     
         let result = await knexDatabase.raw(sql)
 

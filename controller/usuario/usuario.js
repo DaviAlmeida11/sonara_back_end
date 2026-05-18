@@ -29,69 +29,28 @@ const listarUsuarios = async function () {
 
         if (resultUsuarios && resultUsuarios.length > 0) {
 
-            let listaUsuariosMontados = []
-
             for (let itemUsuario of resultUsuarios) {
 
-                // ================= FOTO (DADO PURO + [0]) =================
+                // VIEW de foto
                 let fotoBanco = await viewUsuarioFoto.getSelectViewUserPhoto(itemUsuario.id_usuario)
 
-                let foto = {}
+                let foto = []
 
                 if (fotoBanco && fotoBanco.length > 0) {
-                    foto = [{
-                        id_foto: fotoBanco[0].id_foto,
-                        caminho: fotoBanco[0].url_foto
-                    }]
-                }
-
-                // ================= ENDEREÇO (DADO PURO) =================
-                let endereco = await enderecoDAO.getSelectByIdAddressUser(itemUsuario.id_usuario)
-
-                if (endereco) {
-                    endereco = {}
-                }
-
-                // ================= ARTISTA (DADO PURO) =================
-                let artista = await artistaDAO.getSelectByIdArtistUser(itemUsuario.id_usuario)
-
-                if (artista) {
-                    artista = {}
-                }
-
-
-                let generosMusicais = await generoMusicais.getSelectByIdgendersMusicsUser(itemUsuario.id_usuario)
-
-                if (generoMusicais){
-                    generoMusicais =  [
+                    foto = [
                         {
-                            id_genero_musical : generoMusicais.id_genero_musical,
-                            genero : generoMusicais.nome
+                            id_foto: fotoBanco[0].id_foto,
+                            caminho: fotoBanco[0].url_foto
                         }
-                    ] 
+                    ]
                 }
 
-                // ================= ORGANIZADOR (DADO PURO) =================
-                let organizador = await organizadorDAO.getSelectByIdOrganizerUser(itemUsuario.id_usuario)
-
-                if (!organizador) {
-                    organizador = {}
-                }
-
-                itemUsuario.endereco = endereco
-                itemUsuario.artista = artista
-                itemUsuario.organiazdor = organizador
-                itemUsuario.genero = generosMusicais
-
-                // ================= MONTA OBJETO FINAL =================
-                listaUsuariosMontados.push(
-                   itemUsuario
-                )
+                itemUsuario.foto = foto
             }
 
             MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.itemUsuarios = listaUsuariosMontados
+            MESSAGES.HEADER.response.itemUsuarios = resultUsuarios
 
             return MESSAGES.HEADER
 

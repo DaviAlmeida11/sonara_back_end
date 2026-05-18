@@ -29,53 +29,28 @@ const listarEvento = async function () {
 
         if (resultEvento && resultEvento.length > 0) {
 
-            let listaEventosMontados = []
-
             for (let itemEvento of resultEvento) {
 
-                // ================= ENDEREÇO (DADO PURO) =================
-                let endereco = await enderecoEventoDAO.getSelectByIdAddressEventEvent(itemEvento.id_evento)
-        
-
-                if (!endereco) {
-                    endereco = {}
-                }
-
-                // ================= ORGANIZADOR (DADO PURO) =================
-                let organizador = await eventoOrganizadorDAO.getSelectOrganizerEventByIdEvent(itemEvento.id_evento)
-
-                if (!organizador) {
-                    organizador = {}
-                }
-
-                // ================= FOTOS (DADO PURO + [0]) =================
+                // VIEW de fotos
                 let fotosBanco = await viewBuscarFotoEventoDAO.getSelectViewEventPhoto(itemEvento.id_evento)
 
-                let fotos = {}
+                let fotos = []
 
                 if (fotosBanco && fotosBanco.length > 0) {
                     fotos = [
                         {
-                        id_foto: fotosBanco[0].id_foto,
-                        caminho: fotosBanco[0].url_foto
-                    }
-                ]
+                            id_foto: fotosBanco[0].id_foto,
+                            caminho: fotosBanco[0].url_foto
+                        }
+                    ]
                 }
-                
 
-                itemEvento.endereco = endereco
                 itemEvento.fotos = fotos
-                itemEvento.organizador = organizador
-
-                // ================= MONTA OBJETO FINAL =================
-                listaEventosMontados.push(
-                    itemEvento
-                )
             }
 
             MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.eventos = listaEventosMontados
+            MESSAGES.HEADER.response.eventos = resultEvento
 
             return MESSAGES.HEADER
 
