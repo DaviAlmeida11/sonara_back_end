@@ -381,17 +381,6 @@ const atualizarUsuario = async function (usuario, id, contentType) {
 
         usuario.id_usuario = Number(id)
 
-        // ================= ATUALIZA USUARIO =================
-        if (usuario.senha) {
-            usuario.senha = crypto.hashPassword(usuario.senha)
-        }
-
-        let resultUsuario = await usuarioDAO.setUpdateUsers(usuario)
-
-        if (!resultUsuario) {
-            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL
-        }
-
         // ================= ATUALIZA ENDEREÇO =================
         let enderecoUsuario = {
             cep: usuario.cep,
