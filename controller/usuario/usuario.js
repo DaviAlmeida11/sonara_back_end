@@ -39,10 +39,10 @@ const listarUsuarios = async function () {
                 let foto = {}
 
                 if (fotoBanco && fotoBanco.length > 0) {
-                    foto = {
+                    foto = [{
                         id_foto: fotoBanco[0].id_foto,
                         caminho: fotoBanco[0].url_foto
-                    }
+                    }]
                 }
 
                 // ================= ENDEREÇO (DADO PURO) =================
@@ -66,7 +66,7 @@ const listarUsuarios = async function () {
                     generoMusicais =  [
                         {
                             id_genero_musical : generoMusicais.id_genero_musical,
-                            genero : generoMusicais.id_genero_musical
+                            genero : generoMusicais.nome
                         }
                     ] 
                 }
@@ -81,7 +81,7 @@ const listarUsuarios = async function () {
                 itemUsuario.endereco = endereco
                 itemUsuario.artista = artista
                 itemUsuario.organiazdor = organizador
-                itemUsuario.generoId = generosMusicais
+                itemUsuario.genero = generosMusicais
 
                 // ================= MONTA OBJETO FINAL =================
                 listaUsuariosMontados.push(
