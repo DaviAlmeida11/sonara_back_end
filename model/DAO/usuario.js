@@ -139,12 +139,10 @@ const setUpdateUsers = async function(usuario){
         let sql = `update tb_usuario set 
         nome = "${usuario.nome}",
         email = "${usuario.email}",
-        senha = "${usuario.senha}",
         telefone = ${usuario.telefone === null ? "NULL" : `"${usuario.telefone}"`},
         cpf = "${usuario.cpf}",
         data_nasc = "${usuario.data_nasc}",
         nacionalidade_id = ${usuario.nacionalidade_id},
-        endereco_id = ${usuario.endereco_id},
         genero_id = ${usuario.genero_id}
     where id_usuario = ${usuario.id_usuario}`;
 
