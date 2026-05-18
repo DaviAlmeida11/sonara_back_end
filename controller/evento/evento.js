@@ -227,54 +227,77 @@ const inserirEvento = async function (evento, contentType) {
     }
 }
 //Atualiza um evento buscando pelo ID
-const atualizarEvento = async function(evento, id, contentType){
-    //Criando um objeto novo para as mensagens
+const atualizarEvento = async function (evento, id, contentType) {
+
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
-        //Validação do tipo de conteúdo da requisição (Obrigatório ser um JSON)
-        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-                //Chama a função de validar todos os dados do evento
-                let validar = await validarDadosEvento(evento)
-
-                if(!validar){
-                
-                    //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                     let validarID = await buscarEventoId(id)
-
-                    if(validarID.status_code == 200){
-                        
-                        //Adiciona o ID do evento no JSON de dados para ser encaminhado ao DAO
-                        evento.id_evento = Number(id)
-
-                        //Chama a função para inserir um novo evento no BD
-                        let resultEvento = await eventoDAO.setUpdateEvent(evento)
-
-                        if(resultEvento){
-                            MESSAGES.HEADER.status          =   MESSAGES.SUCCESS_UPDATED_ITEM.status
-                            MESSAGES.HEADER.status_code     =   MESSAGES.SUCCESS_UPDATED_ITEM.status_code
-                            MESSAGES.HEADER.message         =   MESSAGES.SUCCESS_UPDATED_ITEM.message
-                            MESSAGES.HEADER.response.evento     =   evento           
-
-                            return MESSAGES.HEADER //200
-                        }else{
-                            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
-                        }
-                    }else{
-                        return validarID //A função buscargeneroID poderá retornar (400 ou 404 ou 500)
-                    }    
-                }else{
-                    return validar //400 referente a validação dos dados
-                }
-            
-        }else{
-            return MESSAGES.ERROR_CONTENT_TYPE //415
+        if (String(contentType).toUpperCase() !== 'APPLICATION/JSON') {
+            return MESSAGES.ERROR_CONTENT_TYPE
         }
-    } catch (error) {
-        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
-    }
 
+        let validarID = await buscarEventoId(id)
+
+        if (validarID.status_code !== 200) {
+            return validarID
+        }
+
+        evento.id_evento = Number(id)
+
+        // ================= ATUALIZA EVENTO =================
+        let resultEvento = await eventoDAO.setUpdateEvent(evento)
+
+        if (!resultEvento) {
+            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL
+        }
+
+        // ================= ATUALIZA ENDEREÇO =================
+        let enderecoEvento = {
+            cep:         evento.cep,
+            cidade:      evento.cidade,
+            estado:      evento.estado,
+            logradouro:  evento.logradouro,
+            numero:      evento.numero,
+            complemento: evento.complemento,
+            bairro:      evento.bairro,
+            evento_id:   evento.id_evento
+        }
+
+        await enderecoEventoDAO.setUpdateAddressEvent(enderecoEvento)
+
+        // ================= ATUALIZA EVENTO ORGANIZADOR =================
+        let eventoOrganizador = {
+            evento_id:      evento.id_evento,
+            organizador_id: evento.organizador_id
+        }
+
+        await eventoOrganizadorDAO.setUpdateOrganizerEvent(eventoOrganizador)
+
+        // ================= BUSCA FOTOS =================
+        let fotos = await viewBuscarFotoEventoDAO.getSelectViewEventPhoto(evento.id_evento)
+
+        if (!fotos) {
+            fotos = []
+        }
+
+        // ================= RETORNO IGUAL AO INSERT =================
+        MESSAGES.HEADER.status      = MESSAGES.SUCCESS_UPDATED_ITEM.status
+        MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_UPDATED_ITEM.status_code
+        MESSAGES.HEADER.message     = MESSAGES.SUCCESS_UPDATED_ITEM.message
+        MESSAGES.HEADER.response    = {
+            evento,
+            endereco: enderecoEvento,
+            evento_organizador: eventoOrganizador,
+            fotos: fotos
+        }
+
+        return MESSAGES.HEADER
+
+    } catch (error) {
+        console.log(error)
+        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER
+    }
 }
 
 

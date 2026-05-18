@@ -356,48 +356,111 @@ const atualizarUsuario = async function (usuario, id, contentType) {
 
     try {
 
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+        if (String(contentType).toUpperCase() !== 'APPLICATION/JSON') {
+            return MESSAGES.ERROR_CONTENT_TYPE
+        }
 
-            //Chama a função de validar todos os dados do usuario
-            let validar = await validarDadosUsuario(usuario)
+        let validarID = await buscarUsuarioId(id)
 
-            if (!validar) {
+        if (validarID.status_code !== 200) {
+            return validarID
+        }
 
-                //Validação de ID válido, chama a função da controller que verifica no BD se o ID existe e valida o ID
-                let validarID = await buscarUsuarioId(id)
+        usuario.id_usuario = Number(id)
 
-                if (validarID.status_code == 200) {
+        // ================= ATUALIZA USUARIO =================
+        if (usuario.senha) {
+            usuario.senha = crypto.hashPassword(usuario.senha)
+        }
 
-                    //Adiciona o ID do usuario no JSON de dados para ser encaminhado ao DAO
-                    usuario.id_usuario = Number(id)
+        let resultUsuario = await usuarioDAO.setUpdateUsers(usuario)
 
-                    //Chama a função para inserir um novo usuario no BD
-                    let resultusuarios = await usuarioDAO.setUpdateUsers(usuario)
+        if (!resultUsuario) {
+            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL
+        }
 
-                    if (resultusuarios) {
-                        MESSAGES.HEADER.status = MESSAGES.SUCCESS_UPDATED_ITEM.status
-                        MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_UPDATED_ITEM.status_code
-                        MESSAGES.HEADER.message = MESSAGES.SUCCESS_UPDATED_ITEM.message
-                        MESSAGES.HEADER.response.usuario = usuario
+        // ================= ATUALIZA ENDEREÇO =================
+        let enderecoUsuario = {
+            cep: usuario.cep,
+            cidade: usuario.cidade,
+            estado: usuario.estado,
+            logradouro: usuario.logradouro,
+            numero: usuario.numero,
+            complemento: usuario.complemento,
+            bairro: usuario.bairro,
+            usuario_id: usuario.id_usuario
+        }
 
-                        return MESSAGES.HEADER //200
-                    } else {
-                        return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
-                    }
-                } else {
-                    return validarID //A função buscarusuarioID poderá retornar (400 ou 404 ou 500)
+        await enderecoDAO.setUpdateAddress(enderecoUsuario)
+
+        // ================= TIPO USUARIO =================
+        let tipoUsuario = usuario.tipo_usuario?.toLowerCase()
+
+        if (tipoUsuario === 'artista') {
+
+            let artistaBanco = await artistaDAO.getSelectByUsuarioId(usuario.id_usuario)
+
+            if (artistaBanco) {
+
+                let artista = {
+                    nome_artistico: usuario.nome_artistico,
+                    descricao: usuario.descricao,
+                    usuario_id: usuario.id_usuario
                 }
-            } else {
-                return validar //400 referente a validação dos dados
+
+                await artistaDAO.setUpdateArtist(artista)
+
+                if (usuario.generos_musicais && Array.isArray(usuario.generos_musicais)) {
+
+                    await artistaGeneroMusicalDAO.deleteByArtistaId(artistaBanco.id_artista)
+
+                    for (let generoId of usuario.generos_musicais) {
+                        await artistaGeneroMusicalDAO.setInsertArtistGendersSong({
+                            genero_musical_id: generoId,
+                            artista_id: artistaBanco.id_artista
+                        })
+                    }
+                }
             }
 
-        } else {
-            return MESSAGES.ERROR_CONTENT_TYPE //415
-        }
-    } catch (error) {
-        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
-    }
+        } else if (tipoUsuario === 'organizador') {
 
+            let organizadorBanco = await organizadorDAO.getSelectByUsuarioId(usuario.id_usuario)
+
+            if (!organizadorBanco) {
+                await organizadorDAO.setInsertOrganizer({
+                    usuario_id: usuario.id_usuario
+                })
+            }
+        }
+
+        // ================= RETORNO IGUAL AO INSERT =================
+        let fotoBanco = await viewUsuarioFoto.getSelectViewUserPhoto(usuario.id_usuario)
+
+        let foto = {}
+
+        if (fotoBanco && fotoBanco.length > 0) {
+            foto = {
+                id_foto: fotoBanco[0].id_foto,
+                caminho: fotoBanco[0].caminho
+            }
+        }
+
+        MESSAGES.HEADER.status = MESSAGES.SUCCESS_UPDATED_ITEM.status
+        MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_UPDATED_ITEM.status_code
+        MESSAGES.HEADER.message = MESSAGES.SUCCESS_UPDATED_ITEM.message
+        MESSAGES.HEADER.response = {
+            usuario,
+            endereco: enderecoUsuario,
+            foto
+        }
+
+        return MESSAGES.HEADER
+
+    } catch (error) {
+        console.log(error)
+        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER
+    }
 }
 
 
