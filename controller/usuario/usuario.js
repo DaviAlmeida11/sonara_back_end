@@ -8,11 +8,11 @@
 const usuarioDAO = require('../../model/DAO/usuario.js')
 const crypto = require('../modulo/crypto-password.js')
 const enderecoDAO = require('../../model/DAO/endereco.js')
-const controllerEndereco = require('../endereco/endereco.js')
 const artistaDAO = require('../../model/DAO/artista.js')
 const organizadorDAO = require('../../model/DAO/organizador.js')
 const artistaGeneroMusicalDAO = require('../../model/DAO/artista_genero_musical.js')
 const viewUsuarioFoto = require('../../model/DAO/VEWS/usuario_foto.js')
+const generoMusicais = require('../../model/DAO/genero_musical.js')
 
 
 const DEFAULT_MESSAGES = require('../modulo/conf_message.js')
@@ -48,15 +48,26 @@ const listarUsuarios = async function () {
                 // ================= ENDEREÇO (DADO PURO) =================
                 let endereco = await enderecoDAO.getSelectByIdAddressUser(itemUsuario.id_usuario)
 
-                if (!endereco) {
+                if (endereco) {
                     endereco = {}
                 }
 
                 // ================= ARTISTA (DADO PURO) =================
                 let artista = await artistaDAO.getSelectByIdArtistUser(itemUsuario.id_usuario)
 
-                if (!artista) {
+                if (artista) {
                     artista = {}
+                }
+
+
+                let generosMusicais = await generoMusicais.getSelectByIdgendersMusicsUser(itemUsuario.id_usuario)
+
+                if (generoMusicais){
+                    generoMusicais = [
+                        {
+
+                        }
+                    ]
                 }
 
                 // ================= ORGANIZADOR (DADO PURO) =================
@@ -69,6 +80,7 @@ const listarUsuarios = async function () {
                 itemUsuario.endereco = endereco
                 itemUsuario.artista = artista
                 itemUsuario.organiazdor = organizador
+                itemUsuario.generoId = generoMusicais
 
                 // ================= MONTA OBJETO FINAL =================
                 listaUsuariosMontados.push(
@@ -78,7 +90,7 @@ const listarUsuarios = async function () {
 
             MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.itemUsuario = listaUsuariosMontados
+            MESSAGES.HEADER.response.itemUsuarios = listaUsuariosMontados
 
             return MESSAGES.HEADER
 

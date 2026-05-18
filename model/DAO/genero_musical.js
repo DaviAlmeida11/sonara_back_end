@@ -30,6 +30,29 @@ const getSelectAllMusicalGeners = async function(){
     }
 }
 
+const getSelectByIdgendersMusicsUser = async function (id) {
+
+    try {
+
+        let sql = `SELECT * FROM tb_genero_musical WHERE id_usuario = ?`
+
+        let result = await knexDatabase.raw(sql, [id])
+
+        const rows = result?.[0]
+
+        if (Array.isArray(rows) && rows.length > 0) {
+            return rows[0]   
+        }
+
+        return {}
+
+    } catch (error) {
+        console.log(error)
+        return {}
+    }
+}
+
+
 //Retorna um filme filtrando pelo ID do banco de dados
 const getSelectByIdGender = async function(id){
     try {
@@ -130,6 +153,7 @@ const setDeleteMusicalGeners = async function(id){
 
 module.exports = {
     getSelectAllMusicalGeners,
+    getSelectByIdgendersMusicsUser,
     getSelectByIdGender,
     setInsertMusicalGeners,
     setUpdateMusicalGeners,
