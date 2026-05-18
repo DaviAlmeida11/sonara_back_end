@@ -14,7 +14,7 @@ const knexDatabase = knex(knexConfig.development);
 
 const getSelectViewUserPhoto = async function(id_usuario){
     try {
-        let sql = `SELECT id_foto, url_foto, id_usaurio FROM vw_usuario_com_foto where id_evento = ${id_usuario}`
+        let sql = `SELECT id_foto, url_foto, id_usuario FROM vw_usuario_com_foto where id_usuario = ${id_usuario}`
         let result = await knexDatabase.raw(sql)
 
         if(Array.isArray(result[0]))

@@ -63,11 +63,12 @@ const listarUsuarios = async function () {
                 let generosMusicais = await generoMusicais.getSelectByIdgendersMusicsUser(itemUsuario.id_usuario)
 
                 if (generoMusicais){
-                    generoMusicais = [
+                    generoMusicais =  [
                         {
-
+                            id_genero_musical : generoMusicais.id_genero_musical,
+                            genero : generoMusicais.id_genero_musical
                         }
-                    ]
+                    ] 
                 }
 
                 // ================= ORGANIZADOR (DADO PURO) =================
