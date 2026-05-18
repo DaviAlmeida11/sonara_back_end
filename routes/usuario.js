@@ -16,9 +16,7 @@ router.use((request, response, next) => {
     next()
 })
 
-// ✅ rotas específicas SEMPRE antes das rotas com parâmetro
-
-// ================= LOGIN =================
+//login
 router.post('/login', cors(), bodyParserJson, async (req, res) => {
 
     const contentType = req.headers['content-type']
@@ -49,7 +47,8 @@ router.post('/login', cors(), bodyParserJson, async (req, res) => {
     return res.status(result.status_code).json(result)
 })
 
-// ================= INSERIR USUÁRIO =================
+//inserir usuario
+
 router.post('/', cors(), bodyParserJson, async function (request, response) {
     let dadosBody = request.body
     let contentType = request.headers['content-type']
@@ -60,14 +59,14 @@ router.post('/', cors(), bodyParserJson, async function (request, response) {
     response.json(usuario)
 })
 
-// ================= LISTAR USUÁRIOS =================
+//listar usuario
 router.get('/', authMiddleware, cors(), async function (request, response) {
     let usuario = await controllerUsuario.listarUsuarios()
     response.status(usuario.status_code)
     response.json(usuario)
 })
 
-// ================= ATUALIZAR USUÁRIO =================
+//atualizar usuario
 router.put('/:id', cors(), bodyParserJson, async function (request, response) {
     let dadosBody = request.body
     let idUsuario = request.params.id
@@ -79,7 +78,7 @@ router.put('/:id', cors(), bodyParserJson, async function (request, response) {
     response.json(usuario)
 })
 
-// ================= DELETAR USUÁRIO =================
+//deletar usuario
 router.delete('/:id', authMiddleware, cors(), async function (request, response) {
     let idUsuario = request.params.id
 
@@ -89,8 +88,7 @@ router.delete('/:id', authMiddleware, cors(), async function (request, response)
     response.json(usuario)
 })
 
-// ================= BUSCAR USUÁRIO POR ID =================
-// ✅ rota com parâmetro SEMPRE por último
+
 router.get('/:id', authMiddleware, cors(), async function (request, response) {
     let idUsuario = request.params.id
     let usuario = await controllerUsuario.buscarUsuarioId(idUsuario)

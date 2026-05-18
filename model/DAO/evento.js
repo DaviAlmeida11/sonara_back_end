@@ -33,7 +33,7 @@ const getSelectAllEvent = async function(){
 //Retorna um filme filtrando pelo ID do banco de dados
 const getSelectByIdEvent = async function(id){
     try {
-        let sql = `select * from tb_evento where id_evento=${id}`
+        let sql = `select * from vw_evento where id_evento=${id}`
         let result = await knexDatabase.raw(sql)
 
         if(Array.isArray(result[0]))

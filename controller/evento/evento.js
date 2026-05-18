@@ -64,35 +64,50 @@ const listarEvento = async function () {
     }
 }
 //Retorna um evento fultrando pelo ID
-const buscarEventoId = async function(id){
+const buscarEventoId = async function (id) {
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
 
         //Validação da chegada do ID
-        if(!isNaN(id) && id != '' && id != null && id > 0){
-            let resultEvento = await eventoDAO.getSelectByIdEvent(Number(id))
+        if (!isNaN(id) && id != '' && id != null && id > 0) {
+        let resultEvento = await eventoDAO.getSelectByIdEvent(Number(id))
+            if (resultEvento && resultEvento.length > 0) {
 
-            if(resultEvento){
-                if(resultEvento.length > 0){
+                for (let itemEvento of resultEvento) {
+
+                    // VIEW de fotos
+                    let fotosBanco = await viewBuscarFotoEventoDAO.getSelectViewEventPhoto(itemEvento.id_evento)
+
+                    let fotos = []
+
+                    if (fotosBanco && fotosBanco.length > 0) {
+                        fotos = [
+                            {
+                                id_foto: fotosBanco[0].id_foto,
+                                caminho: fotosBanco[0].url_foto
+                            }
+                        ]
+                    }
+
+                    itemEvento.fotos = fotos
                     MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
                     MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
                     MESSAGES.HEADER.response.Evento = resultEvento[0]
-
                     return MESSAGES.HEADER //200
-                }else{
-                    return MESSAGES.ERROR_NOT_FOUND //404
                 }
-            }else{
-                return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+
+            } else {
+                return MESSAGES.ERROR_NOT_FOUND //404
             }
-        }else{
+
+        } else {
             MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [ID incorreto]'
             return MESSAGES.ERROR_REQUIRED_FIELDS //400
         }
 
-    } catch (error) {
+    } catch(error) {
         return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 }
@@ -132,14 +147,14 @@ const inserirEvento = async function (evento, contentType) {
 
         // ================= ENDEREÇO =================
         let enderecoEvento = {
-            cep:         evento.cep,
-            cidade:      evento.cidade,
-            estado:      evento.estado,
-            logradouro:  evento.logradouro,
-            numero:      evento.numero,
+            cep: evento.cep,
+            cidade: evento.cidade,
+            estado: evento.estado,
+            logradouro: evento.logradouro,
+            numero: evento.numero,
             complemento: evento.complemento,
-            bairro:      evento.bairro,
-            evento_id:   lastIDEvento.id_evento
+            bairro: evento.bairro,
+            evento_id: lastIDEvento.id_evento
         }
 
         let validarEndereco = await validarDadosEvento(enderecoEvento)
@@ -187,18 +202,18 @@ const inserirEvento = async function (evento, contentType) {
         if (fotosBanco && fotosBanco.length > 0) {
             fotos = [
                 {
-                id_foto: fotosBanco[0].id_foto,
-                caminho: fotosBanco[0].url_foto
-            }
-        ]
+                    id_foto: fotosBanco[0].id_foto,
+                    caminho: fotosBanco[0].url_foto
+                }
+            ]
         }
-        
+
 
         // ================= RETORNO FINAL =================
-        MESSAGES.HEADER.status      = MESSAGES.SUCCESS_CREATED_ITEM.status
+        MESSAGES.HEADER.status = MESSAGES.SUCCESS_CREATED_ITEM.status
         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_CREATED_ITEM.status_code
-        MESSAGES.HEADER.message     = MESSAGES.SUCCESS_CREATED_ITEM.message
-        MESSAGES.HEADER.response    = {
+        MESSAGES.HEADER.message = MESSAGES.SUCCESS_CREATED_ITEM.message
+        MESSAGES.HEADER.response = {
             evento,
             endereco: enderecoEvento,
             evento_organizador: eventoOrganizador,
@@ -240,21 +255,21 @@ const atualizarEvento = async function (evento, id, contentType) {
 
         // ================= ATUALIZA ENDEREÇO =================
         let enderecoEvento = {
-            cep:         evento.cep,
-            cidade:      evento.cidade,
-            estado:      evento.estado,
-            logradouro:  evento.logradouro,
-            numero:      evento.numero,
+            cep: evento.cep,
+            cidade: evento.cidade,
+            estado: evento.estado,
+            logradouro: evento.logradouro,
+            numero: evento.numero,
             complemento: evento.complemento,
-            bairro:      evento.bairro,
-            evento_id:   evento.id_evento
+            bairro: evento.bairro,
+            evento_id: evento.id_evento
         }
 
         await enderecoEventoDAO.setUpdateAddressEvent(enderecoEvento)
 
         // ================= ATUALIZA EVENTO ORGANIZADOR =================
         let eventoOrganizador = {
-            evento_id:      evento.id_evento,
+            evento_id: evento.id_evento,
             organizador_id: evento.organizador_id
         }
 
@@ -265,17 +280,17 @@ const atualizarEvento = async function (evento, id, contentType) {
         if (fotosBanco && fotosBanco.length > 0) {
             fotos = [
                 {
-                id_foto: fotosBanco[0].id_foto,
-                caminho: fotosBanco[0].url_foto
-            }
-        ]
+                    id_foto: fotosBanco[0].id_foto,
+                    caminho: fotosBanco[0].url_foto
+                }
+            ]
         }
 
         // ================= RETORNO IGUAL AO INSERT =================
-        MESSAGES.HEADER.status      = MESSAGES.SUCCESS_UPDATED_ITEM.status
+        MESSAGES.HEADER.status = MESSAGES.SUCCESS_UPDATED_ITEM.status
         MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_UPDATED_ITEM.status_code
-        MESSAGES.HEADER.message     = MESSAGES.SUCCESS_UPDATED_ITEM.message
-        MESSAGES.HEADER.response    = {
+        MESSAGES.HEADER.message = MESSAGES.SUCCESS_UPDATED_ITEM.message
+        MESSAGES.HEADER.response = {
             evento,
             endereco: enderecoEvento,
             evento_organizador: eventoOrganizador,
@@ -291,38 +306,38 @@ const atualizarEvento = async function (evento, id, contentType) {
 }
 
 
-const excluirEvento = async function(id){
+const excluirEvento = async function (id) {
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
     try {
 
-      
-        if(!isNaN(id) && id != '' && id != null && id > 0){
+
+        if (!isNaN(id) && id != '' && id != null && id > 0) {
 
             let validarID = await buscarEventoId(id)
 
-            if(validarID.status_code == 200){
+            if (validarID.status_code == 200) {
 
                 let resultEvento = await eventoDAO.setDeleteEvent(Number(id))
 
-                if(resultEvento){
-                    
-                        MESSAGES.HEADER.status      = MESSAGES.SUCCESS_DELETED_ITEM.status
-                        MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
-                        MESSAGES.HEADER.message     = MESSAGES.SUCCESS_DELETED_ITEM.message
-                        MESSAGES.HEADER.response.evento = resultEvento
-                        delete MESSAGES.HEADER.response
-                        return MESSAGES.HEADER 
-            
-                }else{
-                    return MESSAGES.ERROR_INTERNAL_SERVER_MODEL 
+                if (resultEvento) {
+
+                    MESSAGES.HEADER.status = MESSAGES.SUCCESS_DELETED_ITEM.status
+                    MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_DELETED_ITEM.status_code
+                    MESSAGES.HEADER.message = MESSAGES.SUCCESS_DELETED_ITEM.message
+                    MESSAGES.HEADER.response.evento = resultEvento
+                    delete MESSAGES.HEADER.response
+                    return MESSAGES.HEADER
+
+                } else {
+                    return MESSAGES.ERROR_INTERNAL_SERVER_MODEL
                 }
-            }else{
-                return MESSAGES.ERROR_NOT_FOUND 
+            } else {
+                return MESSAGES.ERROR_NOT_FOUND
             }
-        }else{
+        } else {
             MESSAGES.ERROR_REQUIRED_FIELDS.message == '[ID incorreto]'
-            return MESSAGES.ERROR_REQUIRED_FIELDS 
+            return MESSAGES.ERROR_REQUIRED_FIELDS
         }
 
     } catch (error) {

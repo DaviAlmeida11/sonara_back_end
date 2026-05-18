@@ -29,10 +29,10 @@ const listarUsuarios = async function () {
 
         if (resultUsuarios && resultUsuarios.length > 0) {
 
-            for (let itemUsuario of resultUsuarios) {
+            for (let usuario of resultUsuarios) {
 
                 // VIEW de foto
-                let fotoBanco = await viewUsuarioFoto.getSelectViewUserPhoto(itemUsuario.id_usuario)
+                let fotoBanco = await viewUsuarioFoto.getSelectViewUserPhoto(usuario.id_usuario)
 
                 let foto = []
 
@@ -45,12 +45,12 @@ const listarUsuarios = async function () {
                     ]
                 }
 
-                itemUsuario.foto = foto
+                usuario.foto = foto
             }
 
             MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
             MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-            MESSAGES.HEADER.response.itemUsuarios = resultUsuarios
+            MESSAGES.HEADER.response.usuarios = resultUsuarios
 
             return MESSAGES.HEADER
 
