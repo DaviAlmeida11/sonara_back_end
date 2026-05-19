@@ -98,6 +98,43 @@ const buscarUsuarioId = async function (id) {
     }
 }
 
+
+
+const buscarOrganizadorUsuarioId = async function (id) {
+    //Criando um objeto novo para as mensagens
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+
+        //Validação da chegada do ID
+        if (!isNaN(id) && id != '' && id != null && id > 0) {
+            let resultusuarios = await usuarioDAO.getSelectByIdUsersOrganizer(Number(id))
+
+            if (resultusuarios) {
+                if (resultusuarios.length > 0) {
+                    MESSAGES.HEADER.status = MESSAGES.SUCCESS_REQUEST.status
+                    MESSAGES.HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
+                    MESSAGES.HEADER.response.usuarios = resultusuarios[0]
+
+                    return MESSAGES.HEADER //200
+                } else {
+                    return MESSAGES.ERROR_NOT_FOUND //404
+                }
+            } else {
+                return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+            }
+        } else {
+            MESSAGES.ERROR_REQUIRED_FIELDS.message == ' [ID incorreto]'
+            return MESSAGES.ERROR_REQUIRED_FIELDS //400
+        }
+
+    } catch (error) {
+        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
+
+
+
 const buscarUsuarioEmail = async function (email) {
     //Criando um objeto novo para as mensagens
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
@@ -554,5 +591,6 @@ module.exports = {
     inserirUsuario,
     atualizarUsuario,
     excluirUsuario,
-    loginUsuario
+    loginUsuario,
+    buscarOrganizadorUsuarioId
 }

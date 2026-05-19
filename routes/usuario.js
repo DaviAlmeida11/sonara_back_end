@@ -97,4 +97,12 @@ router.get('/:id', authMiddleware, cors(), async function (request, response) {
     response.json(usuario)
 })
 
+router.get('/organizador/:id',  cors(), async function (request, response) {
+    let idUsuario = request.params.id
+    let usuario = await controllerUsuario.buscarOrganizadorUsuarioId(idUsuario)
+
+    response.status(usuario.status_code)
+    response.json(usuario)
+})
+
 module.exports = router

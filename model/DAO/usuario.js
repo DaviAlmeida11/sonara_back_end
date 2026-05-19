@@ -15,7 +15,7 @@ const knexDatabase = knex(knexConfig.development);
 const getSelectAllUsers = async function(){
     try {
       
-        let sql = `select * from vw_usuario`
+        let sql = `select * from tb_usuario order by id_usuario desc`
     
         let result = await knexDatabase.raw(sql)
 
@@ -34,7 +34,7 @@ const getSelectAllUsers = async function(){
 const getSelectByIdUsers = async function(id){
     try {
     
-        let sql = `select * from vw_usuario where id_usuario=${id}`
+        let sql = `select * from tb_usuario where id_usuario=${id}`
         
        
         let result = await knexDatabase.raw(sql)
@@ -50,13 +50,34 @@ const getSelectByIdUsers = async function(id){
     }
 }
 
+
+const getSelectByIdUsersOrganizer = async function(id){
+    try {
+    
+        let sql = `select * from tb_organizador where usuario_id=${id}`
+        
+       
+        let result = await knexDatabase.raw(sql)
+
+        if(Array.isArray(result[0]))
+            return result
+        else
+            return false
+
+    } catch (error) {
+      
+        return false
+    }
+}
+
+
 const getSelectLastID = async function() {
     try {
-        let result = await knexDatabase('vw_usuario')
+        let result = await knexDatabase('tb_usuario')
             .max('id_usuario as id_usuario')
             .first()
         
-        console.log('getSelectLastID result:', result) // ← vê o que retorna
+        console.log('getSelectLastID result:', result) 
         return result
     } catch (error) {
         console.log(error)
@@ -66,7 +87,7 @@ const getSelectLastID = async function() {
 
 const getUsuarioByUsuarioEmail = async function(email) {
     try {
-        let sql = `select * from vw_usuario_com_senha where email = '${email}'`
+        let sql = `select * from tb_usuario where email = '${email}'`
 
         const result = await knexDatabase.raw(sql)
 
@@ -76,7 +97,6 @@ const getUsuarioByUsuarioEmail = async function(email) {
             return false
 
     } catch (error) {
-        console.log(error)
         return false
     }
 }
@@ -84,7 +104,7 @@ const getUsuarioByUsuarioEmail = async function(email) {
 
 const getUsuarioByUsuarioCPF = async function(cpf) {
     try {
-        let sql = `select * from vw_usuario where cpf = '${cpf}'`
+        let sql = `select * from tb_usuario where email = '${cpf}'`
 
         const result = await knexDatabase.raw(sql)
 
@@ -140,10 +160,12 @@ const setUpdateUsers = async function(usuario){
         let sql = `update tb_usuario set 
         nome = "${usuario.nome}",
         email = "${usuario.email}",
+        senha = "${usuario.senha}",
         telefone = ${usuario.telefone === null ? "NULL" : `"${usuario.telefone}"`},
         cpf = "${usuario.cpf}",
         data_nasc = "${usuario.data_nasc}",
         nacionalidade_id = ${usuario.nacionalidade_id},
+        endereco_id = ${usuario.endereco_id},
         genero_id = ${usuario.genero_id}
     where id_usuario = ${usuario.id_usuario}`;
 
@@ -188,6 +210,7 @@ module.exports = {
     setUpdateUsers,
     getSelectLastID,
     setDeleteUsers,
+    getSelectByIdUsersOrganizer,
     getUsuarioByUsuarioEmail,
     getUsuarioByUsuarioCPF
 } 
