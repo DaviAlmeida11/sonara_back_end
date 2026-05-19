@@ -132,13 +132,13 @@ const inserirEvento = async function (evento, contentType) {
 
         // ================= INSERE EVENTO =================
         let resultEvento = await eventoDAO.setInsertEvent(evento)
-
+        console.log(resultEvento)
         if (!resultEvento) {
             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
         }
 
         let lastIDEvento = await eventoDAO.getSelectLastID()
-
+        console.log(lastIDEvento)
         if (!lastIDEvento) {
             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
         }
@@ -164,7 +164,7 @@ const inserirEvento = async function (evento, contentType) {
         }
 
         let resultEndereco = await enderecoEventoDAO.setInsertAddressEvent(enderecoEvento)
-
+        console.log(resultEndereco)
         if (!resultEndereco) {
             return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
         }

@@ -26,7 +26,7 @@ const getSelectAllOrganizerEvent = async function () {
 
     } catch (error) {
 
-        return false
+        console.log(error)
     }
 }
 
@@ -94,7 +94,7 @@ INSERT INTO tb_evento_organizador (
             return false
 
     } catch (error) {
-        return false
+        console.log(error)
     }
 }
 

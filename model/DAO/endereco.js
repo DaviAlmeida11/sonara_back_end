@@ -84,7 +84,7 @@ const getSelectLastID = async function(){
 
     } catch (error) {
 
-        return false
+        console.log(error)
     }
 }
 
@@ -119,7 +119,7 @@ const setInsertAddress = async function(endereco){
             return false
 
     } catch (error) {
-        return false
+        console.log(error)
     }
 }
 

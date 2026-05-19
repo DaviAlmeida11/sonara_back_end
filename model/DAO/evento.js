@@ -56,7 +56,7 @@ const getSelectLastID = async function(){
         else
             return false
     } catch (error) {
-        return false
+        console.log(error)
     }
 }
 
@@ -77,7 +77,7 @@ const setInsertEvent = async function(evento){
         else
             return false
     } catch (error) {
-        return false
+        console.log(error)
     }
 }
 

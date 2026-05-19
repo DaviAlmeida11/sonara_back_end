@@ -289,6 +289,7 @@ const loginUsuario = async function (usuario) {
     try {
 
         const user = await usuarioDAO.getUsuarioByUsuarioEmail(usuario.email)
+        console.log(user)
 
         if (!user) {
             return MESSAGE.ERROR_LOGIN

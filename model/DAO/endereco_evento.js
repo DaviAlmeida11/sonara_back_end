@@ -111,7 +111,7 @@ const setInsertAddressEvent = async function(enderco_evento){
             return false
 
     } catch (error) {
-        return false
+        console.log(error)
     }
 }
 
