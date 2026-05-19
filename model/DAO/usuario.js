@@ -87,7 +87,7 @@ const getSelectLastID = async function() {
 
 const getUsuarioByUsuarioEmail = async function(email) {
     try {
-        let sql = `select * from vw_usuario where email = ${email}`
+        let sql = `select * from vw_usuario_com_senha where email = "${email}"`
 
         const result = await knexDatabase.raw(sql)
 
@@ -97,7 +97,7 @@ const getUsuarioByUsuarioEmail = async function(email) {
             return false
 
     } catch (error) {
-        return false
+        console.log(error)
     }
 }
 
