@@ -309,7 +309,7 @@ const loginUsuario = async function (usuario) {
 
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ATUALIZAR
+// ATUALIZAR USUARIO
 // ─────────────────────────────────────────────────────────────────────────────
 const atualizarUsuario = async function (usuario, id, file, contentType) {
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
